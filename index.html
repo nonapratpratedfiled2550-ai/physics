@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#141c2f">
+<title>ฟิสิกส์ทีละขั้น</title>
+<style>
+  :root {
+    --paper: #f3eee6;
+    --sheet: #fffdf9;
+    --ink: #1c1915;
+    --muted: #6f675e;
+    --line: #e4dacb;
+    --sidebar: #141c2f;
+    --sidebar-2: #1c2740;
+    --cream: #f6f1e8;
+    --brass: #c6a15a;
+    --teal: #0f6e64;
+    --teal-deep: #0a4f49;
+    --teal-soft: #e6f4f1;
+    --good: #17693c;
+    --good-bg: #e8f6ee;
+    --bad: #9d342c;
+    --bad-bg: #fdecea;
+    --info-bg: #e7f3f2;
+    --shadow: 0 16px 40px rgba(28, 25, 21, 0.06);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    color: var(--ink);
+    font-family: "Leelawadee UI", Tahoma, "Segoe UI", sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    background: var(--paper);
+  }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
+  .skip {
+    position: absolute; left: 0.6rem; top: -3rem;
+    background: white; padding: 0.4rem 0.7rem; z-index: 9;
+  }
+  .skip:focus { top: 0.6rem; }
+  #app { height: 100%; }
+  .shell { height: 100%; display: grid; grid-template-columns: 300px minmax(0, 1fr); }
+  .sidebar {
+    background: linear-gradient(180deg, var(--sidebar) 0%, #10182a 100%);
+    color: var(--cream);
+    display: flex; flex-direction: column;
+    min-height: 0;
+    padding: 1.15rem 0.9rem 0.8rem;
+  }
+  .brand { display: flex; gap: 0.75rem; align-items: center; padding: 0 0.35rem 0.9rem; }
+  .mark {
+    width: 42px; height: 42px; flex: none; color: var(--brass);
+    border: 1px solid rgba(198, 161, 90, 0.45); border-radius: 13px;
+    display: grid; place-items: center;
+  }
+  .mark svg { width: 26px; height: 26px; }
+  .brand p { margin: 0; }
+  .brand .name { font-size: 1.12rem; font-weight: 700; letter-spacing: 0.01em; }
+  .brand .sub { color: #c9bfb2; font-size: 0.82rem; margin-top: 0.1rem; }
+  .progress { padding: 0 0.35rem 0.85rem; }
+  .progress .row { display: flex; justify-content: space-between; font-size: 0.86rem; color: #d9d0c4; }
+  .bar { margin-top: 0.4rem; height: 6px; border-radius: 99px; background: rgba(255,255,255,0.08); overflow: hidden; }
+  .bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--brass), #e6d3a4); width: 0; }
+  .plist { overflow: auto; display: flex; flex-direction: column; gap: 0.35rem; padding: 0.15rem; min-height: 0; }
+  .prob {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 0.65rem; align-items: center;
+    text-align: left; width: 100%;
+    background: transparent; color: var(--cream);
+    border: 1px solid transparent; border-radius: 14px;
+    padding: 0.55rem 0.6rem; min-height: 58px;
+  }
+  .prob:hover { background: rgba(255,255,255,0.04); }
+  .prob.on { background: rgba(255,255,255,0.08); border-color: rgba(198,161,90,0.45); }
+  .prob .n {
+    width: 1.8rem; height: 1.8rem; border-radius: 50%;
+    display: grid; place-items: center;
+    background: rgba(255,255,255,0.08); font-size: 0.85rem;
+  }
+  .prob.on .n { background: var(--brass); color: #1c1408; font-weight: 700; }
+  .prob strong { display: block; font-size: 0.95rem; font-weight: 700; }
+  .prob em { display: block; font-style: normal; color: #b7ad9f; font-size: 0.78rem; }
+  .tick { color: #8ddec0; font-size: 0.95rem; }
+  .side-foot {
+    margin-top: auto; padding: 0.85rem 0.35rem 0.15rem;
+    display: flex; justify-content: space-between; gap: 0.5rem; align-items: center;
+    color: #b7ad9f; font-size: 0.8rem;
+  }
+  .linkish {
+    background: transparent; border: 0; color: #e7d7b0; padding: 0.2rem; text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .workspace { min-width: 0; min-height: 0; overflow: auto; padding: 1.2rem 1.35rem 2.4rem; }
+  .topbar { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-end; margin-bottom: 0.85rem; }
+  .kicker { margin: 0; color: var(--teal); font-size: 0.82rem; letter-spacing: 0.04em; }
+  h1.page { margin: 0.1rem 0 0; font-size: 1.55rem; line-height: 1.25; }
+  .stepper { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: flex-end; }
+  .stepper span {
+    display: flex; align-items: center; gap: 0.35rem;
+    color: var(--muted); font-size: 0.86rem; padding: 0.15rem 0.2rem;
+  }
+  .stepper i {
+    font-style: normal; width: 1.45rem; height: 1.45rem; border-radius: 50%;
+    display: grid; place-items: center; border: 1px solid var(--line); background: white; font-size: 0.78rem;
+  }
+  .stepper span.now { color: var(--ink); font-weight: 700; }
+  .stepper span.now i { background: var(--teal); color: white; border-color: var(--teal); }
+  .stepper span.did i { background: var(--good); color: white; border-color: var(--good); }
+  .help { margin: 0 0 0.8rem; color: var(--muted); }
+  .sheet, .card {
+    background: var(--sheet);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 1.1rem 1.2rem 1.2rem;
+    margin-bottom: 0.85rem;
+  }
+  .story { margin: 0.35rem 0 0.9rem; font-size: 1.05rem; }
+  .facts { display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 0.7rem; }
+  .fact {
+    background: #f7f3ec; border-radius: 14px; padding: 0.75rem 0.8rem;
+  }
+  .fact.asked { background: var(--teal-soft); }
+  .fact h2 { margin: 0 0 0.45rem; font-size: 0.82rem; letter-spacing: 0.03em; color: var(--muted); font-weight: 700; }
+  .fact.asked h2 { color: var(--teal-deep); }
+  .chips { display: flex; flex-direction: column; gap: 0.35rem; margin: 0; padding: 0; list-style: none; }
+  .chips li { background: white; border-radius: 10px; padding: 0.32rem 0.55rem; }
+  .ask-sym {
+    margin: 0; font-family: Cambria, Georgia, serif; font-size: 1.7rem; color: var(--teal-deep); line-height: 1.1;
+  }
+  .ask-name { margin: 0.15rem 0 0; }
+  .msg { border-radius: 14px; padding: 0.75rem 0.9rem; margin-bottom: 0.85rem; }
+  .msg.good { background: var(--good-bg); color: var(--good); }
+  .msg.bad { background: var(--bad-bg); color: var(--bad); }
+  .msg.info { background: var(--info-bg); color: var(--teal-deep); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.7rem; }
+  .plate {
+    text-align: left; width: 100%;
+    border: 1px solid var(--line); background: white; border-radius: 16px;
+    padding: 0.9rem 0.95rem 0.85rem; min-height: 108px;
+    border-top: 4px solid var(--stripe, var(--teal));
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .plate:hover { transform: translateY(-2px); border-color: #d7c4a4; }
+  .plate .label { display: block; font-weight: 700; }
+  .plate small { display: block; color: var(--muted); margin-top: 0.25rem; }
+  .formula-face {
+    font-family: Cambria, "Leelawadee UI", Georgia, serif;
+    font-size: 1.55rem; color: var(--teal-deep); margin: 0.25rem 0 0.15rem; line-height: 1.2;
+  }
+  .vchips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.45rem; }
+  .vchips i {
+    font-style: normal; font-family: Cambria, Georgia, serif;
+    background: #f4efe6; border-radius: 999px; padding: 0.05rem 0.45rem; font-size: 0.95rem;
+  }
+  .headrow { display: flex; justify-content: space-between; gap: 0.8rem; align-items: baseline; margin-bottom: 0.7rem; }
+  .headrow h2 { margin: 0; font-size: 1.15rem; }
+  .note { color: var(--muted); font-size: 0.92rem; margin: 0.2rem 0 0.55rem; }
+  .target {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    margin: 0 0 0.7rem; border-radius: 999px; padding: 0.28rem 0.75rem;
+    background: var(--teal-soft); color: var(--teal-deep); font-size: 0.95rem;
+  }
+  .target.ready { background: var(--good-bg); color: var(--good); }
+  .board {
+    position: relative;
+    background:
+      radial-gradient(900px 180px at 50% -20%, rgba(255,255,255,0.08), transparent 55%),
+      linear-gradient(180deg, #1d3054, #15233d);
+    color: #f7f1e7;
+    border-radius: 18px;
+    padding: 1.35rem 1rem 0.95rem;
+    overflow-x: auto;
+    user-select: none;
+    box-shadow: inset 0 0 0 1px rgba(198, 161, 90, 0.35), inset 0 18px 40px rgba(0,0,0,0.18);
+  }
+  .board:before, .board:after {
+    content: ""; position: absolute; width: 12px; height: 12px;
+    border: 2px solid rgba(198, 161, 90, 0.75);
+  }
+  .board:before { top: 10px; left: 10px; border-right: 0; border-bottom: 0; }
+  .board:after { right: 10px; bottom: 10px; border-left: 0; border-top: 0; }
+  .eqline {
+    display: flex; justify-content: center; align-items: center; gap: 0.85rem;
+    min-width: min-content;
+    font-family: Cambria, "Leelawadee UI", Georgia, serif;
+    font-size: 2.05rem; line-height: 1.15; padding: 0.35rem 0.4rem 0.15rem;
+  }
+  .equals { color: #9fd9cf; }
+  .side { display: flex; align-items: center; border-radius: 12px; padding: 0.15rem; }
+  .side.over { outline: 2px dashed #e7c98a; outline-offset: 4px; }
+  .num, .den { display: flex; align-items: center; justify-content: center; gap: 0.12rem; padding: 0.08rem 0.2rem; }
+  .frac { display: inline-flex; flex-direction: column; align-items: center; }
+  .fbar { height: 2px; background: currentColor; align-self: stretch; margin: 0.12rem 0; opacity: 0.9; }
+  .term {
+    display: inline-flex; align-items: center; cursor: grab;
+    border: 2px solid transparent; border-radius: 12px; padding: 0.08rem 0.22rem;
+  }
+  .term.selected { border-color: #e7c98a; background: rgba(231, 201, 138, 0.14); }
+  .factor {
+    background: transparent; border: 0; border-radius: 8px;
+    padding: 0.12rem 0.18rem; color: inherit; font: inherit; cursor: pointer;
+  }
+  .factor.selected { background: #e7c98a; color: #1c1408; }
+  .factor.goal { box-shadow: inset 0 -2px 0 #8fd0c6; }
+  .cdot { color: #8fd0c6; }
+  .sign { padding-right: 0.08rem; }
+  .sign.plus { color: #e7c98a; padding: 0 0.38rem 0 0.18rem; }
+  .sqrt { display: inline-flex; align-items: center; }
+  .sqrt-mark { font-size: 1.15em; padding-right: 0.04em; }
+  .sqrt-in { border-top: 2px solid currentColor; padding: 0.12rem 0.28rem 0; }
+  .legend { margin: 0.45rem 0 0; color: #c9d4e4; font-size: 0.84rem; text-align: center; }
+  .preview {
+    margin: 0.7rem 0 0; background: #f7f3ec; border-radius: 12px; padding: 0.55rem 0.75rem;
+    display: flex; flex-wrap: wrap; gap: 0.45rem 0.8rem; align-items: baseline;
+  }
+  .preview span { color: var(--muted); font-size: 0.88rem; }
+  .preview code { font-family: Cambria, Georgia, serif; font-size: 1.2rem; color: var(--ink); }
+  .actions { display: flex; flex-direction: column; gap: 0.45rem; margin-top: 0.8rem; }
+  .actions-main, .actions-sub { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .btn {
+    border: 0; border-radius: 12px; padding: 0.58rem 0.85rem;
+    background: var(--teal); color: white;
+  }
+  .btn.calc {
+    background: var(--teal-deep);
+    padding: 0.72rem 1.05rem;
+    font-size: 1.02rem;
+  }
+  .btn.secondary { background: #efe6d8; color: var(--ink); }
+  .btn.ghost { background: transparent; color: var(--teal-deep); border: 1px solid #cfe0db; }
+  .btn:disabled { opacity: 0.42; cursor: not-allowed; }
+  .coach { margin: 0.65rem 0 0; color: var(--muted); }
+  .hintbox { margin-top: 0.55rem; background: #fff8ec; border-radius: 12px; padding: 0.6rem 0.75rem; color: #6a4b16; }
+  .timeline { list-style: none; margin: 0.9rem 0 0; padding: 0; }
+  .timeline li {
+    display: grid; grid-template-columns: 1.6rem 8.2rem 1fr; gap: 0.45rem;
+    padding: 0.38rem 0; border-top: 1px dashed var(--line); align-items: baseline;
+  }
+  .timeline .idx { color: var(--brass); font-weight: 700; }
+  .timeline .note { color: var(--muted); font-size: 0.9rem; }
+  .timeline code { font-family: Cambria, Georgia, serif; font-size: 1.08rem; }
+  .hero { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-end; flex-wrap: wrap; }
+  .answer-num {
+    margin: 0.15rem 0; font-family: Cambria, Georgia, serif;
+    font-size: 3rem; line-height: 1; color: var(--teal-deep);
+  }
+  .unit-th { margin: 0.25rem 0 0; color: var(--muted); }
+  .seal {
+    background: var(--good-bg); color: var(--good); border-radius: 999px;
+    padding: 0.35rem 0.7rem; font-size: 0.9rem;
+  }
+  .work { margin: 0.15rem 0; font-family: Cambria, Georgia, serif; font-size: 1.22rem; }
+  .work-block { margin-top: 0.8rem; }
+  .work-block p.label { margin: 0.45rem 0 0; color: var(--muted); font-size: 0.82rem; }
+  .row-actions { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.95rem; }
+  @media (max-width: 900px) {
+    html, body, #app, .shell { height: auto; min-height: 100%; }
+    .shell { grid-template-columns: 1fr; }
+    .sidebar { position: sticky; top: 0; z-index: 4; max-height: none; }
+    .plist { flex-direction: row; overflow-x: auto; }
+    .prob { min-width: 220px; }
+    .workspace { overflow: visible; padding: 1rem 0.9rem 2rem; }
+    .topbar { flex-direction: column; align-items: flex-start; }
+    .facts { grid-template-columns: 1fr; }
+    .eqline { font-size: 1.55rem; justify-content: flex-start; }
+    .timeline li { grid-template-columns: 1.4rem 1fr; }
+    .timeline .note { grid-column: 2; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+    .plate:hover { transform: none; }
+  }
+  @media print {
+    .sidebar, .actions, .row-actions, .stepper, .skip { display: none !important; }
+    .shell { display: block; height: auto; }
+    .workspace { overflow: visible; }
+    .board { background: white; color: black; box-shadow: none; }
+    .sheet, .card { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#workspace">ไปที่โจทย์</a>
+<div id="app"></div>
+<noscript>เปิดใช้ JavaScript เพื่อฝึกทำโจทย์</noscript>
+<script>
+'use strict';
+
+var SYM = {
+  u:  { sym: 'u',  name: 'ความเร็วต้น', unit: 'm/s', unitTh: 'เมตรต่อวินาที' },
+  v:  { sym: 'v',  name: 'ความเร็ว', unit: 'm/s', unitTh: 'เมตรต่อวินาที' },
+  a:  { sym: 'a',  name: 'ความเร่ง', unit: 'm/s²', unitTh: 'เมตรต่อวินาทีกำลังสอง' },
+  t:  { sym: 't',  name: 'เวลา', unit: 's', unitTh: 'วินาที' },
+  s:  { sym: 's',  name: 'การกระจัด', unit: 'm', unitTh: 'เมตร' },
+  F:  { sym: 'F',  name: 'แรงลัพธ์', unit: 'N', unitTh: 'นิวตัน' },
+  m:  { sym: 'm',  name: 'มวล', unit: 'kg', unitTh: 'กิโลกรัม' },
+  w:  { sym: 'w',  name: 'น้ำหนัก', unit: 'N', unitTh: 'นิวตัน' },
+  g:  { sym: 'g',  name: 'ความเร่งโน้มถ่วง', unit: 'm/s²', unitTh: 'เมตรต่อวินาทีกำลังสอง' },
+  f:  { sym: 'f',  name: 'แรงเสียดทาน', unit: 'N', unitTh: 'นิวตัน' },
+  mu: { sym: 'μ',  name: 'สัมประสิทธิ์แรงเสียดทาน', unit: '', unitTh: 'ไม่มีหน่วย' },
+  N:  { sym: 'N',  name: 'แรงตั้งฉาก', unit: 'N', unitTh: 'นิวตัน' },
+  W:  { sym: 'W',  name: 'งาน', unit: 'J', unitTh: 'จูล' },
+  Ek: { sym: 'Eₖ', name: 'พลังงานจลน์', unit: 'J', unitTh: 'จูล' },
+  Ep: { sym: 'Eₚ', name: 'พลังงานศักย์โน้มถ่วง', unit: 'J', unitTh: 'จูล' },
+  h:  { sym: 'h',  name: 'ความสูง', unit: 'm', unitTh: 'เมตร' },
+  P:  { sym: 'P',  name: 'กำลัง', unit: 'W', unitTh: 'วัตต์' },
+  p:  { sym: 'p',  name: 'โมเมนตัม', unit: 'kg·m/s', unitTh: 'กิโลกรัม·เมตรต่อวินาที' },
+  dp: { sym: 'Δp', name: 'การเปลี่ยนแปลงโมเมนตัม', unit: 'kg·m/s', unitTh: 'กิโลกรัม·เมตรต่อวินาที' },
+  V:  { sym: 'V',  name: 'ความต่างศักย์', unit: 'V', unitTh: 'โวลต์' },
+  I:  { sym: 'I',  name: 'กระแสไฟฟ้า', unit: 'A', unitTh: 'แอมแปร์' },
+  R:  { sym: 'R',  name: 'ความต้านทาน', unit: 'Ω', unitTh: 'โอห์ม' },
+  Pe: { sym: 'P',  name: 'กำลังไฟฟ้า', unit: 'W', unitTh: 'วัตต์' }
+};
+
+var topics = [
+  { id: 'motion', name: 'การเคลื่อนที่แนวตรง', stripe: '#2a6f97', blurb: 'ความเร็วต้น ความเร็วปลาย ความเร่ง การกระจัด และเวลา โดยยังไม่ใช้แรง' },
+  { id: 'force', name: 'แรงและกฎของนิวตัน', stripe: '#b86112', blurb: 'แรงลัพธ์ มวล ความเร่ง น้ำหนัก หรือแรงเสียดทาน' },
+  { id: 'energy', name: 'งาน พลังงาน และกำลัง', stripe: '#0f6e64', blurb: 'งาน พลังงานจลน์ พลังงานศักย์โน้มถ่วง หรือกำลัง' },
+  { id: 'momentum', name: 'โมเมนตัม', stripe: '#5c4d7a', blurb: 'มวล ความเร็ว และโมเมนตัม' },
+  { id: 'electric', name: 'ไฟฟ้ากระแส', stripe: '#9d342c', blurb: 'ความต่างศักย์ กระแสไฟฟ้า ความต้านทาน หรือกำลังไฟฟ้า' }
+];
+
+function lit(name, power) { return { type: 'var', name: name, power: power || 1 }; }
+function num(value) { return { type: 'const', value: value }; }
+function makeTerm(sign, factors) { return { sign: sign, factors: factors }; }
+function makeSide(terms, denom) { return { terms: terms, denom: denom || [], sqrt: false }; }
+function equation(left, right) { return { left: left, right: right }; }
+
+var formulas = [
+  { id: 'vuat', topic: 'motion', name: 'ความเร็วเมื่อรู้เวลา', classic: 'v = u + at', when: 'มีครบสามในสี่ปริมาณนี้ แล้วหาตัวที่เหลือ', vars: ['v', 'u', 'a', 't'],
+    eq: equation(makeSide([makeTerm(1, [lit('v')])]), makeSide([makeTerm(1, [lit('u')]), makeTerm(1, [lit('a'), lit('t')])])) },
+  { id: 'sutat', topic: 'motion', name: 'การกระจัดเมื่อรู้เวลา', classic: 's = ut + ½at²', when: 'มีการกระจัด ความเร็วต้น ความเร่ง และเวลา', vars: ['s', 'u', 'a', 't'],
+    eq: equation(makeSide([makeTerm(1, [lit('s')])]), makeSide([makeTerm(1, [lit('u'), lit('t')]), makeTerm(1, [num(0.5), lit('a'), lit('t', 2)])])) },
+  { id: 'v2u2as', topic: 'motion', name: 'ความเร็วไม่ใช้เวลา', classic: 'v² = u² + 2as', when: 'ไม่ปรากฏเวลาในข้อมูลหรือในสิ่งที่ถาม', vars: ['v', 'u', 'a', 's'],
+    eq: equation(makeSide([makeTerm(1, [lit('v', 2)])]), makeSide([makeTerm(1, [lit('u', 2)]), makeTerm(1, [num(2), lit('a'), lit('s')])])) },
+  { id: 'savg', topic: 'motion', name: 'การกระจัดจากความเร็วเฉลี่ย', classic: 's = (u + v)t / 2', when: 'รู้ความเร็วต้น ความเร็วปลาย และเวลา', boardNote: 'บนกระดานกระจายเป็น s = ½ut + ½vt ซึ่งเท่ากับสูตรนี้', vars: ['s', 'u', 'v', 't'],
+    eq: equation(makeSide([makeTerm(1, [lit('s')])]), makeSide([makeTerm(1, [num(0.5), lit('u'), lit('t')]), makeTerm(1, [num(0.5), lit('v'), lit('t')])])) },
+  { id: 'fma', topic: 'force', name: 'กฎข้อที่สองของนิวตัน', classic: 'F = ma', when: 'แรงลัพธ์ มวล และความเร่ง', vars: ['F', 'm', 'a'],
+    eq: equation(makeSide([makeTerm(1, [lit('F')])]), makeSide([makeTerm(1, [lit('m'), lit('a')])])) },
+  { id: 'weight', topic: 'force', name: 'น้ำหนัก', classic: 'w = mg', when: 'น้ำหนัก มวล และความเร่งโน้มถ่วง', vars: ['w', 'm', 'g'],
+    eq: equation(makeSide([makeTerm(1, [lit('w')])]), makeSide([makeTerm(1, [lit('m'), lit('g')])])) },
+  { id: 'friction', topic: 'force', name: 'แรงเสียดทาน', classic: 'f = μN', when: 'แรงเสียดทาน สัมประสิทธิ์ และแรงตั้งฉาก', vars: ['f', 'mu', 'N'],
+    eq: equation(makeSide([makeTerm(1, [lit('f')])]), makeSide([makeTerm(1, [lit('mu'), lit('N')])])) },
+  { id: 'work', topic: 'energy', name: 'งานของแรงคงที่', classic: 'W = Fs', when: 'แรงคงที่ทำตามแนวการกระจัด', vars: ['W', 'F', 's'],
+    eq: equation(makeSide([makeTerm(1, [lit('W')])]), makeSide([makeTerm(1, [lit('F'), lit('s')])])) },
+  { id: 'ke', topic: 'energy', name: 'พลังงานจลน์', classic: 'Eₖ = ½mv²', when: 'พลังงานเนื่องจากการเคลื่อนที่', vars: ['Ek', 'm', 'v'],
+    eq: equation(makeSide([makeTerm(1, [lit('Ek')])]), makeSide([makeTerm(1, [num(0.5), lit('m'), lit('v', 2)])])) },
+  { id: 'pe', topic: 'energy', name: 'พลังงานศักย์โน้มถ่วง', classic: 'Eₚ = mgh', when: 'พลังงานจากความสูงใกล้ผิวโลก', vars: ['Ep', 'm', 'g', 'h'],
+    eq: equation(makeSide([makeTerm(1, [lit('Ep')])]), makeSide([makeTerm(1, [lit('m'), lit('g'), lit('h')])])) },
+  { id: 'power', topic: 'energy', name: 'กำลัง', classic: 'P = W / t', when: 'งานที่ทำต่อหนึ่งหน่วยเวลา', vars: ['P', 'W', 't'],
+    eq: equation(makeSide([makeTerm(1, [lit('P')])]), makeSide([makeTerm(1, [lit('W')])], [lit('t')])) },
+  { id: 'mom', topic: 'momentum', name: 'โมเมนตัม', classic: 'p = mv', when: 'โมเมนตัม มวล และความเร็ว', vars: ['p', 'm', 'v'],
+    eq: equation(makeSide([makeTerm(1, [lit('p')])]), makeSide([makeTerm(1, [lit('m'), lit('v')])])) },
+  { id: 'deltap', topic: 'momentum', name: 'การเปลี่ยนโมเมนตัม', classic: 'Δp = m(v − u)', when: 'ผลต่างโมเมนตัมปลายกับโมเมนตัมต้น', boardNote: 'บนกระดานกระจายเป็น Δp = mv − mu', vars: ['dp', 'm', 'v', 'u'],
+    eq: equation(makeSide([makeTerm(1, [lit('dp')])]), makeSide([makeTerm(1, [lit('m'), lit('v')]), makeTerm(-1, [lit('m'), lit('u')])])) },
+  { id: 'ohm', topic: 'electric', name: 'กฎของโอห์ม', classic: 'V = IR', when: 'ความต่างศักย์ กระแส และความต้านทาน', vars: ['V', 'I', 'R'],
+    eq: equation(makeSide([makeTerm(1, [lit('V')])]), makeSide([makeTerm(1, [lit('I'), lit('R')])])) },
+  { id: 'piv', topic: 'electric', name: 'กำลังจากกระแสและความต่างศักย์', classic: 'P = IV', when: 'รู้กระแสและความต่างศักย์', vars: ['Pe', 'I', 'V'],
+    eq: equation(makeSide([makeTerm(1, [lit('Pe')])]), makeSide([makeTerm(1, [lit('I'), lit('V')])])) },
+  { id: 'pi2r', topic: 'electric', name: 'กำลังจากกระแสและความต้านทาน', classic: 'P = I²R', when: 'รู้กระแสและความต้านทาน', vars: ['Pe', 'I', 'R'],
+    eq: equation(makeSide([makeTerm(1, [lit('Pe')])]), makeSide([makeTerm(1, [lit('I', 2), lit('R')])])) },
+  { id: 'pv2r', topic: 'electric', name: 'กำลังจากความต่างศักย์และความต้านทาน', classic: 'P = V² / R', when: 'รู้ความต่างศักย์และความต้านทาน', vars: ['Pe', 'V', 'R'],
+    eq: equation(makeSide([makeTerm(1, [lit('Pe')])]), makeSide([makeTerm(1, [lit('V', 2)])], [lit('R')])) }
+];
+
+var problems = [
+  { id: 'car-accel', topic: 'motion', title: 'รถยนต์เร่งเครื่อง',
+    text: 'รถยนต์คันหนึ่งแล่นด้วยความเร็วต้น 5 เมตรต่อวินาที แล้วเร่งจนมีความเร็ว 25 เมตรต่อวินาที ภายในเวลา 4 วินาที จงหาความเร่งของรถยนต์',
+    given: [{ key: 'u', value: 5 }, { key: 'v', value: 25, name: 'ความเร็วปลาย' }, { key: 't', value: 4 }],
+    unknown: 'a', answer: 5,
+    hints: ['ยังไม่ใช่เรื่องนี้ โจทย์ให้ความเร็วกับเวลา และถามความเร่ง ไม่ได้ให้แรงหรือมวล', 'ไม่ได้ถามงาน พลังงาน โมเมนตัม หรือวงจรไฟฟ้า', 'เรื่องที่ตรงคือการเคลื่อนที่แนวตรง'] },
+  { id: 'car-distance', topic: 'motion', title: 'รถออกตัว',
+    text: 'รถคันหนึ่งออกตัวจากหยุดนิ่งด้วยความเร่งคงที่ 2 เมตรต่อวินาทีกำลังสอง จนมีความเร็ว 10 เมตรต่อวินาที จงหาการกระจัดของรถในช่วงนี้',
+    given: [{ key: 'u', value: 0 }, { key: 'a', value: 2 }, { key: 'v', value: 10, name: 'ความเร็วปลาย' }],
+    unknown: 's', answer: 25,
+    hints: ['ยังไม่ใช่เรื่องนี้ มีความเร็วกับความเร่ง และถามการกระจัด ไม่ได้ให้แรง', 'โจทย์ไม่ได้ถามพลังงาน', 'เรื่องที่ตรงคือการเคลื่อนที่แนวตรง'] },
+  { id: 'timed-drive', topic: 'motion', title: 'รถในช่วงเวลา',
+    text: 'รถมีความเร็วต้น 2 เมตรต่อวินาที เคลื่อนที่ด้วยความเร่งคงที่เป็นเวลา 2 วินาที แล้วมีการกระจัด 10 เมตร จงหาความเร่ง',
+    given: [{ key: 'u', value: 2 }, { key: 't', value: 2 }, { key: 's', value: 10 }],
+    unknown: 'a', answer: 3,
+    hints: ['มีเวลา การกระจัด และความเร็วต้น แต่ไม่มีความเร็วปลาย', 'ไม่ได้ให้แรงหรือมวล', 'เรื่องที่ตรงคือการเคลื่อนที่แนวตรง'] },
+  { id: 'push-box', topic: 'force', title: 'กล่องบนพื้นราบ',
+    text: 'ออกแรงลัพธ์ 18 นิวตัน กระทำต่อวัตถุมวล 4 กิโลกรัม บนพื้นราบที่ไม่มีแรงเสียดทาน จงหาความเร่งของวัตถุ',
+    given: [{ key: 'F', value: 18 }, { key: 'm', value: 4 }],
+    unknown: 'a', answer: 4.5,
+    hints: ['โจทย์ให้แรงกับมวล และถามความเร่ง', 'ไม่ได้ให้ความเร็วต้นหรือเวลา จึงไม่ใช่สมการการเคลื่อนที่', 'เรื่องที่ตรงคือแรงและกฎของนิวตัน'] },
+  { id: 'held-mass', topic: 'force', title: 'ของที่ยกไว้',
+    text: 'วัตถุชิ้นหนึ่งมีน้ำหนัก 50 นิวตัน กำหนดให้ความเร่งโน้มถ่วงเท่ากับ 10 เมตรต่อวินาทีกำลังสอง จงหามวลของวัตถุ',
+    given: [{ key: 'w', value: 50 }, { key: 'g', value: 10 }],
+    unknown: 'm', answer: 5,
+    hints: ['มีน้ำหนักกับความเร่งโน้มถ่วง และถามมวล', 'ไม่ได้ให้แรงลัพธ์ที่ทำให้เกิดการเคลื่อนที่', 'เรื่องที่ตรงคือแรงและกฎของนิวตัน'] },
+  { id: 'rough-floor', topic: 'force', title: 'วัตถุบนพื้นขรุขระ',
+    text: 'วัตถุถูกแรงเสียดทาน 15 นิวตัน สัมประสิทธิ์แรงเสียดทานเท่ากับ 0.5 จงหาแรงตั้งฉาก',
+    given: [{ key: 'f', value: 15 }, { key: 'mu', value: 0.5 }],
+    unknown: 'N', answer: 30,
+    hints: ['มีแรงเสียดทานกับสัมประสิทธิ์ และถามแรงตั้งฉาก', 'ไม่ได้ให้มวลหรือความเร่งของการเคลื่อนที่', 'เรื่องที่ตรงคือแรงและกฎของนิวตัน'] },
+  { id: 'kinetic', topic: 'energy', title: 'วัตถุที่กำลังแล่น',
+    text: 'วัตถุมวล 2 กิโลกรัมกำลังเคลื่อนที่ และมีพลังงานจลน์ 16 จูล จงหาความเร็วของวัตถุ',
+    given: [{ key: 'm', value: 2 }, { key: 'Ek', value: 16 }],
+    unknown: 'v', answer: 4,
+    hints: ['โจทย์พูดถึงพลังงานจลน์ มวล และถามความเร็ว', 'ไม่ได้ให้ความสูง และไม่ได้บอกแรงกับระยะทาง', 'เรื่องที่ตรงคืองาน พลังงาน และกำลัง'] },
+  { id: 'shelf', topic: 'energy', title: 'วัตถุบนชั้นวาง',
+    text: 'วัตถุมวล 2 กิโลกรัม มีพลังงานศักย์โน้มถ่วง 80 จูล กำหนดให้ความเร่งโน้มถ่วงเท่ากับ 10 เมตรต่อวินาทีกำลังสอง จงหาความสูงจากระดับอ้างอิง',
+    given: [{ key: 'm', value: 2 }, { key: 'Ep', value: 80 }, { key: 'g', value: 10 }],
+    unknown: 'h', answer: 4,
+    hints: ['มีพลังงานศักย์ มวล และความเร่งโน้มถ่วง ถามความสูง', 'ไม่ได้ถามความเร็ว', 'เรื่องที่ตรงคืองาน พลังงาน และกำลัง'] },
+  { id: 'machine', topic: 'energy', title: 'เครื่องจักรทำงาน',
+    text: 'เครื่องจักรทำงาน 200 จูล ด้วยกำลังคงที่ 40 วัตต์ จงหาเวลาที่ใช้',
+    given: [{ key: 'W', value: 200 }, { key: 'P', value: 40 }],
+    unknown: 't', answer: 5,
+    hints: ['มีงานกับกำลัง และถามเวลา', 'ไม่ได้ให้แรงกับการกระจัดแยกกัน และไม่ใช่วงจรไฟฟ้า', 'เรื่องที่ตรงคืองาน พลังงาน และกำลัง'] },
+  { id: 'momentum-speed', topic: 'momentum', title: 'วัตถุเคลื่อนที่ตรง',
+    text: 'วัตถุมีมวล 8 กิโลกรัม และมีโมเมนตัม 24 กิโลกรัม·เมตรต่อวินาที จงหาความเร็วของวัตถุ',
+    given: [{ key: 'm', value: 8 }, { key: 'p', value: 24 }],
+    unknown: 'v', answer: 3,
+    hints: ['ปริมาณในโจทย์คือมวลกับโมเมนตัม', 'ไม่ได้ถามแรง และไม่ได้ให้เวลา', 'เรื่องที่ตรงคือโมเมนตัม'] },
+  { id: 'resistor', topic: 'electric', title: 'หลอดในวงจร',
+    text: 'ตัวต้านทานตัวหนึ่งต่อกับความต่างศักย์ 12 โวลต์ แล้วมีกระแสไฟฟ้าไหลผ่าน 0.5 แอมแปร์ จงหาความต้านทาน',
+    given: [{ key: 'V', value: 12 }, { key: 'I', value: 0.5 }],
+    unknown: 'R', answer: 24,
+    hints: ['มีความต่างศักย์กับกระแส และถามความต้านทาน', 'ไม่ใช่แรงหรือการเคลื่อนที่', 'เรื่องที่ตรงคือไฟฟ้ากระแส'] },
+  { id: 'simple-circuit', topic: 'electric', title: 'วงจรอย่างง่าย',
+    text: 'ความต่างศักย์ 9 โวลต์คร่อมความต้านทาน 18 โอห์ม จงหากระแสไฟฟ้าที่ไหลผ่าน',
+    given: [{ key: 'V', value: 9 }, { key: 'R', value: 18 }],
+    unknown: 'I', answer: 0.5,
+    hints: ['มีความต่างศักย์กับความต้านทาน และถามกระแส', 'ไม่ใช่แรงหรือพลังงานกล', 'เรื่องที่ตรงคือไฟฟ้ากระแส'] }
+];
+
+var STEP_LABELS = ['วิเคราะห์เรื่อง', 'เลือกสูตร', 'จัดรูปสมการ', 'คำตอบ'];
+var STEP_HELP = [
+  'ดูปริมาณที่ให้กับสิ่งที่ถาม แล้วเลือกหน่วยการเรียนให้ตรง',
+  'ในเรื่องที่เลือก มีสูตรให้ครบ เลือกสูตรที่หาสิ่งที่ถามได้จากข้อมูลที่มี',
+  'ย้ายข้างเองจนตัวที่ถามอยู่ลำพัง ทุกครั้งที่ย้าย สมการยังเท่ากับสูตรเดิม',
+  'ตัวเลขนี้คำนวณจากสมการที่จัดไว้ ไม่ได้ดึงจากเฉลยล่วงหน้า'
+];
+var SAVE_KEY = 'phys-lab-v2';
+
+function clone(x) { return JSON.parse(JSON.stringify(x)); }
+function other(side) { return side === 'left' ? 'right' : 'left'; }
+function topicById(id) { return topics.filter(function (t) { return t.id === id; })[0]; }
+function formulaById(id) { return formulas.filter(function (f) { return f.id === id; })[0]; }
+function knownOf(problem) {
+  var o = {};
+  problem.given.forEach(function (g) { o[g.key] = g.value; });
+  return o;
+}
+function qtyName(key, problem) {
+  if (problem) {
+    var g = problem.given.filter(function (item) { return item.key === key; })[0];
+    if (g && g.name) return g.name;
+  }
+  return SYM[key].name;
+}
+function formatNum(n) {
+  if (!isFinite(n)) return '—';
+  var r = Math.round(n * 1e6) / 1e6;
+  if (Math.abs(r) < 1e-9) return '0';
+  if (Math.abs(r - Math.round(r)) < 1e-6) return String(Math.round(r));
+  return r.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
+}
+function formatConst(v) {
+  if (Math.abs(v - 0.5) < 1e-9) return '½';
+  if (Math.abs(v - 0.25) < 1e-9) return '¼';
+  return formatNum(v);
+}
+function factorText(f, map) {
+  if (f.type === 'const') return formatConst(f.value);
+  var has = map && Object.prototype.hasOwnProperty.call(map, f.name);
+  var base = has ? formatNum(map[f.name]) : SYM[f.name].sym;
+  if (f.power === 2) return base + '²';
+  if (f.power === 3) return base + '³';
+  if (f.power !== 1) return base + '^' + f.power;
+  return base;
+}
+function simplifyTerm(term) {
+  var c = term.sign;
+  var powers = new Map();
+  var order = [];
+  term.factors.forEach(function (f) {
+    if (f.type === 'const') { c *= f.value; return; }
+    if (!powers.has(f.name)) order.push(f.name);
+    powers.set(f.name, (powers.get(f.name) || 0) + f.power);
+  });
+  if (Math.abs(c) < 1e-10) return null;
+  var sign = c < 0 ? -1 : 1;
+  var mag = Math.abs(c);
+  var vars = [];
+  order.forEach(function (name) {
+    var power = powers.get(name);
+    if (power) vars.push({ type: 'var', name: name, power: power });
+  });
+  if (!vars.length) return { sign: sign, factors: [{ type: 'const', value: mag }] };
+  var factors = [];
+  if (Math.abs(mag - 1) > 1e-8) factors.push({ type: 'const', value: mag });
+  return { sign: sign, factors: factors.concat(vars) };
+}
+function foldTerms(side) { side.terms = side.terms.map(simplifyTerm).filter(Boolean); }
+function cancelWithinSide(side) {
+  var guard = 0;
+  while (guard++ < 8) {
+    var cancelled = false;
+    for (var di = 0; di < side.denom.length; di++) {
+      var d = side.denom[di];
+      if (d.type !== 'var') continue;
+      var all = side.terms.every(function (t) {
+        return t.factors.some(function (f) { return f.type === 'var' && f.name === d.name && f.power === d.power; });
+      });
+      if (!all || !side.terms.length) continue;
+      side.terms.forEach(function (t) {
+        var i = t.factors.findIndex(function (f) { return f.type === 'var' && f.name === d.name && f.power === d.power; });
+        t.factors.splice(i, 1);
+        if (!t.factors.length) t.factors.push({ type: 'const', value: 1 });
+      });
+      side.denom.splice(di, 1);
+      foldTerms(side);
+      cancelled = true;
+      break;
+    }
+    if (!cancelled) break;
+  }
+}
+function simplifySide(side) {
+  foldTerms(side);
+  var c = 1;
+  var varDen = [];
+  side.denom.forEach(function (f) {
+    if (f.type === 'const') c *= f.value;
+    else varDen.push(f);
+  });
+  if (c < 1 - 1e-9) {
+    var mul = 1 / c;
+    side.terms.forEach(function (t) { t.factors.push({ type: 'const', value: mul }); });
+    foldTerms(side);
+    side.denom = varDen;
+  } else if (Math.abs(c - 1) < 1e-9) side.denom = varDen;
+  else side.denom = [{ type: 'const', value: c }].concat(varDen);
+  cancelWithinSide(side);
+  if (!side.terms.length) side.terms = [{ sign: 1, factors: [{ type: 'const', value: 0 }] }];
+}
+function normalize(eq) { simplifySide(eq.left); simplifySide(eq.right); return eq; }
+function freshEquation(formula) { return normalize(clone(formula.eq)); }
+function sideContainsVar(side, name) {
+  var hit = function (f) { return f.type === 'var' && f.name === name; };
+  return side.terms.some(function (t) { return t.factors.some(hit); }) || side.denom.some(hit);
+}
+function isPureSquare(side) {
+  if (side.sqrt || side.denom.length || side.terms.length !== 1) return false;
+  var t = side.terms[0];
+  if (t.sign !== 1 || t.factors.length !== 1) return false;
+  var f = t.factors[0];
+  return f.type === 'var' && f.power === 2;
+}
+function isPureVar(side) {
+  if (side.sqrt || side.denom.length || side.terms.length !== 1) return false;
+  var t = side.terms[0];
+  if (t.sign !== 1 || t.factors.length !== 1) return false;
+  return t.factors[0].type === 'var' && t.factors[0].power === 1;
+}
+function findIsolated(eq) {
+  var sides = ['left', 'right'];
+  for (var i = 0; i < sides.length; i++) {
+    var name = sides[i];
+    if (!isPureVar(eq[name])) continue;
+    var v = eq[name].terms[0].factors[0].name;
+    if (sideContainsVar(eq[other(name)], v)) continue;
+    return { name: v, side: name };
+  }
+  return null;
+}
+function guardRadical(eq) {
+  if (eq.left.sqrt || eq.right.sqrt) return { ok: false, message: 'สมการติดกรณฑ์อยู่ ถ้ายังจัดไม่เสร็จ ให้ยกกำลังสองกลับก่อน หรือกดย้อนกลับ' };
+  return null;
+}
+function moveTerm(eq, fromSide, termIndex) {
+  var blocked = guardRadical(eq);
+  if (blocked) return blocked;
+  var src = eq[fromSide];
+  var dst = eq[other(fromSide)];
+  if (!src || termIndex < 0 || termIndex >= src.terms.length) return { ok: false, message: 'เลือกพจน์ที่ต้องการย้าย' };
+  if (src.denom.length) return { ok: false, message: 'ฝั่งนี้เป็นเศษส่วนอยู่ ย้ายตัวในตัวส่วนออกก่อน แล้วค่อยย้ายพจน์' };
+  var term = src.terms.splice(termIndex, 1)[0];
+  term.sign *= -1;
+  dst.terms.push(term);
+  normalize(eq);
+  return { ok: true, message: 'ย้ายพจน์ไปอีกฝั่ง เครื่องหมายเปลี่ยน' };
+}
+function moveFactor(eq, fromSide, factorIndex) {
+  var blocked = guardRadical(eq);
+  if (blocked) return blocked;
+  var src = eq[fromSide];
+  var dst = eq[other(fromSide)];
+  if (src.terms.length !== 1 || src.denom.length) return { ok: false, message: 'ยังย้ายตัวคูณนี้ไม่ได้ ย้ายพจน์อื่นออกก่อนจนฝั่งนี้เหลือพจน์เดียว' };
+  var term = src.terms[0];
+  if (term.factors.length < 2 || factorIndex < 0 || factorIndex >= term.factors.length) return { ok: false, message: 'ตัวนี้อยู่ลำพังทั้งพจน์ ให้ย้ายทั้งพจน์ เครื่องหมายจะเปลี่ยน' };
+  var factor = term.factors.splice(factorIndex, 1)[0];
+  dst.denom.push(clone(factor));
+  normalize(eq);
+  var message = 'ย้าย ' + factorText(factor) + ' ไปหารอีกฝั่ง';
+  if (factor.type === 'const' && Math.abs(factor.value - 0.5) < 1e-9) message = 'ย้าย ½ ไปอีกฝั่ง เท่ากับคูณอีกฝั่งด้วย 2';
+  return { ok: true, message: message };
+}
+function moveDenom(eq, fromSide, factorIndex) {
+  var blocked = guardRadical(eq);
+  if (blocked) return blocked;
+  var src = eq[fromSide];
+  var dst = eq[other(fromSide)];
+  if (factorIndex < 0 || factorIndex >= src.denom.length) return { ok: false, message: 'เลือกตัวในตัวส่วนที่ต้องการย้าย' };
+  var factor = src.denom.splice(factorIndex, 1)[0];
+  dst.terms.forEach(function (t) { t.factors.push(clone(factor)); });
+  normalize(eq);
+  return { ok: true, message: 'ย้าย ' + factorText(factor) + ' ไปคูณอีกฝั่ง' };
+}
+function takeSqrt(eq) {
+  if (eq.left.sqrt || eq.right.sqrt) return { ok: false, message: 'ถอดรากไปแล้ว' };
+  var squareSide = ['left', 'right'].filter(function (name) { return isPureSquare(eq[name]); })[0];
+  if (!squareSide) return { ok: false, message: 'ถอดรากได้เมื่อมีตัวแปรกำลังสองอยู่ลำพังฝั่งหนึ่ง เช่น v² = ...' };
+  eq[squareSide].terms[0].factors[0].power = 1;
+  eq[other(squareSide)].sqrt = true;
+  normalize(eq);
+  return { ok: true, message: 'ถอดรากที่สองทั้งสองข้าง ใช้ค่ารากบวก' };
+}
+function squareBoth(eq) {
+  var rad = ['left', 'right'].filter(function (name) { return eq[name].sqrt; })[0];
+  if (!rad) return { ok: false, message: 'สมการยังไม่มีกรณฑ์' };
+  var plain = other(rad);
+  if (!isPureVar(eq[plain])) return { ok: false, message: 'ยกกำลังสองกลับได้เมื่ออีกฝั่งเป็นตัวแปรเดียว' };
+  eq[rad].sqrt = false;
+  eq[plain].terms[0].factors[0].power = 2;
+  normalize(eq);
+  return { ok: true, message: 'ยกกำลังสองทั้งสองข้าง' };
+}
+function mapFactor(f, known) {
+  if (f.type === 'var' && Object.prototype.hasOwnProperty.call(known, f.name)) return { type: 'const', value: Math.pow(Number(known[f.name]), f.power) };
+  return clone(f);
+}
+function substituteKnown(eq, known) {
+  var before = JSON.stringify(eq);
+  ['left', 'right'].forEach(function (key) {
+    eq[key].terms.forEach(function (t) { t.factors = t.factors.map(function (f) { return mapFactor(f, known); }); });
+    eq[key].denom = eq[key].denom.map(function (f) { return mapFactor(f, known); });
+  });
+  normalize(eq);
+  if (JSON.stringify(eq) === before) return { ok: false, message: 'ไม่มีตัวแปรที่โจทย์ให้เหลืออยู่แล้ว' };
+  return { ok: true, message: 'แทนค่าที่โจทย์ให้มา' };
+}
+function evalFactor(f, values) {
+  if (f.type === 'const') return f.value;
+  if (!Object.prototype.hasOwnProperty.call(values, f.name)) throw new Error('ยังมีตัวแปรที่ไม่มีค่าในโจทย์');
+  return Math.pow(Number(values[f.name]), f.power);
+}
+function evalSide(side, values) {
+  var total = 0;
+  side.terms.forEach(function (t) {
+    var prod = t.sign;
+    t.factors.forEach(function (f) { prod *= evalFactor(f, values); });
+    total += prod;
+  });
+  var den = 1;
+  side.denom.forEach(function (f) { den *= evalFactor(f, values); });
+  if (Math.abs(den) < 1e-12) throw new Error('ตัวหารเป็นศูนย์ ตรวจการจัดรูปอีกครั้ง');
+  var result = total / den;
+  if (side.sqrt) {
+    if (result < -1e-8) throw new Error('ถอดรากของจำนวนลบไม่ได้ในโจทย์ชุดนี้');
+    result = Math.sqrt(Math.max(0, result));
+  }
+  return result;
+}
+function sideText(side, map) {
+  var num = side.terms.map(function (t, i) {
+    var body = t.factors.map(function (f) { return factorText(f, map); }).join('·') || '1';
+    if (i === 0) return (t.sign < 0 ? '−' : '') + body;
+    return (t.sign < 0 ? ' − ' : ' + ') + body;
+  }).join('');
+  if (side.denom.length) {
+    var den = side.denom.map(function (f) { return factorText(f, map); }).join('·');
+    num = (side.terms.length > 1 ? '(' + num + ')' : num) + ' / ' + (side.denom.length > 1 ? '(' + den + ')' : den);
+  }
+  if (side.sqrt) num = '√(' + num + ')';
+  return num;
+}
+function eqText(eq, map) { return sideText(eq.left, map) + ' = ' + sideText(eq.right, map); }
+function canSolve(formula, problem) {
+  var known = knownOf(problem);
+  if (formula.vars.indexOf(problem.unknown) === -1) {
+    return { ok: false, message: 'สูตร ' + formula.classic + ' ไม่มี' + qtyName(problem.unknown, problem) + ' ซึ่งเป็นสิ่งที่โจทย์ถาม' };
+  }
+  var missing = formula.vars.filter(function (v) { return v !== problem.unknown && !Object.prototype.hasOwnProperty.call(known, v); });
+  if (missing.length) {
+    var names = missing.map(function (v) { return qtyName(v, problem) + ' (' + SYM[v].sym + ')'; }).join(', ');
+    return { ok: false, message: 'สูตร ' + formula.classic + ' ต้องรู้' + names + ' ด้วย แต่โจทย์ข้อนี้ไม่ได้ให้' };
+  }
+  return { ok: true, message: '' };
+}
+function approxEqual(a, b) { return Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(b)); }
+function termLabel(t) {
+  var body = t.factors.map(function (f) { return factorText(f); }).join('·') || '1';
+  return (t.sign < 0 ? '−' : '') + body;
+}
+function nextHint(eq, unknown) {
+  var iso = findIsolated(eq);
+  var sym = SYM[unknown].sym;
+  if (iso && iso.name === unknown) return 'จัดรูปครบแล้ว กดคำนวณได้เลย';
+  if (eq.left.sqrt || eq.right.sqrt) return 'ตอนนี้ติดกรณฑ์ ถ้าตัวที่อยู่ลำพังยังไม่ใช่ ' + sym + ' ให้ยกกำลังสองกลับก่อน';
+  var sides = ['left', 'right'];
+  for (var d = 0; d < sides.length; d++) {
+    if (eq[sides[d]].denom.some(function (f) { return f.type === 'var' && f.name === unknown; })) {
+      return sym + ' ไปอยู่ตัวส่วน คลิกมันแล้วย้ายไปคูณอีกฝั่ง';
+    }
+  }
+  for (var s = 0; s < sides.length; s++) {
+    var side = eq[sides[s]];
+    if (side.denom.length || side.sqrt) continue;
+    var idx = -1;
+    for (var ti = 0; ti < side.terms.length; ti++) {
+      if (side.terms[ti].factors.some(function (f) { return f.type === 'var' && f.name === unknown; })) idx = ti;
+    }
+    if (idx === -1) continue;
+    if (side.terms.length > 1) {
+      var otherIndex = idx === 0 ? 1 : 0;
+      return 'ย้ายพจน์ ' + termLabel(side.terms[otherIndex]) + ' ไปอีกฝั่ง เครื่องหมายจะสลับ';
+    }
+    var goal = null;
+    var others = [];
+    side.terms[0].factors.forEach(function (f) {
+      if (!goal && f.type === 'var' && f.name === unknown) goal = f;
+      else others.push(f);
+    });
+    if (goal && others.length) return 'ย้าย ' + factorText(others[0]) + ' ไปหารอีกฝั่ง เพื่อให้ใกล้ ' + sym + ' มากขึ้น';
+    if (goal && goal.power === 2) return 'เหลือ ' + sym + '² อยู่ลำพังแล้ว กดถอดรากที่สอง';
+  }
+  return 'ย้ายสิ่งที่ไม่ใช่ ' + sym + ' ออกไปทีละตัว จนมันอยู่ลำพัง';
+}
+
+var state = {
+  index: 0, step: 1, topicId: null, formulaId: null, eq: null,
+  undo: [], history: [], selected: null, message: null,
+  topicTries: 0, formulaTries: 0, hintOn: false, result: null,
+  solved: [], confirmWipe: false
+};
+var memory = { v: 1, solved: [], active: problems[0].id, drafts: {} };
+var dragPayload = null;
+var suppressClick = false;
+
+function current() { return problems[state.index]; }
+function blankWork() {
+  state.step = 1;
+  state.topicId = null;
+  state.formulaId = null;
+  state.eq = null;
+  state.undo = [];
+  state.history = [];
+  state.selected = null;
+  state.message = null;
+  state.topicTries = 0;
+  state.formulaTries = 0;
+  state.hintOn = false;
+  state.result = null;
+  state.confirmWipe = false;
+}
+function snapshot() {
+  return {
+    step: state.step, topicId: state.topicId, formulaId: state.formulaId,
+    eq: state.eq, undo: state.undo.slice(-25), history: state.history,
+    topicTries: state.topicTries, formulaTries: state.formulaTries,
+    hintOn: !!state.hintOn, result: state.result, message: state.message
+  };
+}
+function sanitize(draft) {
+  if (!draft || [1, 2, 3, 4].indexOf(draft.step) === -1) return null;
+  var out = {
+    step: draft.step,
+    topicId: draft.topicId || null,
+    formulaId: draft.formulaId || null,
+    eq: draft.eq || null,
+    undo: Array.isArray(draft.undo) ? draft.undo.slice(-25) : [],
+    history: Array.isArray(draft.history) ? draft.history : [],
+    topicTries: Number(draft.topicTries) || 0,
+    formulaTries: Number(draft.formulaTries) || 0,
+    hintOn: !!draft.hintOn,
+    result: draft.result || null,
+    message: draft.message && draft.message.text ? draft.message : null
+  };
+  if (out.step >= 2 && !topicById(out.topicId)) return null;
+  if (out.step >= 3 && (!formulaById(out.formulaId) || !out.eq || !out.eq.left || !out.eq.right)) return null;
+  if (out.step === 4 && (!out.result || !out.result.valueText)) out.step = 3;
+  return out;
+}
+function applyDraft(draft) {
+  state.step = draft.step;
+  state.topicId = draft.topicId;
+  state.formulaId = draft.formulaId;
+  state.eq = draft.eq;
+  state.undo = draft.undo;
+  state.history = draft.history;
+  state.topicTries = draft.topicTries;
+  state.formulaTries = draft.formulaTries;
+  state.hintOn = draft.hintOn;
+  state.result = draft.result;
+  state.message = draft.message;
+  state.selected = null;
+  state.confirmWipe = false;
+}
+function persist() {
+  memory.solved = state.solved.slice();
+  memory.active = current().id;
+  memory.drafts[current().id] = clone(snapshot());
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(memory)); } catch (err) { /* ที่เก็บเต็มหรือถูกปิด */ }
+}
+function loadStore() {
+  try {
+    var raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return;
+    var data = JSON.parse(raw);
+    if (!data || data.v !== 1) return;
+    memory.drafts = data.drafts && typeof data.drafts === 'object' ? data.drafts : {};
+    state.solved = Array.isArray(data.solved) ? data.solved.filter(function (id) { return problems.some(function (p) { return p.id === id; }); }) : [];
+    var idx = problems.findIndex(function (p) { return p.id === data.active; });
+    if (idx >= 0) state.index = idx;
+    var draft = sanitize(memory.drafts[current().id]);
+    if (draft) applyDraft(draft);
+  } catch (err) { blankWork(); }
+}
+function markSolved(id) { if (state.solved.indexOf(id) === -1) state.solved.push(id); }
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function chipText(key, value, problem) {
+  var info = SYM[key];
+  return qtyName(key, problem) + ' ' + info.sym + ' = ' + formatNum(value) + (info.unit ? ' ' + info.unit : '');
+}
+function setMessage(type, text) { state.message = text ? { type: type, text: text } : null; }
+function ensureConsistent() {
+  if (state.step >= 2 && !topicById(state.topicId)) state.step = 1;
+  if (state.step >= 3 && (!formulaById(state.formulaId) || !state.eq)) {
+    state.step = state.topicId ? 2 : 1;
+    state.eq = null;
+  }
+  if (state.step === 4 && (!state.result || !state.result.valueText)) state.step = 3;
+}
+
+function render() {
+  var app = document.getElementById('app');
+  if (!app) return;
+  ensureConsistent();
+  var jump = render.step !== state.step || render.index !== state.index;
+  var side = document.querySelector('.sidebar');
+  var work = document.getElementById('workspace');
+  var ss = side ? side.scrollTop : 0;
+  var ws = work ? work.scrollTop : 0;
+  app.innerHTML = '<div class="shell">' + renderSidebar() + '<div class="workspace" id="workspace">' + renderMain() + '</div></div>';
+  var side2 = document.querySelector('.sidebar');
+  var work2 = document.getElementById('workspace');
+  if (side2) side2.scrollTop = ss;
+  if (jump) {
+    if (window.matchMedia && window.matchMedia('(max-width: 900px)').matches) window.scrollTo(0, 0);
+    else if (work2) work2.scrollTop = 0;
+  } else if (work2) work2.scrollTop = ws;
+  render.step = state.step;
+  render.index = state.index;
+  persist();
+}
+function renderSidebar() {
+  var done = problems.filter(function (p) { return state.solved.indexOf(p.id) !== -1; }).length;
+  var pct = Math.round(100 * done / problems.length);
+  var list = problems.map(function (p, i) {
+    var on = i === state.index;
+    var solved = state.solved.indexOf(p.id) !== -1;
+    var parked = memory.drafts[p.id] && memory.drafts[p.id].step > 1 && !solved && !on;
+    var status = solved ? 'ทำแล้ว' : (on ? 'กำลังทำ' : (parked ? 'ทำค้างไว้' : 'ยังไม่ทำ'));
+    return '<button type="button" class="prob' + (on ? ' on' : '') + '" data-act="problem" data-index="' + i + '" aria-current="' + (on ? 'true' : 'false') + '">' +
+      '<span class="n">' + (i + 1) + '</span><span><strong>' + esc(p.title) + '</strong><em>' + status + '</em></span>' +
+      (solved ? '<span class="tick">✓</span>' : '<span></span>') + '</button>';
+  }).join('');
+  return '<aside class="sidebar"><div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="14" cy="26" r="5" fill="currentColor"></circle><path d="M22 26h16M32 18l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div><p class="name">ฟิสิกส์ทีละขั้น</p><p class="sub">วิเคราะห์ · เลือกสูตร · จัดรูป · คำนวณ</p></div></div>' +
+    '<div class="progress"><div class="row"><span>ทำแล้ว ' + done + ' จาก ' + problems.length + ' ข้อ</span><span>' + pct + '%</span></div><div class="bar"><span style="width:' + pct + '%"></span></div></div>' +
+    '<div class="plist">' + list + '</div>' +
+    '<div class="side-foot"><span>บันทึกในเครื่องนี้</span><button type="button" class="linkish" data-act="wipe">' + (state.confirmWipe ? 'ยืนยันล้างทั้งหมด' : 'ล้างความคืบหน้า') + '</button></div></aside>';
+}
+function renderMain() {
+  var p = current();
+  return renderTop(p) + '<p class="help">' + esc(STEP_HELP[state.step - 1]) + '</p>' + renderProblem(p) +
+    (state.message ? '<div class="msg ' + state.message.type + '" role="status">' + esc(state.message.text) + '</div>' : '') +
+    renderStep(p);
+}
+function renderTop(p) {
+  var steps = STEP_LABELS.map(function (label, i) {
+    var n = i + 1;
+    var cls = n === state.step ? 'now' : (n < state.step ? 'did' : '');
+    return '<span class="' + cls + '"><i>' + (n < state.step ? '✓' : n) + '</i>' + label + '</span>';
+  }).join('');
+  return '<div class="topbar"><div><p class="kicker">ข้อ ' + (state.index + 1) + ' จาก ' + problems.length + '</p><h1 class="page">' + esc(p.title) + '</h1></div><div class="stepper">' + steps + '</div></div>';
+}
+function renderProblem(p) {
+  var given = p.given.map(function (g) { return '<li>' + esc(chipText(g.key, g.value, p)) + '</li>'; }).join('');
+  var info = SYM[p.unknown];
+  return '<article class="sheet"><p class="story">' + esc(p.text) + '</p><div class="facts"><div class="fact"><h2>ข้อมูลที่ให้</h2><ul class="chips">' + given + '</ul></div><div class="fact asked"><h2>สิ่งที่ต้องหา</h2><p class="ask-sym">' + esc(info.sym) + ' = ?</p><p class="ask-name">' + esc(qtyName(p.unknown, p) + (info.unit ? ' · ' + info.unit : '')) + '</p></div></div></article>';
+}
+function renderStep(p) {
+  if (state.step === 1) return renderTopics();
+  if (state.step === 2) return renderFormulas();
+  if (state.step === 3) return renderArrange(p);
+  return renderResult(p);
+}
+function renderTopics() {
+  var cards = topics.map(function (t) {
+    return '<button type="button" class="plate" style="--stripe:' + t.stripe + '" data-act="topic" data-id="' + t.id + '"><span class="label">' + esc(t.name) + '</span><small>' + esc(t.blurb) + '</small></button>';
+  }).join('');
+  return '<section class="card"><div class="headrow"><h2>โจทย์นี้เป็นเรื่องอะไร</h2></div><div class="grid">' + cards + '</div></section>';
+}
+function renderFormulas() {
+  var topic = topicById(state.topicId);
+  var list = formulas.filter(function (f) { return f.topic === state.topicId; });
+  var cards = list.map(function (f) {
+    var vars = f.vars.map(function (v) { return '<i>' + esc(SYM[v].sym) + '</i>'; }).join('');
+    return '<button type="button" class="plate" style="--stripe:' + topic.stripe + '" data-act="formula" data-id="' + f.id + '"><span class="label">' + esc(f.name) + '</span><div class="formula-face">' + esc(f.classic) + '</div><small>' + esc(f.when) + '</small><span class="vchips">' + vars + '</span></button>';
+  }).join('');
+  return '<section class="card"><div class="headrow"><h2>สูตรทั้งหมดในเรื่อง' + esc(topic.name) + '</h2></div><p class="note">มี ' + list.length + ' สูตร เลือกสูตรที่หาสิ่งที่โจทย์ถามได้จากข้อมูลที่ให้มา</p><div class="grid">' + cards + '</div><div class="row-actions"><button type="button" class="btn ghost" data-act="back-topic">เลือกเรื่องใหม่</button></div></section>';
+}
+function renderArrange(p) {
+  var f = formulaById(state.formulaId);
+  var iso = findIsolated(state.eq);
+  var ready = !!(iso && iso.name === p.unknown);
+  var target = ready
+    ? 'จัดรูปได้แล้ว ' + SYM[p.unknown].sym + ' อยู่ลำพัง'
+    : 'เป้าหมาย: ทำให้ ' + SYM[p.unknown].sym + ' (' + qtyName(p.unknown, p) + ') อยู่ลำพัง';
+  var note = f.boardNote ? '<p class="note">' + esc(f.boardNote) + '</p>' : '';
+  var preview = '';
+  if (ready) {
+    var symbolic = eqText(state.eq);
+    var plugged = eqText(state.eq, knownOf(p));
+    preview = '<div class="preview"><span>พร้อมแทนค่า</span><code>' + esc(plugged === symbolic ? symbolic : plugged) + '</code></div>';
+  }
+  var hint = state.hintOn ? '<div class="hintbox">คำใบ้: ' + esc(nextHint(state.eq, p.unknown)) + '</div>' : '';
+  return '<section class="card"><div class="headrow"><h2>จัดรูป ' + esc(f.classic) + '</h2></div>' + note +
+    '<div class="target' + (ready ? ' ready' : '') + '">' + esc(target) + '</div>' +
+    '<div class="board"><div class="eqline">' + sideHtml(state.eq.left, 'left') + '<span class="equals">=</span>' + sideHtml(state.eq.right, 'right') + '</div>' +
+    '<p class="legend">ลากไปวางอีกฝั่งได้ หรือคลิกแล้วกดย้าย · จุดคือเครื่องหมายคูณ · ขีดใต้คือตัวที่ต้องหา · Ctrl+Z ย้อนกลับ</p></div>' +
+    preview + renderTools(ready) + '<p class="coach">' + esc(coachText(p)) + '</p>' + hint + renderTimeline() + '</section>';
+}
+function sideHtml(side, sideName) {
+  var body = fractionHtml(side, sideName);
+  if (!side.sqrt) return '<div class="side" data-drop="' + sideName + '">' + body + '</div>';
+  return '<div class="side" data-drop="' + sideName + '"><div class="sqrt"><span class="sqrt-mark">√</span><div class="sqrt-in">' + body + '</div></div></div>';
+}
+function fractionHtml(side, sideName) {
+  var num = '<div class="num">' + termsHtml(side.terms, sideName) + '</div>';
+  if (!side.denom.length) return num;
+  var den = side.denom.map(function (f, i) { return factorButton(f, sideName, 'denom', 0, i); }).join('<span class="cdot">·</span>');
+  return '<div class="frac">' + num + '<div class="fbar"></div><div class="den">' + den + '</div></div>';
+}
+function termsHtml(terms, sideName) {
+  return terms.map(function (t, i) {
+    var selectedTerm = state.selected && state.selected.side === sideName && state.selected.term === i && (state.selected.kind === 'term' || state.selected.kind === 'factor');
+    var factors = t.factors.map(function (f, fi) { return factorButton(f, sideName, 'factor', i, fi); }).join('<span class="cdot">·</span>');
+    var sign = t.sign < 0 ? '<span class="sign">−</span>' : '';
+    var plus = (i > 0 && t.sign > 0) ? '<span class="sign plus">+</span>' : '';
+    return plus + '<span class="term' + (selectedTerm ? ' selected' : '') + '" draggable="true" data-drag="term" data-act="pick-term" data-side="' + sideName + '" data-term="' + i + '" title="เลือกหรือลากทั้งพจน์">' + sign + factors + '</span>';
+  }).join('');
+}
+function factorButton(f, side, kind, termIndex, factorIndex) {
+  var sel = state.selected && state.selected.kind === kind && state.selected.side === side && state.selected.term === termIndex && state.selected.factor === factorIndex;
+  var act = kind === 'denom' ? 'pick-denom' : 'pick-factor';
+  var goal = f.type === 'var' && current().unknown === f.name ? ' goal' : '';
+  return '<button type="button" draggable="true" class="factor' + (sel ? ' selected' : '') + goal + '" data-drag="' + kind + '" data-act="' + act + '" data-side="' + side + '" data-term="' + termIndex + '" data-factor="' + factorIndex + '">' + esc(factorText(f)) + '</button>';
+}
+function renderTools(ready) {
+  var action = primaryAction();
+  var hasSqrt = state.eq.left.sqrt || state.eq.right.sqrt;
+  var calc = ready ? '<button type="button" class="btn calc" data-act="calc">คำนวณคำตอบ</button>' : '';
+  var moveBtn = action.enabled || !ready
+    ? '<button type="button" class="btn" data-act="move"' + (action.enabled ? '' : ' disabled') + '>' + esc(action.label) + '</button>'
+    : '';
+  return '<div class="actions"><div class="actions-main">' + calc + moveBtn +
+    (action.whole ? '<button type="button" class="btn secondary" data-act="move-term">ย้ายทั้งพจน์</button>' : '') +
+    '</div><div class="actions-sub">' +
+    '<button type="button" class="btn secondary" data-act="hint">' + (state.hintOn ? 'ซ่อนคำใบ้' : 'ขอคำใบ้') + '</button>' +
+    '<button type="button" class="btn secondary" data-act="sub">แทนค่าที่โจทย์ให้</button>' +
+    '<button type="button" class="btn secondary" data-act="sqrt">ถอดรากที่สอง</button>' +
+    (hasSqrt ? '<button type="button" class="btn secondary" data-act="square">ยกกำลังสอง</button>' : '') +
+    '<button type="button" class="btn ghost" data-act="undo"' + (state.undo.length ? '' : ' disabled') + '>ย้อนกลับ</button>' +
+    '<button type="button" class="btn ghost" data-act="reset-eq">เริ่มจัดรูปใหม่</button>' +
+    '<button type="button" class="btn ghost" data-act="back-formula">เลือกสูตรใหม่</button></div></div>';
+}
+function primaryAction() {
+  var sel = state.selected;
+  if (!sel || !state.eq) return { label: 'คลิกหรือลากสิ่งที่จะย้าย', enabled: false, whole: false };
+  if (sel.kind === 'denom') return { label: 'ย้ายตัวนี้ไปคูณอีกฝั่ง', enabled: true, whole: false };
+  if (sel.kind === 'factor') {
+    var factor = state.eq[sel.side].terms[sel.term].factors[sel.factor];
+    if (factor && factor.type === 'const' && Math.abs(factor.value - 0.5) < 1e-9) return { label: 'ย้าย ½ ไปคูณอีกฝั่งเป็น 2', enabled: true, whole: true };
+    return { label: 'ย้ายตัวนี้ไปหารอีกฝั่ง', enabled: true, whole: true };
+  }
+  return { label: 'ย้ายพจน์นี้ไปอีกฝั่ง', enabled: true, whole: false };
+}
+function coachText(p) {
+  var target = SYM[p.unknown].sym;
+  var iso = findIsolated(state.eq);
+  if (iso && iso.name === p.unknown) return 'ตัวที่โจทย์ถามอยู่ลำพังแล้ว แถบด้านบนคือสมการหลังแทนค่า กดคำนวณเพื่อคิดตัวเลข';
+  if (iso) return 'ตอนนี้ ' + SYM[iso.name].sym + ' อยู่ลำพัง แต่โจทย์ถาม ' + target;
+  var sel = state.selected;
+  if (!sel) return 'คลิกตัวที่อยากย้าย แล้วกดปุ่ม หรือลากไปปล่อยอีกฝั่งของเครื่องหมายเท่ากับ';
+  if (sel.kind === 'denom') return 'ตัวในตัวส่วนจะย้ายไปคูณอีกฝั่ง';
+  if (sel.kind === 'factor') {
+    if (state.eq[sel.side].terms.length !== 1 || state.eq[sel.side].denom.length) return 'ตัวคูณนี้ยังย้ายเดี่ยวๆ ไม่ได้ เพราะฝั่งนี้ยังมีหลายพจน์';
+    return 'ตัวที่กำลังคูณอยู่ จะกลายเป็นตัวหารของอีกฝั่ง';
+  }
+  return 'ย้ายทั้งพจน์นี้แล้วเครื่องหมายจะสลับ บวกเป็นลบ และลบเป็นบวก';
+}
+function renderTimeline() {
+  if (!state.history.length) return '';
+  return '<ol class="timeline">' + state.history.map(function (h, i) {
+    return '<li><span class="idx">' + (i + 1) + '</span><span class="note">' + esc(h.note) + '</span><code>' + esc(h.text) + '</code></li>';
+  }).join('') + '</ol>';
+}
+function renderResult(p) {
+  var f = formulaById(state.formulaId);
+  var topic = topicById(p.topic);
+  var r = state.result;
+  var info = SYM[p.unknown];
+  var rows = r.rows.map(function (row) {
+    return '<p class="label">' + esc(row.label) + '</p><p class="work">' + esc(row.text) + '</p>';
+  }).join('');
+  var nextLabel = problems.some(function (item) { return state.solved.indexOf(item.id) === -1; }) ? 'ข้อที่ยังไม่ได้ทำ' : 'เปิดข้อถัดไป';
+  return '<section class="card"><div class="hero"><div><p class="note">เรื่อง' + esc(topic.name) + ' · ' + esc(f.classic) + '</p><p class="answer-num">' + esc(info.sym + ' = ' + r.valueText + (info.unit ? ' ' + info.unit : '')) + '</p><p class="unit-th">' + esc(qtyName(p.unknown, p) + ' ' + r.valueText + ' ' + info.unitTh) + '</p></div><div class="seal">ตรงกับเฉลย</div></div><div class="work-block">' + rows + '</div>' + renderTimeline() +
+    '<div class="row-actions"><button type="button" class="btn" data-act="next">' + nextLabel + '</button><button type="button" class="btn secondary" data-act="retry">ฝึกข้อนี้อีกครั้ง</button><button type="button" class="btn ghost" data-act="print">พิมพ์ใบคำตอบ</button></div></section>';
+}
+
+function startArrange(formula) {
+  state.formulaId = formula.id;
+  state.eq = freshEquation(formula);
+  state.undo = [];
+  state.history = [{ note: 'สูตรตั้งต้น', text: eqText(state.eq) }];
+  state.selected = null;
+  state.result = null;
+  state.hintOn = false;
+  state.step = 3;
+  var iso = findIsolated(state.eq);
+  if (iso && iso.name === current().unknown) setMessage('good', 'สูตรนี้อยู่ในรูปที่ตัวที่ถามอยู่ลำพังแล้ว ตรวจการแทนค่าแล้วกดคำนวณ');
+  else setMessage('info', 'จัดรูปจน ' + SYM[current().unknown].sym + ' อยู่ลำพัง แล้วกดคำนวณ');
+}
+function applyOp(runner) {
+  var next = clone(state.eq);
+  var res = runner(next);
+  if (!res.ok) { setMessage('bad', res.message); render(); return; }
+  state.undo.push(clone(state.eq));
+  state.eq = next;
+  state.history.push({ note: res.message, text: eqText(state.eq) });
+  state.selected = null;
+  setMessage('info', res.message);
+  render();
+}
+function chooseTopic(id) {
+  var p = current();
+  if (id === p.topic) {
+    state.topicId = id;
+    state.step = 2;
+    state.formulaTries = 0;
+    setMessage('good', 'ถูกต้อง โจทย์นี้เป็นเรื่อง' + topicById(id).name);
+    render();
+    return;
+  }
+  state.topicTries += 1;
+  setMessage('bad', p.hints[Math.min(state.topicTries - 1, p.hints.length - 1)]);
+  render();
+}
+function chooseFormula(id) {
+  var formula = formulaById(id);
+  var p = current();
+  var check = canSolve(formula, p);
+  if (!check.ok) {
+    state.formulaTries += 1;
+    var text = check.message;
+    if (state.topicId !== p.topic) text += ' และเรื่องที่เลือกยังไม่ตรงกับโจทย์';
+    if (state.formulaTries >= 3) {
+      var right = formulas.filter(function (f) { return canSolve(f, p).ok; })[0];
+      if (right) text += ' แนวทางของข้อนี้คือสูตร ' + right.classic + ' ในเรื่อง' + topicById(right.topic).name;
+    }
+    setMessage('bad', text);
+    render();
+    return;
+  }
+  startArrange(formula);
+  render();
+}
+function doPrimary() {
+  var sel = state.selected;
+  if (!sel) { setMessage('info', 'คลิกพจน์หรือตัวแปรบนสมการก่อน'); render(); return; }
+  if (sel.kind === 'denom') { applyOp(function (eq) { return moveDenom(eq, sel.side, sel.factor); }); return; }
+  if (sel.kind === 'factor') { applyOp(function (eq) { return moveFactor(eq, sel.side, sel.factor); }); return; }
+  applyOp(function (eq) { return moveTerm(eq, sel.side, sel.term); });
+}
+function doCalculate() {
+  var p = current();
+  var iso = findIsolated(state.eq);
+  if (!iso || iso.name !== p.unknown) { setMessage('bad', 'ยังจัดรูปไม่ถึงตัวที่โจทย์ถาม'); render(); return; }
+  var known = knownOf(p);
+  var value;
+  try { value = evalSide(state.eq[other(iso.side)], known); }
+  catch (err) { setMessage('bad', err.message); render(); return; }
+  if (!approxEqual(value, p.answer)) {
+    setMessage('bad', 'คำนวณได้ ' + formatNum(value) + ' ซึ่งยังไม่ตรงกับเฉลย ลองย้อนกลับแล้วจัดรูปใหม่');
+    render();
+    return;
+  }
+  var arranged = eqText(state.eq);
+  var plugged = eqText(state.eq, known);
+  var rows = [{ label: 'สมการที่จัดแล้ว', text: arranged }];
+  if (plugged !== arranged) rows.push({ label: 'แทนค่าจากโจทย์', text: plugged });
+  rows.push({ label: 'ผลลัพธ์', text: SYM[p.unknown].sym + ' = ' + formatNum(value) + (SYM[p.unknown].unit ? ' ' + SYM[p.unknown].unit : '') });
+  state.result = { valueText: formatNum(value), rows: rows };
+  state.step = 4;
+  markSolved(p.id);
+  setMessage(null);
+  render();
+}
+function nextIndex() {
+  for (var i = 1; i <= problems.length; i++) {
+    var idx = (state.index + i) % problems.length;
+    if (state.solved.indexOf(problems[idx].id) === -1) return idx;
+  }
+  return (state.index + 1) % problems.length;
+}
+function openProblem(index) {
+  if (index === state.index || index < 0 || index >= problems.length) return;
+  memory.drafts[current().id] = clone(snapshot());
+  state.index = index;
+  var draft = sanitize(memory.drafts[current().id]);
+  if (draft) applyDraft(draft);
+  else blankWork();
+  render();
+}
+function handle(ds) {
+  var act = ds.act;
+  if (act === 'wipe') {
+    if (!state.confirmWipe) {
+      state.confirmWipe = true;
+      render();
+      return;
+    }
+    memory.drafts = {};
+    state.solved = [];
+    blankWork();
+    try { localStorage.removeItem(SAVE_KEY); } catch (err) { /* ignore */ }
+    render();
+    return;
+  }
+  state.confirmWipe = false;
+  try {
+    if (act === 'problem') return openProblem(Number(ds.index));
+    if (act === 'topic') return chooseTopic(ds.id);
+    if (act === 'formula') return chooseFormula(ds.id);
+    if (act === 'back-topic') {
+      state.step = 1; state.topicId = null; state.formulaId = null; state.eq = null; setMessage(null); render(); return;
+    }
+    if (act === 'back-formula') {
+      state.step = 2; state.formulaId = null; state.eq = null; state.selected = null; state.hintOn = false; setMessage(null); render(); return;
+    }
+    if (act === 'pick-factor') {
+      var term = state.eq[ds.side].terms[Number(ds.term)];
+      if (term && term.factors.length === 1) state.selected = { kind: 'term', side: ds.side, term: Number(ds.term) };
+      else state.selected = { kind: 'factor', side: ds.side, term: Number(ds.term), factor: Number(ds.factor) };
+      render(); return;
+    }
+    if (act === 'pick-term') { state.selected = { kind: 'term', side: ds.side, term: Number(ds.term) }; render(); return; }
+    if (act === 'pick-denom') { state.selected = { kind: 'denom', side: ds.side, term: 0, factor: Number(ds.factor) }; render(); return; }
+    if (act === 'move') return doPrimary();
+    if (act === 'move-term') {
+      if (!state.selected) return;
+      applyOp(function (eq) { return moveTerm(eq, state.selected.side, state.selected.term); });
+      return;
+    }
+    if (act === 'sqrt') return applyOp(takeSqrt);
+    if (act === 'square') return applyOp(squareBoth);
+    if (act === 'sub') return applyOp(function (eq) { return substituteKnown(eq, knownOf(current())); });
+    if (act === 'hint') { state.hintOn = !state.hintOn; render(); return; }
+    if (act === 'undo') {
+      if (!state.undo.length) return;
+      state.eq = state.undo.pop();
+      if (state.history.length > 1) state.history.pop();
+      state.selected = null;
+      setMessage('info', 'ย้อนกลับหนึ่งขั้น');
+      render(); return;
+    }
+    if (act === 'reset-eq') { startArrange(formulaById(state.formulaId)); render(); return; }
+    if (act === 'calc') return doCalculate();
+    if (act === 'retry') { blankWork(); render(); return; }
+    if (act === 'next') return openProblem(nextIndex());
+    if (act === 'print') { window.print(); return; }
+  } catch (err) {
+    setMessage('bad', 'ทำขั้นนี้ไม่สำเร็จ ลองย้อนกลับหรือเริ่มจัดรูปใหม่');
+    render();
+  }
+}
+function onDrop(sideName) {
+  if (!dragPayload || state.step !== 3 || !state.eq) return;
+  var payload = dragPayload;
+  dragPayload = null;
+  if (payload.side === sideName) { setMessage('info', 'ปล่อยที่อีกฝั่งของเครื่องหมายเท่ากับ'); render(); return; }
+  if (payload.kind === 'denom') { applyOp(function (eq) { return moveDenom(eq, payload.side, payload.factor); }); return; }
+  if (payload.kind === 'factor') {
+    var term = state.eq[payload.side].terms[payload.term];
+    if (!term || term.factors.length < 2) applyOp(function (eq) { return moveTerm(eq, payload.side, payload.term); });
+    else applyOp(function (eq) { return moveFactor(eq, payload.side, payload.factor); });
+    return;
+  }
+  applyOp(function (eq) { return moveTerm(eq, payload.side, payload.term); });
+}
+function boot() {
+  loadStore();
+  var app = document.getElementById('app');
+  app.addEventListener('click', function (e) {
+    if (suppressClick) { suppressClick = false; return; }
+    var el = e.target.closest('[data-act]');
+    if (!el) return;
+    handle(el.dataset);
+  });
+  app.addEventListener('dblclick', function (e) {
+    var el = e.target.closest('[data-act]');
+    if (!el) return;
+    if (el.dataset.act === 'pick-factor' || el.dataset.act === 'pick-term' || el.dataset.act === 'pick-denom') doPrimary();
+  });
+  app.addEventListener('dragstart', function (e) {
+    var el = e.target.closest('[data-drag]');
+    if (!el) return;
+    dragPayload = { kind: el.dataset.drag, side: el.dataset.side, term: Number(el.dataset.term), factor: Number(el.dataset.factor) };
+    if (e.dataTransfer) { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', 'move'); }
+  });
+  app.addEventListener('dragover', function (e) {
+    var zone = e.target.closest('[data-drop]');
+    if (!zone) return;
+    e.preventDefault();
+    document.querySelectorAll('.side.over').forEach(function (node) { node.classList.remove('over'); });
+    zone.classList.add('over');
+  });
+  app.addEventListener('drop', function (e) {
+    var zone = e.target.closest('[data-drop]');
+    if (!zone) return;
+    e.preventDefault();
+    suppressClick = true;
+    onDrop(zone.dataset.drop);
+  });
+  app.addEventListener('dragend', function () {
+    dragPayload = null;
+    document.querySelectorAll('.side.over').forEach(function (node) { node.classList.remove('over'); });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (state.step !== 3) return;
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); handle({ act: 'undo' }); }
+    else if (e.key === 'Escape' && state.selected) { state.selected = null; render(); }
+  });
+  render();
+}
+
+if (typeof document !== 'undefined') boot();
+if (globalThis.RUN_PHYSICS_TEST) {
+  globalThis.PhysicsLab = {
+    problems: problems, formulas: formulas, topics: topics, state: state, memory: memory,
+    freshEquation: freshEquation, moveTerm: moveTerm, moveFactor: moveFactor, moveDenom: moveDenom,
+    takeSqrt: takeSqrt, findIsolated: findIsolated, evalSide: evalSide, eqText: eqText,
+    canSolve: canSolve, knownOf: knownOf, other: other, nextHint: nextHint, approxEqual: approxEqual,
+    handle: handle, blankWork: blankWork
+  };
+}
+</script>
+</body>
+</html>
