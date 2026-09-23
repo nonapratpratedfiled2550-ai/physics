@@ -2,89 +2,286 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#141c2f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>ฟิสิกส์ทีละขั้น</title>
 <style>
   :root {
-    --paper: #f3eee6;
-    --sheet: #fffdf9;
-    --ink: #1c1915;
-    --muted: #6f675e;
-    --line: #e4dacb;
-    --sidebar: #141c2f;
-    --sidebar-2: #1c2740;
-    --cream: #f6f1e8;
-    --brass: #c6a15a;
-    --teal: #0f6e64;
-    --teal-deep: #0a4f49;
-    --teal-soft: #e6f4f1;
+    --paper: #ebe4d8;
+    --sheet: #fffdf8;
+    --ink: #171410;
+    --muted: #6a6359;
+    --line: #ddd2c0;
+    --sidebar: #0f1628;
+    --sidebar-2: #182338;
+    --cream: #f4efe6;
+    --brass: #c9a45c;
+    --teal: #0d6b62;
+    --teal-deep: #084841;
+    --teal-soft: #e3f3ef;
     --good: #17693c;
-    --good-bg: #e8f6ee;
-    --bad: #9d342c;
-    --bad-bg: #fdecea;
-    --info-bg: #e7f3f2;
-    --shadow: 0 16px 40px rgba(28, 25, 21, 0.06);
+    --good-bg: #e7f6ed;
+    --bad: #9a312a;
+    --bad-bg: #fceceb;
+    --info-bg: #e5f2f0;
+    --warn: #8a5a12;
+    --warn-bg: #fff4df;
+    --shadow: 0 18px 44px rgba(23, 20, 16, 0.08);
+    --rise: 180ms cubic-bezier(.2,.7,.2,1);
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; }
+  html, body { margin: 0; min-height: 100%; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   body {
     color: var(--ink);
     font-family: "Leelawadee UI", Tahoma, "Segoe UI", sans-serif;
     font-size: 17px;
     line-height: 1.55;
-    background: var(--paper);
+    background:
+      radial-gradient(1100px 520px at 8% -10%, rgba(13,107,98,0.10), transparent 60%),
+      radial-gradient(900px 420px at 100% 0%, rgba(201,164,92,0.14), transparent 55%),
+      linear-gradient(180deg, #f2ebe0 0%, var(--paper) 45%, #e7dfd1 100%);
+    padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+    overscroll-behavior-y: contain;
   }
-  button, input { font: inherit; color: inherit; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button, a, [data-act], .plate, .factor, .term { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   button { cursor: pointer; }
+  input, textarea, select { font-size: 16px; } /* กัน iOS ซูมตอนโฟกัส */
   :focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
   .skip {
     position: absolute; left: 0.6rem; top: -3rem;
     background: white; padding: 0.4rem 0.7rem; z-index: 9;
   }
   .skip:focus { top: 0.6rem; }
-  #app { height: 100%; }
-  .shell { height: 100%; display: grid; grid-template-columns: 300px minmax(0, 1fr); }
+  #app { min-height: 100%; min-height: 100dvh; }
+  .shell {
+    min-height: 100%; min-height: 100dvh;
+    display: grid; grid-template-columns: 320px minmax(0, 1fr);
+  }
   .sidebar {
-    background: linear-gradient(180deg, var(--sidebar) 0%, #10182a 100%);
+    background:
+      radial-gradient(480px 220px at 20% -10%, rgba(201,164,92,0.18), transparent 60%),
+      linear-gradient(180deg, #142038 0%, var(--sidebar) 55%, #0b1220 100%);
     color: var(--cream);
     display: flex; flex-direction: column;
-    min-height: 0;
-    padding: 1.15rem 0.9rem 0.8rem;
+    min-height: 0; overflow: auto;
+    padding: 1.15rem 0.95rem 0.85rem;
+    border-right: 1px solid rgba(201,164,92,0.18);
   }
-  .brand { display: flex; gap: 0.75rem; align-items: center; padding: 0 0.35rem 0.9rem; }
+  .brand { display: flex; gap: 0.75rem; align-items: center; padding: 0 0.35rem 0.95rem; }
   .mark {
-    width: 42px; height: 42px; flex: none; color: var(--brass);
-    border: 1px solid rgba(198, 161, 90, 0.45); border-radius: 13px;
+    width: 46px; height: 46px; flex: none; color: var(--brass);
+    border: 1px solid rgba(198, 161, 90, 0.5); border-radius: 14px;
     display: grid; place-items: center;
+    background: rgba(255,255,255,0.03);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
   }
   .mark svg { width: 26px; height: 26px; }
   .brand p { margin: 0; }
-  .brand .name { font-size: 1.12rem; font-weight: 700; letter-spacing: 0.01em; }
-  .brand .sub { color: #c9bfb2; font-size: 0.82rem; margin-top: 0.1rem; }
-  .progress { padding: 0 0.35rem 0.85rem; }
-  .progress .row { display: flex; justify-content: space-between; font-size: 0.86rem; color: #d9d0c4; }
-  .bar { margin-top: 0.4rem; height: 6px; border-radius: 99px; background: rgba(255,255,255,0.08); overflow: hidden; }
-  .bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--brass), #e6d3a4); width: 0; }
-  .plist { overflow: auto; display: flex; flex-direction: column; gap: 0.35rem; padding: 0.15rem; min-height: 0; }
-  .prob {
-    display: grid; grid-template-columns: auto 1fr auto; gap: 0.65rem; align-items: center;
-    text-align: left; width: 100%;
-    background: transparent; color: var(--cream);
-    border: 1px solid transparent; border-radius: 14px;
-    padding: 0.55rem 0.6rem; min-height: 58px;
+  .brand .name { font-size: 1.16rem; font-weight: 700; letter-spacing: 0.01em; }
+  .brand .sub { color: #c9bfb2; font-size: 0.82rem; margin-top: 0.12rem; }
+  .side-meter { margin: 0 0.2rem 0.85rem; padding: 0.65rem 0.7rem; border-radius: 14px; background: rgba(255,255,255,0.05); }
+  .side-meter .row { display: flex; justify-content: space-between; gap: 0.5rem; font-size: 0.82rem; color: #d5cbbd; }
+  .meter {
+    margin-top: 0.4rem; height: 7px; border-radius: 99px;
+    background: rgba(255,255,255,0.08); overflow: hidden;
   }
-  .prob:hover { background: rgba(255,255,255,0.04); }
-  .prob.on { background: rgba(255,255,255,0.08); border-color: rgba(198,161,90,0.45); }
-  .prob .n {
-    width: 1.8rem; height: 1.8rem; border-radius: 50%;
+  .meter span {
+    display: block; height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--brass), #efe0b4);
+    transition: width var(--rise);
+  }
+  .side-note { margin: 0 0.35rem 0.7rem; color: #c9bfb2; font-size: 0.92rem; }
+  .side-story { margin: 0 0.15rem 0.8rem; color: var(--cream); white-space: pre-wrap; }
+  .side-prompt {
+    width: 100%; min-height: 13.5rem; resize: vertical;
+    border: 1px solid rgba(198, 161, 90, 0.45); border-radius: 14px;
+    padding: 0.75rem 0.8rem; background: #fffdf9; color: var(--ink); line-height: 1.55;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+  }
+  .side-go { width: 100%; margin-top: 0.65rem; }
+  .kbd-hint { margin: 0.45rem 0.2rem 0; color: #a89f91; font-size: 0.78rem; }
+  .topic-live { margin: 0.75rem 0.15rem 0; border-radius: 14px; padding: 0.75rem 0.85rem; transition: background var(--rise), border-color var(--rise); }
+  .topic-live p { margin: 0; }
+  .topic-live.wait { background: rgba(255,255,255,0.05); color: #c9bfb2; }
+  .topic-live.hit {
+    background: linear-gradient(135deg, rgba(201,164,92,0.18), rgba(13,107,98,0.18));
+    border: 1px solid rgba(198,161,90,0.55);
+    animation: rise-in 280ms ease;
+  }
+  .topic-live .eyebrow { color: var(--brass); font-size: 0.78rem; }
+  .topic-live .chap { margin-top: 0.18rem; font-weight: 700; font-size: 1.02rem; }
+  .topic-live .meta { margin-top: 0.12rem; color: #d9d0c4; font-size: 0.86rem; }
+  .topic-live .conf { margin-top: 0.45rem; }
+  .conf-bar {
+    height: 6px; border-radius: 99px; background: rgba(255,255,255,0.1); overflow: hidden;
+  }
+  .conf-bar i { display: block; height: 100%; background: linear-gradient(90deg, #8fd0c6, var(--brass)); }
+  .chapter-banner {
+    border: 2px solid var(--teal); border-radius: 18px; padding: 1rem 1.05rem;
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.65), transparent 55%),
+      var(--teal-soft);
+    animation: rise-in 320ms ease;
+  }
+  .chapter-banner h2 { margin: 0.18rem 0 0.28rem; font-size: 1.4rem; }
+  .chapter-banner .eyebrow { margin: 0; color: var(--teal-deep); font-size: 0.82rem; font-weight: 700; }
+  .alt-topics { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.65rem 0 0.2rem; }
+  .alt-topics button {
+    border: 1px solid var(--line); background: white; border-radius: 999px;
+    padding: 0.28rem 0.7rem; font-size: 0.86rem; color: var(--muted);
+  }
+  .alt-topics button.on { background: var(--teal); color: white; border-color: var(--teal); }
+  .guide { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+  .guide li {
+    background: linear-gradient(180deg, #fff, #f7f2ea);
+    border: 1px solid var(--line);
+    border-radius: 16px; padding: 0.85rem 0.9rem;
+    animation: rise-in 360ms ease both;
+  }
+  .guide li:nth-child(2) { animation-delay: 40ms; }
+  .guide li:nth-child(3) { animation-delay: 80ms; }
+  .guide li:nth-child(4) { animation-delay: 120ms; }
+  .guide strong { display: block; margin-bottom: 0.15rem; }
+  .guide .n {
+    display: inline-grid; place-items: center;
+    width: 1.45rem; height: 1.45rem; border-radius: 50%;
+    background: var(--teal); color: white; font-size: 0.78rem; margin-right: 0.35rem;
+  }
+  .welcome-hero {
+    display: grid; grid-template-columns: 1.35fr 0.85fr; gap: 1rem; align-items: stretch;
+    margin-bottom: 0.85rem;
+  }
+  .welcome-hero .panel {
+    background:
+      radial-gradient(420px 180px at 90% 0%, rgba(13,107,98,0.12), transparent 60%),
+      var(--sheet);
+    border: 1px solid var(--line); border-radius: 22px; padding: 1.2rem 1.25rem;
+    box-shadow: var(--shadow);
+  }
+  .welcome-hero h2 { margin: 0.2rem 0 0.45rem; font-size: 1.55rem; line-height: 1.25; }
+  .welcome-hero .lead { margin: 0; color: var(--muted); }
+  .mini-board {
+    background: linear-gradient(180deg, #1d3054, #15233d);
+    color: #f7f1e7; border-radius: 18px; padding: 1rem;
     display: grid; place-items: center;
-    background: rgba(255,255,255,0.08); font-size: 0.85rem;
+    font-family: Cambria, Georgia, serif; font-size: 1.55rem;
+    box-shadow: inset 0 0 0 1px rgba(198,161,90,0.35);
   }
-  .prob.on .n { background: var(--brass); color: #1c1408; font-weight: 700; }
-  .prob strong { display: block; font-size: 0.95rem; font-weight: 700; }
-  .prob em { display: block; font-style: normal; color: #b7ad9f; font-size: 0.78rem; }
-  .tick { color: #8ddec0; font-size: 0.95rem; }
+  .mini-board span { color: #9fd9cf; }
+  .check-list { margin: 0.7rem 0 0; padding: 0; list-style: none; display: grid; gap: 0.35rem; }
+  .check-list li {
+    display: flex; align-items: center; gap: 0.45rem;
+    background: #f7f3ec; border-radius: 12px; padding: 0.45rem 0.65rem; font-size: 0.92rem;
+  }
+  .check-list li.ok { background: var(--good-bg); color: var(--good); }
+  .check-list li.wait { color: var(--muted); }
+  .dot {
+    width: 0.7rem; height: 0.7rem; border-radius: 50%; flex: none;
+    background: #cfc4b3;
+  }
+  .check-list li.ok .dot { background: var(--good); }
+  .next-task {
+    margin: 0.15rem 0 0.85rem;
+    background: linear-gradient(135deg, #fff8e8, var(--teal-soft));
+    border: 1px solid #e4d4b0;
+    border-radius: 16px;
+    padding: 0.85rem 1rem;
+  }
+  .next-task strong { display: block; font-size: 1.05rem; margin-bottom: 0.15rem; }
+  .next-task p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+  .section-label {
+    display: flex; align-items: center; gap: 0.45rem;
+    margin: 0.95rem 0 0.55rem; font-weight: 700; font-size: 0.95rem;
+  }
+  .section-label .stepn {
+    width: 1.55rem; height: 1.55rem; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--teal); color: white; font-size: 0.82rem;
+  }
+  .ask-box {
+    display: grid; grid-template-columns: auto 1fr auto;
+    gap: 0.75rem; align-items: center;
+    background: var(--teal-soft);
+    border: 1px solid #bfd8d2;
+    border-radius: 16px;
+    padding: 0.85rem 0.95rem;
+  }
+  .ask-box .sym {
+    font-family: Cambria, Georgia, serif;
+    font-size: 2rem; line-height: 1; color: var(--teal-deep);
+  }
+  .ask-box select {
+    border: 1px solid #b7cec8; border-radius: 11px; padding: 0.5rem 0.6rem; background: white; width: 100%;
+  }
+  .ask-box .unit { color: var(--teal-deep); font-weight: 700; }
+  .var-cards { display: grid; gap: 0.55rem; }
+  .var-card {
+    display: grid;
+    grid-template-columns: 4.2rem minmax(0, 1fr) auto;
+    gap: 0.55rem 0.75rem;
+    align-items: center;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 0.75rem 0.85rem;
+  }
+  .var-card.filled { border-color: #b7d8c6; background: #f7fcf8; }
+  .var-card .sym {
+    font-family: Cambria, Georgia, serif;
+    font-size: 1.75rem; color: var(--teal-deep); line-height: 1;
+  }
+  .var-card .meta { min-width: 0; }
+  .var-card .meta strong { display: block; }
+  .var-card .meta span { color: var(--muted); font-size: 0.86rem; }
+  .var-card .var-actions {
+    display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; justify-content: flex-end;
+    grid-column: 1 / -1;
+  }
+  .var-card input[data-field="value"] {
+    border: 1px solid var(--line); border-radius: 11px; padding: 0.55rem 0.65rem;
+    background: #fffdf9; width: min(11rem, 100%); font-size: 1.05rem;
+  }
+  .var-card.filled input[data-field="value"] { border-color: #9fcbb0; }
+  .btn.tiny { padding: 0.35rem 0.55rem; font-size: 0.84rem; border-radius: 10px; }
+  .btn.use-found { background: var(--brass); color: #1c1408; font-weight: 700; }
+  .add-box {
+    margin-top: 0.35rem;
+    background: #f7f3ec;
+    border-radius: 16px;
+    padding: 0.75rem 0.85rem;
+  }
+  .add-box .row {
+    display: grid;
+    grid-template-columns: minmax(8rem, 1.2fr) minmax(6rem, 0.8fr) auto;
+    gap: 0.45rem; align-items: center;
+  }
+  .add-box select, .add-box input {
+    border: 1px solid var(--line); border-radius: 11px; padding: 0.45rem 0.55rem; background: white; width: 100%;
+  }
+  .plan-box {
+    margin: 0.35rem 0 0.85rem;
+    background: #eef6f4;
+    border: 1px solid #bfd8d2;
+    border-radius: 16px;
+    padding: 0.8rem 0.95rem;
+  }
+  .plan-box ol { margin: 0.35rem 0 0; padding-left: 1.2rem; }
+  .plan-box li { margin: 0.2rem 0; }
+  .plan-box li.now { font-weight: 700; color: var(--teal-deep); }
+  .plan-box li.did { color: var(--good); }
+  .step-tag {
+    display: inline-block; margin-left: 0.3rem; background: #dff0ec; color: var(--teal-deep);
+    border-radius: 999px; font-size: 0.74rem; padding: 0.05rem 0.45rem; font-weight: 700;
+  }
   .side-foot {
     margin-top: auto; padding: 0.85rem 0.35rem 0.15rem;
     display: flex; justify-content: space-between; gap: 0.5rem; align-items: center;
@@ -94,63 +291,58 @@
     background: transparent; border: 0; color: #e7d7b0; padding: 0.2rem; text-decoration: underline;
     text-underline-offset: 2px;
   }
-  .workspace { min-width: 0; min-height: 0; overflow: auto; padding: 1.2rem 1.35rem 2.4rem; }
+  .workspace { min-width: 0; min-height: 0; overflow: auto; padding: 1.25rem 1.4rem 2.5rem; }
   .topbar { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-end; margin-bottom: 0.85rem; }
-  .kicker { margin: 0; color: var(--teal); font-size: 0.82rem; letter-spacing: 0.04em; }
-  h1.page { margin: 0.1rem 0 0; font-size: 1.55rem; line-height: 1.25; }
-  .stepper { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: flex-end; }
-  .stepper span {
+  .kicker { margin: 0; color: var(--teal); font-size: 0.82rem; letter-spacing: 0.04em; font-weight: 700; }
+  h1.page { margin: 0.1rem 0 0; font-size: 1.6rem; line-height: 1.25; }
+  .stepper { display: flex; gap: 0.25rem; flex-wrap: wrap; justify-content: flex-end; }
+  .stepper button, .stepper span {
     display: flex; align-items: center; gap: 0.35rem;
-    color: var(--muted); font-size: 0.86rem; padding: 0.15rem 0.2rem;
+    color: var(--muted); font-size: 0.86rem; padding: 0.2rem 0.35rem;
+    background: transparent; border: 0; border-radius: 999px;
   }
+  .stepper button:hover { background: rgba(13,107,98,0.08); }
   .stepper i {
-    font-style: normal; width: 1.45rem; height: 1.45rem; border-radius: 50%;
+    font-style: normal; width: 1.5rem; height: 1.5rem; border-radius: 50%;
     display: grid; place-items: center; border: 1px solid var(--line); background: white; font-size: 0.78rem;
   }
-  .stepper span.now { color: var(--ink); font-weight: 700; }
-  .stepper span.now i { background: var(--teal); color: white; border-color: var(--teal); }
-  .stepper span.did i { background: var(--good); color: white; border-color: var(--good); }
+  .stepper .now { color: var(--ink); font-weight: 700; background: rgba(13,107,98,0.08); }
+  .stepper .now i { background: var(--teal); color: white; border-color: var(--teal); }
+  .stepper .did i { background: var(--good); color: white; border-color: var(--good); }
   .help { margin: 0 0 0.8rem; color: var(--muted); }
   .sheet, .card {
     background: var(--sheet);
     border: 1px solid var(--line);
-    border-radius: 20px;
+    border-radius: 22px;
     box-shadow: var(--shadow);
-    padding: 1.1rem 1.2rem 1.2rem;
-    margin-bottom: 0.85rem;
+    padding: 1.15rem 1.25rem 1.25rem;
+    margin-bottom: 0.9rem;
+    animation: rise-in 280ms ease;
   }
-  .story { margin: 0.35rem 0 0.9rem; font-size: 1.05rem; }
-  .facts { display: grid; grid-template-columns: 1.4fr 0.8fr; gap: 0.7rem; }
-  .fact {
-    background: #f7f3ec; border-radius: 14px; padding: 0.75rem 0.8rem;
+  .story { margin: 0.35rem 0 0.9rem; font-size: 1.06rem; }
+  .msg {
+    border-radius: 14px; padding: 0.8rem 0.95rem; margin-bottom: 0.85rem;
+    animation: rise-in 220ms ease;
   }
-  .fact.asked { background: var(--teal-soft); }
-  .fact h2 { margin: 0 0 0.45rem; font-size: 0.82rem; letter-spacing: 0.03em; color: var(--muted); font-weight: 700; }
-  .fact.asked h2 { color: var(--teal-deep); }
-  .chips { display: flex; flex-direction: column; gap: 0.35rem; margin: 0; padding: 0; list-style: none; }
-  .chips li { background: white; border-radius: 10px; padding: 0.32rem 0.55rem; }
-  .ask-sym {
-    margin: 0; font-family: Cambria, Georgia, serif; font-size: 1.7rem; color: var(--teal-deep); line-height: 1.1;
-  }
-  .ask-name { margin: 0.15rem 0 0; }
-  .msg { border-radius: 14px; padding: 0.75rem 0.9rem; margin-bottom: 0.85rem; }
   .msg.good { background: var(--good-bg); color: var(--good); }
   .msg.bad { background: var(--bad-bg); color: var(--bad); }
   .msg.info { background: var(--info-bg); color: var(--teal-deep); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.7rem; }
+  .msg.warn { background: var(--warn-bg); color: var(--warn); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.75rem; }
   .plate {
     text-align: left; width: 100%;
-    border: 1px solid var(--line); background: white; border-radius: 16px;
-    padding: 0.9rem 0.95rem 0.85rem; min-height: 108px;
+    border: 1px solid var(--line); background: white; border-radius: 18px;
+    padding: 0.95rem 1rem 0.9rem; min-height: 118px;
     border-top: 4px solid var(--stripe, var(--teal));
-    transition: border-color .15s ease, transform .15s ease;
+    transition: border-color var(--rise), transform var(--rise), box-shadow var(--rise);
   }
-  .plate:hover { transform: translateY(-2px); border-color: #d7c4a4; }
+  .plate:hover { transform: translateY(-3px); border-color: #d7c4a4; box-shadow: 0 10px 24px rgba(23,20,16,0.06); }
   .plate .label { display: block; font-weight: 700; }
   .plate small { display: block; color: var(--muted); margin-top: 0.25rem; }
+  .plate.locked { opacity: 0.72; }
   .formula-face {
     font-family: Cambria, "Leelawadee UI", Georgia, serif;
-    font-size: 1.55rem; color: var(--teal-deep); margin: 0.25rem 0 0.15rem; line-height: 1.2;
+    font-size: 1.55rem; color: var(--teal-deep); margin: 0.28rem 0 0.15rem; line-height: 1.2;
   }
   .vchips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.45rem; }
   .vchips i {
@@ -158,11 +350,44 @@
     background: #f4efe6; border-radius: 999px; padding: 0.05rem 0.45rem; font-size: 0.95rem;
   }
   .headrow { display: flex; justify-content: space-between; gap: 0.8rem; align-items: baseline; margin-bottom: 0.7rem; }
-  .headrow h2 { margin: 0; font-size: 1.15rem; }
+  .headrow h2 { margin: 0; font-size: 1.18rem; }
   .note { color: var(--muted); font-size: 0.92rem; margin: 0.2rem 0 0.55rem; }
+  .analysis { background: var(--teal-soft); border-radius: 16px; padding: 0.9rem 1rem; margin-top: 0.85rem; }
+  .analysis h3 { margin: 0 0 0.35rem; font-size: 1.02rem; color: var(--teal-deep); }
+  .analysis p { margin: 0.25rem 0; }
+  .analysis .pill {
+    display: inline-block; margin: 0.15rem 0.25rem 0.15rem 0;
+    background: white; border-radius: 999px; padding: 0.15rem 0.55rem; font-size: 0.86rem;
+  }
+  .var-row {
+    display: grid; grid-template-columns: minmax(8rem, 1.35fr) 8.5rem minmax(4rem, 0.9fr) auto;
+    gap: 0.45rem; align-items: center; margin-bottom: 0.45rem;
+  }
+  .var-row input, .var-row select, .ask-pick {
+    border: 1px solid var(--line); border-radius: 11px; padding: 0.45rem 0.55rem; background: white; width: 100%;
+  }
+  .var-row input:focus, .var-row select:focus, .ask-pick:focus, .side-prompt:focus,
+  .var-card input:focus, .ask-box select:focus, .add-box select:focus, .add-box input:focus {
+    border-color: var(--teal); box-shadow: 0 0 0 3px rgba(13,107,98,0.12);
+    outline: none;
+  }
+  .found-hint { color: var(--brass); font-size: 0.8rem; }
+  .plate.rec { border-color: var(--teal); box-shadow: 0 0 0 2px rgba(15, 110, 100, 0.16); }
+  .rec-tag {
+    display: inline-block; margin-left: 0.35rem; background: var(--teal); color: white;
+    border-radius: 999px; font-size: 0.75rem; padding: 0.05rem 0.45rem; font-weight: 700;
+  }
+  .ready-tag {
+    display: inline-block; margin-left: 0.3rem; background: var(--good-bg); color: var(--good);
+    border-radius: 999px; font-size: 0.74rem; padding: 0.05rem 0.45rem; font-weight: 700;
+  }
+  .need-tag {
+    display: inline-block; margin-left: 0.3rem; background: var(--warn-bg); color: var(--warn);
+    border-radius: 999px; font-size: 0.74rem; padding: 0.05rem 0.45rem; font-weight: 700;
+  }
   .target {
     display: inline-flex; align-items: center; gap: 0.35rem;
-    margin: 0 0 0.7rem; border-radius: 999px; padding: 0.28rem 0.75rem;
+    margin: 0 0 0.7rem; border-radius: 999px; padding: 0.3rem 0.8rem;
     background: var(--teal-soft); color: var(--teal-deep); font-size: 0.95rem;
   }
   .target.ready { background: var(--good-bg); color: var(--good); }
@@ -172,12 +397,27 @@
       radial-gradient(900px 180px at 50% -20%, rgba(255,255,255,0.08), transparent 55%),
       linear-gradient(180deg, #1d3054, #15233d);
     color: #f7f1e7;
-    border-radius: 18px;
-    padding: 1.35rem 1rem 0.95rem;
+    border-radius: 20px;
+    padding: 1.4rem 1rem 1rem;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
     user-select: none;
+    -webkit-user-select: none;
     box-shadow: inset 0 0 0 1px rgba(198, 161, 90, 0.35), inset 0 18px 40px rgba(0,0,0,0.18);
+    touch-action: pan-x pan-y;
   }
+  .mobile-tip {
+    display: none;
+    margin: 0.55rem 0 0;
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 0.55rem 0.7rem;
+    color: #d7e4f2;
+    font-size: 0.88rem;
+    text-align: center;
+  }
+  .factor, .term { min-height: 2.2rem; min-width: 2rem; }
   .board:before, .board:after {
     content: ""; position: absolute; width: 12px; height: 12px;
     border: 2px solid rgba(198, 161, 90, 0.75);
@@ -191,8 +431,8 @@
     font-size: 2.05rem; line-height: 1.15; padding: 0.35rem 0.4rem 0.15rem;
   }
   .equals { color: #9fd9cf; }
-  .side { display: flex; align-items: center; border-radius: 12px; padding: 0.15rem; }
-  .side.over { outline: 2px dashed #e7c98a; outline-offset: 4px; }
+  .side { display: flex; align-items: center; border-radius: 12px; padding: 0.15rem; min-height: 2.4rem; }
+  .side.over { outline: 2px dashed #e7c98a; outline-offset: 4px; background: rgba(231,201,138,0.08); }
   .num, .den { display: flex; align-items: center; justify-content: center; gap: 0.12rem; padding: 0.08rem 0.2rem; }
   .frac { display: inline-flex; flex-direction: column; align-items: center; }
   .fbar { height: 2px; background: currentColor; align-self: stretch; margin: 0.12rem 0; opacity: 0.9; }
@@ -223,23 +463,25 @@
   .actions { display: flex; flex-direction: column; gap: 0.45rem; margin-top: 0.8rem; }
   .actions-main, .actions-sub { display: flex; flex-wrap: wrap; gap: 0.45rem; }
   .btn {
-    border: 0; border-radius: 12px; padding: 0.58rem 0.85rem;
+    border: 0; border-radius: 12px; padding: 0.6rem 0.9rem;
     background: var(--teal); color: white;
+    transition: transform var(--rise), filter var(--rise);
   }
+  .btn:hover:not(:disabled) { filter: brightness(1.05); transform: translateY(-1px); }
   .btn.calc {
     background: var(--teal-deep);
-    padding: 0.72rem 1.05rem;
+    padding: 0.75rem 1.1rem;
     font-size: 1.02rem;
   }
   .btn.secondary { background: #efe6d8; color: var(--ink); }
   .btn.ghost { background: transparent; color: var(--teal-deep); border: 1px solid #cfe0db; }
-  .btn:disabled { opacity: 0.42; cursor: not-allowed; }
+  .btn:disabled { opacity: 0.42; cursor: not-allowed; transform: none; }
   .coach { margin: 0.65rem 0 0; color: var(--muted); }
-  .hintbox { margin-top: 0.55rem; background: #fff8ec; border-radius: 12px; padding: 0.6rem 0.75rem; color: #6a4b16; }
+  .hintbox { margin-top: 0.55rem; background: #fff8ec; border-radius: 12px; padding: 0.65rem 0.8rem; color: #6a4b16; }
   .timeline { list-style: none; margin: 0.9rem 0 0; padding: 0; }
   .timeline li {
     display: grid; grid-template-columns: 1.6rem 8.2rem 1fr; gap: 0.45rem;
-    padding: 0.38rem 0; border-top: 1px dashed var(--line); align-items: baseline;
+    padding: 0.4rem 0; border-top: 1px dashed var(--line); align-items: baseline;
   }
   .timeline .idx { color: var(--brass); font-weight: 700; }
   .timeline .note { color: var(--muted); font-size: 0.9rem; }
@@ -247,36 +489,116 @@
   .hero { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-end; flex-wrap: wrap; }
   .answer-num {
     margin: 0.15rem 0; font-family: Cambria, Georgia, serif;
-    font-size: 3rem; line-height: 1; color: var(--teal-deep);
+    font-size: 3.1rem; line-height: 1; color: var(--teal-deep);
   }
   .unit-th { margin: 0.25rem 0 0; color: var(--muted); }
   .seal {
     background: var(--good-bg); color: var(--good); border-radius: 999px;
-    padding: 0.35rem 0.7rem; font-size: 0.9rem;
+    padding: 0.4rem 0.8rem; font-size: 0.9rem; font-weight: 700;
   }
   .work { margin: 0.15rem 0; font-family: Cambria, Georgia, serif; font-size: 1.22rem; }
   .work-block { margin-top: 0.8rem; }
   .work-block p.label { margin: 0.45rem 0 0; color: var(--muted); font-size: 0.82rem; }
   .row-actions { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.95rem; }
+  .score-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; margin-top: 0.85rem; }
+  .score-card {
+    background: #f7f3ec; border-radius: 14px; padding: 0.7rem 0.8rem;
+  }
+  .score-card strong { display: block; font-size: 1.15rem; }
+  .score-card span { color: var(--muted); font-size: 0.84rem; }
+  @keyframes rise-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
   @media (max-width: 900px) {
-    html, body, #app, .shell { height: auto; min-height: 100%; }
+    html, body, #app, .shell { height: auto; min-height: 100%; min-height: 100dvh; }
     .shell { grid-template-columns: 1fr; }
-    .sidebar { position: sticky; top: 0; z-index: 4; max-height: none; }
-    .plist { flex-direction: row; overflow-x: auto; }
-    .prob { min-width: 220px; }
-    .workspace { overflow: visible; padding: 1rem 0.9rem 2rem; }
-    .topbar { flex-direction: column; align-items: flex-start; }
-    .facts { grid-template-columns: 1fr; }
-    .eqline { font-size: 1.55rem; justify-content: flex-start; }
+    .sidebar {
+      position: relative;
+      z-index: 3;
+      max-height: none;
+      overflow: visible;
+      border-right: 0;
+      border-bottom: 1px solid rgba(198,161,90,0.25);
+      padding: 0.85rem 0.85rem 0.75rem;
+    }
+    .sidebar.compact {
+      padding-bottom: 0.65rem;
+    }
+    .sidebar.compact .side-meter,
+    .sidebar.compact .kbd-hint { display: none; }
+    .side-prompt { min-height: 8.5rem; font-size: 16px; }
+    .side-story {
+      max-height: 4.8rem; overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      font-size: 0.92rem;
+    }
+    .workspace { overflow: visible; padding: 0.85rem 0.8rem calc(1.6rem + var(--safe-bottom)); }
+    .topbar { flex-direction: column; align-items: stretch; gap: 0.55rem; margin-bottom: 0.65rem; }
+    h1.page { font-size: 1.28rem; }
+    .stepper {
+      justify-content: flex-start;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.15rem;
+      margin: 0 -0.1rem;
+    }
+    .stepper button, .stepper span {
+      flex: none;
+      white-space: nowrap;
+      font-size: 0.8rem;
+      padding: 0.35rem 0.45rem;
+    }
+    .guide, .welcome-hero, .score-grid { grid-template-columns: 1fr; }
+    .sheet, .card { border-radius: 18px; padding: 0.95rem 0.9rem 1rem; margin-bottom: 0.75rem; }
+    .chapter-banner h2 { font-size: 1.15rem; }
+    .var-card { grid-template-columns: 3.2rem 1fr auto; }
+    .var-card .var-actions { justify-content: stretch; }
+    .var-card input[data-field="value"] { width: 100%; min-height: 2.75rem; font-size: 16px; }
+    .ask-box { grid-template-columns: auto 1fr; gap: 0.55rem; }
+    .ask-box .unit { grid-column: 2; }
+    .ask-box select, .add-box select, .add-box input, .side-prompt { min-height: 2.75rem; }
+    .add-box .row { grid-template-columns: 1fr; }
+    .var-row { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: 1fr; }
+    .plate { min-height: 0; padding: 0.85rem 0.9rem; }
+    .eqline {
+      font-size: 1.35rem;
+      justify-content: flex-start;
+      gap: 0.55rem;
+      padding-bottom: 0.35rem;
+    }
+    .board { padding: 1.05rem 0.7rem 0.85rem; border-radius: 16px; }
+    .mobile-tip { display: block; }
+    .legend { display: none; }
     .timeline li { grid-template-columns: 1.4rem 1fr; }
     .timeline .note { grid-column: 2; }
+    .actions-main, .actions-sub, .row-actions { gap: 0.5rem; }
+    .btn, .btn.calc, .btn.secondary, .btn.ghost {
+      min-height: 2.75rem;
+      padding: 0.7rem 0.9rem;
+      width: auto;
+      flex: 1 1 auto;
+    }
+    .actions-main .btn, .row-actions .btn.calc { flex: 1 1 100%; }
+    .answer-num { font-size: 2.35rem; }
+    .alt-topics { gap: 0.35rem; }
+    .alt-topics button { min-height: 2.4rem; }
+    .kbd-hint { display: none; }
+  }
+  @media (max-width: 420px) {
+    body { font-size: 16px; }
+    .brand .name { font-size: 1.05rem; }
+    .formula-face { font-size: 1.35rem; }
+    .eqline { font-size: 1.2rem; }
   }
   @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; }
-    .plate:hover { transform: none; }
+    * { transition: none !important; animation: none !important; }
+    .plate:hover, .btn:hover:not(:disabled) { transform: none; }
   }
   @media print {
-    .sidebar, .actions, .row-actions, .stepper, .skip { display: none !important; }
+    .sidebar, .actions, .row-actions, .stepper, .skip, .side-meter { display: none !important; }
     .shell { display: block; height: auto; }
     .workspace { overflow: visible; }
     .board { background: white; color: black; box-shadow: none; }
@@ -314,15 +636,61 @@ var SYM = {
   V:  { sym: 'V',  name: 'ความต่างศักย์', unit: 'V', unitTh: 'โวลต์' },
   I:  { sym: 'I',  name: 'กระแสไฟฟ้า', unit: 'A', unitTh: 'แอมแปร์' },
   R:  { sym: 'R',  name: 'ความต้านทาน', unit: 'Ω', unitTh: 'โอห์ม' },
-  Pe: { sym: 'P',  name: 'กำลังไฟฟ้า', unit: 'W', unitTh: 'วัตต์' }
+  Pe: { sym: 'P',  name: 'กำลังไฟฟ้า', unit: 'W', unitTh: 'วัตต์' },
+  d: { sym: 'd', name: 'ระยะตั้งฉาก', unit: 'm', unitTh: 'เมตร' },
+  tau: { sym: 'τ', name: 'ทอร์ก', unit: 'N·m', unitTh: 'นิวตัน·เมตร' },
+  ell: { sym: 'ℓ', name: 'ความยาว', unit: 'm', unitTh: 'เมตร' },
+  k: { sym: 'k', name: 'ค่าคงตัวสปริง', unit: 'N/m', unitTh: 'นิวตันต่อเมตร' },
+  x: { sym: 'x', name: 'การยืดของสปริง', unit: 'm', unitTh: 'เมตร' },
+  kC: { sym: 'k', name: 'ค่าคงตัวคูลอมบ์', unit: 'N·m²/C²', unitTh: 'นิวตัน·ตารางเมตรต่อคูลอมบ์กำลังสอง' },
+  q1: { sym: 'q₁', name: 'ประจุที่หนึ่ง', unit: 'C', unitTh: 'คูลอมบ์' },
+  q2: { sym: 'q₂', name: 'ประจุที่สอง', unit: 'C', unitTh: 'คูลอมบ์' },
+  freq: { sym: 'f', name: 'ความถี่', unit: 'Hz', unitTh: 'เฮิรตซ์' },
+  vs: { sym: 'v', name: 'อัตราเร็วเสียง', unit: 'm/s', unitTh: 'เมตรต่อวินาที' },
+  lam: { sym: 'λ', name: 'ความยาวคลื่น', unit: 'm', unitTh: 'เมตร' },
+  y: { sym: 'y', name: 'ระยะจากแนวกลาง', unit: 'm', unitTh: 'เมตร' },
+  L: { sym: 'L', name: 'ระยะจากสลิตถึงฉาก', unit: 'm', unitTh: 'เมตร' },
+  slit: { sym: 'd', name: 'ระยะระหว่างสลิต', unit: 'm', unitTh: 'เมตร' },
+  n: { sym: 'n', name: 'ดัชนีหักเห', unit: '', unitTh: 'ไม่มีหน่วย' },
+  c: { sym: 'c', name: 'อัตราเร็วแสงในสุญญากาศ', unit: 'm/s', unitTh: 'เมตรต่อวินาที' },
+  r: { sym: 'r', name: 'รัศมี', unit: 'm', unitTh: 'เมตร' },
+  Tper: { sym: 'T', name: 'คาบ', unit: 's', unitTh: 'วินาที' },
+  B: { sym: 'B', name: 'ความหนาแน่นฟลักซ์แม่เหล็ก', unit: 'T', unitTh: 'เทสลา' },
+  q: { sym: 'q', name: 'ประจุ', unit: 'C', unitTh: 'คูลอมบ์' },
+  rho: { sym: 'ρ', name: 'ความหนาแน่น', unit: 'kg/m³', unitTh: 'กิโลกรัมต่อลูกบาศก์เมตร' },
+  Pf: { sym: 'P', name: 'ความดัน', unit: 'Pa', unitTh: 'ปาสกาล' },
+  Qh: { sym: 'Q', name: 'ความร้อน', unit: 'J', unitTh: 'จูล' },
+  cSp: { sym: 'c', name: 'ความร้อนจำเพาะ', unit: 'J/(kg·°C)', unitTh: 'จูลต่อกิโลกรัมต่อองศาเซลเซียส' },
+  dT: { sym: 'ΔT', name: 'ผลต่างอุณหภูมิ', unit: '°C', unitTh: 'องศาเซลเซียส' },
+  En: { sym: 'E', name: 'พลังงาน', unit: 'J', unitTh: 'จูล' },
+  hpk: { sym: 'h', name: 'ค่าคงตัวพลังค์', unit: 'J·s', unitTh: 'จูล·วินาที' },
+  Aact: { sym: 'A', name: 'กัมมันตภาพ', unit: 'Bq', unitTh: 'เบ็กเคอเรล' },
+  decay: { sym: 'λ', name: 'ค่าคงตัวการสลาย', unit: 's⁻¹', unitTh: 'ต่อวินาที' },
+  Nn: { sym: 'N', name: 'จำนวนนิวเคลียส', unit: '', unitTh: 'ไม่มีหน่วย' },
+  EF: { sym: 'E', name: 'สนามไฟฟ้า', unit: 'N/C', unitTh: 'นิวตันต่อคูลอมบ์' }
 };
 
 var topics = [
-  { id: 'motion', name: 'การเคลื่อนที่แนวตรง', stripe: '#2a6f97', blurb: 'ความเร็วต้น ความเร็วปลาย ความเร่ง การกระจัด และเวลา โดยยังไม่ใช้แรง' },
-  { id: 'force', name: 'แรงและกฎของนิวตัน', stripe: '#b86112', blurb: 'แรงลัพธ์ มวล ความเร่ง น้ำหนัก หรือแรงเสียดทาน' },
-  { id: 'energy', name: 'งาน พลังงาน และกำลัง', stripe: '#0f6e64', blurb: 'งาน พลังงานจลน์ พลังงานศักย์โน้มถ่วง หรือกำลัง' },
-  { id: 'momentum', name: 'โมเมนตัม', stripe: '#5c4d7a', blurb: 'มวล ความเร็ว และโมเมนตัม' },
-  { id: 'electric', name: 'ไฟฟ้ากระแส', stripe: '#9d342c', blurb: 'ความต่างศักย์ กระแสไฟฟ้า ความต้านทาน หรือกำลังไฟฟ้า' }
+  { id: 'ch1', no: 1, grade: 'ม.4', vol: 'เล่ม 1', stripe: '#2a6f97', name: 'ธรรมชาติและพัฒนาการทางฟิสิกส์', blurb: 'ธรรมชาติของวิชา การวัด หน่วย SI เลขนัยสำคัญ และกระบวนการทดลอง' },
+  { id: 'ch2', no: 2, grade: 'ม.4', vol: 'เล่ม 1', stripe: '#2a6f97', name: 'การเคลื่อนที่แนวตรง', blurb: 'การกระจัด ความเร็วเฉลี่ยและความเร่ง สมการการเคลื่อนที่ที่ความเร่งคงตัว' },
+  { id: 'ch3', no: 3, grade: 'ม.4', vol: 'เล่ม 1', stripe: '#2a6f97', name: 'แรงและกฎการเคลื่อนที่', blurb: 'กฎของนิวตัน มวล แรงเสียดทาน แรงโน้มถ่วงและน้ำหนัก' },
+  { id: 'ch4', no: 4, grade: 'ม.4', vol: 'เล่ม 2', stripe: '#b86112', name: 'สมดุลกล', blurb: 'ศูนย์กลางมวล สมดุลต่อการเลื่อนและหมุน ทอร์ก' },
+  { id: 'ch5', no: 5, grade: 'ม.4', vol: 'เล่ม 2', stripe: '#b86112', name: 'งานและพลังงาน', blurb: 'งาน กำลัง พลังงานจลน์ พลังงานศักย์ และการอนุรักษ์พลังงาน' },
+  { id: 'ch6', no: 6, grade: 'ม.4', vol: 'เล่ม 2', stripe: '#b86112', name: 'โมเมนตัมและการชน', blurb: 'โมเมนตัม แรงดล และการอนุรักษ์โมเมนตัม' },
+  { id: 'ch7', no: 7, grade: 'ม.4', vol: 'เล่ม 2', stripe: '#b86112', name: 'การเคลื่อนที่แนวโค้ง', blurb: 'การเคลื่อนที่แบบวงกลม ความเร่งสู่ศูนย์กลาง' },
+  { id: 'ch8', no: 8, grade: 'ม.5', vol: 'เล่ม 3', stripe: '#0f6e64', name: 'การเคลื่อนที่แบบฮาร์มอนิกอย่างง่าย', blurb: 'สปริง ลูกตุ้มอย่างง่าย และคาบการแกว่ง' },
+  { id: 'ch9', no: 9, grade: 'ม.5', vol: 'เล่ม 3', stripe: '#0f6e64', name: 'คลื่น', blurb: 'คลื่นกล อัตราเร็วคลื่น ความถี่และความยาวคลื่น' },
+  { id: 'ch10', no: 10, grade: 'ม.5', vol: 'เล่ม 3', stripe: '#0f6e64', name: 'แสงเชิงคลื่น', blurb: 'การแทรกสอด การเลี้ยวเบน และเกรตติง' },
+  { id: 'ch11', no: 11, grade: 'ม.5', vol: 'เล่ม 3', stripe: '#0f6e64', name: 'แสงเชิงรังสี', blurb: 'การสะท้อน การหักเห ดัชนีหักเห และเลนส์' },
+  { id: 'ch12', no: 12, grade: 'ม.5', vol: 'เล่ม 4', stripe: '#9d342c', name: 'เสียง', blurb: 'คลื่นเสียง อัตราเร็วเสียง และความถี่ที่ได้ยิน' },
+  { id: 'ch13', no: 13, grade: 'ม.5', vol: 'เล่ม 4', stripe: '#9d342c', name: 'ไฟฟ้าสถิต', blurb: 'ประจุ กฎของคูลอมบ์ สนามไฟฟ้า และศักย์ไฟฟ้า' },
+  { id: 'ch14', no: 14, grade: 'ม.5', vol: 'เล่ม 4', stripe: '#9d342c', name: 'ไฟฟ้ากระแส', blurb: 'กระแส กฎของโอห์ม กำลังไฟฟ้า และวงจร' },
+  { id: 'ch15', no: 15, grade: 'ม.6', vol: 'เล่ม 5', stripe: '#5c4d7a', name: 'แม่เหล็กและไฟฟ้า', blurb: 'สนามแม่เหล็ก แรงกระทำต่อลวด และแรงเคลื่อนไฟฟ้าเหนี่ยวนำ' },
+  { id: 'ch16', no: 16, grade: 'ม.6', vol: 'เล่ม 5', stripe: '#5c4d7a', name: 'ความร้อนและแก๊ส', blurb: 'ความร้อนจำเพาะ ความร้อนแฝง และกฎของแก๊ส' },
+  { id: 'ch17', no: 17, grade: 'ม.6', vol: 'เล่ม 5', stripe: '#5c4d7a', name: 'ของแข็งและของไหล', blurb: 'ความหนาแน่น ความดัน และกฎของพาสคัล' },
+  { id: 'ch18', no: 18, grade: 'ม.6', vol: 'เล่ม 6', stripe: '#3d6b4f', name: 'คลื่นแม่เหล็กไฟฟ้า', blurb: 'สเปกตรัม อัตราเร็วแสง และความถี่กับความยาวคลื่น' },
+  { id: 'ch19', no: 19, grade: 'ม.6', vol: 'เล่ม 6', stripe: '#3d6b4f', name: 'ฟิสิกส์อะตอม', blurb: 'แบบจำลองอะตอม โฟตอน และปรากฏการณ์โฟโตอิเล็กทริก' },
+  { id: 'ch20', no: 20, grade: 'ม.6', vol: 'เล่ม 6', stripe: '#3d6b4f', name: 'ฟิสิกส์นิวเคลียร์และฟิสิกส์อนุภาค', blurb: 'กัมมันตภาพรังสี เลขมวล และพลังงานนิวเคลียร์' }
 ];
 
 function lit(name, power) { return { type: 'var', name: name, power: power || 1 }; }
@@ -332,113 +700,224 @@ function makeSide(terms, denom) { return { terms: terms, denom: denom || [], sqr
 function equation(left, right) { return { left: left, right: right }; }
 
 var formulas = [
-  { id: 'vuat', topic: 'motion', name: 'ความเร็วเมื่อรู้เวลา', classic: 'v = u + at', when: 'มีครบสามในสี่ปริมาณนี้ แล้วหาตัวที่เหลือ', vars: ['v', 'u', 'a', 't'],
+  { id: 'vuat', topic: 'ch2', name: 'ความเร็วเมื่อรู้เวลา', classic: 'v = u + at', when: 'มีครบสามในสี่ปริมาณนี้ แล้วหาตัวที่เหลือ', vars: ['v', 'u', 'a', 't'],
     eq: equation(makeSide([makeTerm(1, [lit('v')])]), makeSide([makeTerm(1, [lit('u')]), makeTerm(1, [lit('a'), lit('t')])])) },
-  { id: 'sutat', topic: 'motion', name: 'การกระจัดเมื่อรู้เวลา', classic: 's = ut + ½at²', when: 'มีการกระจัด ความเร็วต้น ความเร่ง และเวลา', vars: ['s', 'u', 'a', 't'],
+  { id: 'sutat', topic: 'ch2', name: 'การกระจัดเมื่อรู้เวลา', classic: 's = ut + ½at²', when: 'มีการกระจัด ความเร็วต้น ความเร่ง และเวลา', vars: ['s', 'u', 'a', 't'],
     eq: equation(makeSide([makeTerm(1, [lit('s')])]), makeSide([makeTerm(1, [lit('u'), lit('t')]), makeTerm(1, [num(0.5), lit('a'), lit('t', 2)])])) },
-  { id: 'v2u2as', topic: 'motion', name: 'ความเร็วไม่ใช้เวลา', classic: 'v² = u² + 2as', when: 'ไม่ปรากฏเวลาในข้อมูลหรือในสิ่งที่ถาม', vars: ['v', 'u', 'a', 's'],
+  { id: 'v2u2as', topic: 'ch2', name: 'ความเร็วไม่ใช้เวลา', classic: 'v² = u² + 2as', when: 'ไม่ปรากฏเวลาในข้อมูลหรือในสิ่งที่ถาม', vars: ['v', 'u', 'a', 's'],
     eq: equation(makeSide([makeTerm(1, [lit('v', 2)])]), makeSide([makeTerm(1, [lit('u', 2)]), makeTerm(1, [num(2), lit('a'), lit('s')])])) },
-  { id: 'savg', topic: 'motion', name: 'การกระจัดจากความเร็วเฉลี่ย', classic: 's = (u + v)t / 2', when: 'รู้ความเร็วต้น ความเร็วปลาย และเวลา', boardNote: 'บนกระดานกระจายเป็น s = ½ut + ½vt ซึ่งเท่ากับสูตรนี้', vars: ['s', 'u', 'v', 't'],
+  { id: 'savg', topic: 'ch2', name: 'การกระจัดจากความเร็วเฉลี่ย', classic: 's = (u + v)t / 2', when: 'รู้ความเร็วต้น ความเร็วปลาย และเวลา', boardNote: 'บนกระดานกระจายเป็น s = ½ut + ½vt ซึ่งเท่ากับสูตรนี้', vars: ['s', 'u', 'v', 't'], soft: true,
     eq: equation(makeSide([makeTerm(1, [lit('s')])]), makeSide([makeTerm(1, [num(0.5), lit('u'), lit('t')]), makeTerm(1, [num(0.5), lit('v'), lit('t')])])) },
-  { id: 'fma', topic: 'force', name: 'กฎข้อที่สองของนิวตัน', classic: 'F = ma', when: 'แรงลัพธ์ มวล และความเร่ง', vars: ['F', 'm', 'a'],
+  { id: 'fma', topic: 'ch3', name: 'กฎข้อที่สองของนิวตัน', classic: 'F = ma', when: 'แรงลัพธ์ มวล และความเร่ง', vars: ['F', 'm', 'a'],
     eq: equation(makeSide([makeTerm(1, [lit('F')])]), makeSide([makeTerm(1, [lit('m'), lit('a')])])) },
-  { id: 'weight', topic: 'force', name: 'น้ำหนัก', classic: 'w = mg', when: 'น้ำหนัก มวล และความเร่งโน้มถ่วง', vars: ['w', 'm', 'g'],
+  { id: 'weight', topic: 'ch3', name: 'น้ำหนัก', classic: 'w = mg', when: 'น้ำหนัก มวล และความเร่งโน้มถ่วง', vars: ['w', 'm', 'g'],
     eq: equation(makeSide([makeTerm(1, [lit('w')])]), makeSide([makeTerm(1, [lit('m'), lit('g')])])) },
-  { id: 'friction', topic: 'force', name: 'แรงเสียดทาน', classic: 'f = μN', when: 'แรงเสียดทาน สัมประสิทธิ์ และแรงตั้งฉาก', vars: ['f', 'mu', 'N'],
+  { id: 'friction', topic: 'ch3', name: 'แรงเสียดทาน', classic: 'f = μN', when: 'แรงเสียดทาน สัมประสิทธิ์ และแรงตั้งฉาก', vars: ['f', 'mu', 'N'],
     eq: equation(makeSide([makeTerm(1, [lit('f')])]), makeSide([makeTerm(1, [lit('mu'), lit('N')])])) },
-  { id: 'work', topic: 'energy', name: 'งานของแรงคงที่', classic: 'W = Fs', when: 'แรงคงที่ทำตามแนวการกระจัด', vars: ['W', 'F', 's'],
+  { id: 'work', topic: 'ch5', name: 'งานของแรงคงที่', classic: 'W = Fs', when: 'แรงคงที่ทำตามแนวการกระจัด', vars: ['W', 'F', 's'],
     eq: equation(makeSide([makeTerm(1, [lit('W')])]), makeSide([makeTerm(1, [lit('F'), lit('s')])])) },
-  { id: 'ke', topic: 'energy', name: 'พลังงานจลน์', classic: 'Eₖ = ½mv²', when: 'พลังงานเนื่องจากการเคลื่อนที่', vars: ['Ek', 'm', 'v'],
+  { id: 'ke', topic: 'ch5', name: 'พลังงานจลน์', classic: 'Eₖ = ½mv²', when: 'พลังงานเนื่องจากการเคลื่อนที่', vars: ['Ek', 'm', 'v'],
     eq: equation(makeSide([makeTerm(1, [lit('Ek')])]), makeSide([makeTerm(1, [num(0.5), lit('m'), lit('v', 2)])])) },
-  { id: 'pe', topic: 'energy', name: 'พลังงานศักย์โน้มถ่วง', classic: 'Eₚ = mgh', when: 'พลังงานจากความสูงใกล้ผิวโลก', vars: ['Ep', 'm', 'g', 'h'],
+  { id: 'pe', topic: 'ch5', name: 'พลังงานศักย์โน้มถ่วง', classic: 'Eₚ = mgh', when: 'พลังงานจากความสูงใกล้ผิวโลก', vars: ['Ep', 'm', 'g', 'h'],
     eq: equation(makeSide([makeTerm(1, [lit('Ep')])]), makeSide([makeTerm(1, [lit('m'), lit('g'), lit('h')])])) },
-  { id: 'power', topic: 'energy', name: 'กำลัง', classic: 'P = W / t', when: 'งานที่ทำต่อหนึ่งหน่วยเวลา', vars: ['P', 'W', 't'],
+  { id: 'power', topic: 'ch5', name: 'กำลัง', classic: 'P = W / t', when: 'งานที่ทำต่อหนึ่งหน่วยเวลา', vars: ['P', 'W', 't'],
     eq: equation(makeSide([makeTerm(1, [lit('P')])]), makeSide([makeTerm(1, [lit('W')])], [lit('t')])) },
-  { id: 'mom', topic: 'momentum', name: 'โมเมนตัม', classic: 'p = mv', when: 'โมเมนตัม มวล และความเร็ว', vars: ['p', 'm', 'v'],
+  { id: 'mom', topic: 'ch6', name: 'โมเมนตัม', classic: 'p = mv', when: 'โมเมนตัม มวล และความเร็ว', vars: ['p', 'm', 'v'],
     eq: equation(makeSide([makeTerm(1, [lit('p')])]), makeSide([makeTerm(1, [lit('m'), lit('v')])])) },
-  { id: 'deltap', topic: 'momentum', name: 'การเปลี่ยนโมเมนตัม', classic: 'Δp = m(v − u)', when: 'ผลต่างโมเมนตัมปลายกับโมเมนตัมต้น', boardNote: 'บนกระดานกระจายเป็น Δp = mv − mu', vars: ['dp', 'm', 'v', 'u'],
+  { id: 'deltap', topic: 'ch6', name: 'การเปลี่ยนโมเมนตัม', classic: 'Δp = m(v − u)', when: 'ผลต่างโมเมนตัมปลายกับโมเมนตัมต้น', boardNote: 'บนกระดานกระจายเป็น Δp = mv − mu', vars: ['dp', 'm', 'v', 'u'], soft: true,
     eq: equation(makeSide([makeTerm(1, [lit('dp')])]), makeSide([makeTerm(1, [lit('m'), lit('v')]), makeTerm(-1, [lit('m'), lit('u')])])) },
-  { id: 'ohm', topic: 'electric', name: 'กฎของโอห์ม', classic: 'V = IR', when: 'ความต่างศักย์ กระแส และความต้านทาน', vars: ['V', 'I', 'R'],
+  { id: 'ohm', topic: 'ch14', name: 'กฎของโอห์ม', classic: 'V = IR', when: 'ความต่างศักย์ กระแส และความต้านทาน', vars: ['V', 'I', 'R'],
     eq: equation(makeSide([makeTerm(1, [lit('V')])]), makeSide([makeTerm(1, [lit('I'), lit('R')])])) },
-  { id: 'piv', topic: 'electric', name: 'กำลังจากกระแสและความต่างศักย์', classic: 'P = IV', when: 'รู้กระแสและความต่างศักย์', vars: ['Pe', 'I', 'V'],
+  { id: 'piv', topic: 'ch14', name: 'กำลังจากกระแสและความต่างศักย์', classic: 'P = IV', when: 'รู้กระแสและความต่างศักย์', vars: ['Pe', 'I', 'V'],
     eq: equation(makeSide([makeTerm(1, [lit('Pe')])]), makeSide([makeTerm(1, [lit('I'), lit('V')])])) },
-  { id: 'pi2r', topic: 'electric', name: 'กำลังจากกระแสและความต้านทาน', classic: 'P = I²R', when: 'รู้กระแสและความต้านทาน', vars: ['Pe', 'I', 'R'],
+  { id: 'pi2r', topic: 'ch14', name: 'กำลังจากกระแสและความต้านทาน', classic: 'P = I²R', when: 'รู้กระแสและความต้านทาน', vars: ['Pe', 'I', 'R'],
     eq: equation(makeSide([makeTerm(1, [lit('Pe')])]), makeSide([makeTerm(1, [lit('I', 2), lit('R')])])) },
-  { id: 'pv2r', topic: 'electric', name: 'กำลังจากความต่างศักย์และความต้านทาน', classic: 'P = V² / R', when: 'รู้ความต่างศักย์และความต้านทาน', vars: ['Pe', 'V', 'R'],
-    eq: equation(makeSide([makeTerm(1, [lit('Pe')])]), makeSide([makeTerm(1, [lit('V', 2)])], [lit('R')])) }
+  { id: 'pv2r', topic: 'ch14', name: 'กำลังจากความต่างศักย์และความต้านทาน', classic: 'P = V² / R', when: 'รู้ความต่างศักย์และความต้านทาน', vars: ['Pe', 'V', 'R'],
+    eq: equation(makeSide([makeTerm(1, [lit('Pe')])]), makeSide([makeTerm(1, [lit('V', 2)])], [lit('R')])) },
+  { id: 'torque', topic: 'ch4', name: 'ทอร์กของแรง', classic: 'τ = Fd', when: 'แรงตั้งฉากกับแขนโมเมนต์', vars: ['tau', 'F', 'd'],
+    eq: equation(makeSide([makeTerm(1, [lit('tau')])]), makeSide([makeTerm(1, [lit('F'), lit('d')])])) },
+  { id: 'impulse', topic: 'ch6', name: 'แรงดล', classic: 'F = Δp / t', when: 'แรงเฉลี่ยที่ทำให้โมเมนตัมเปลี่ยนในช่วงเวลาหนึ่ง', vars: ['F', 'dp', 't'],
+    eq: equation(makeSide([makeTerm(1, [lit('F')])]), makeSide([makeTerm(1, [lit('dp')])], [lit('t')])) },
+  { id: 'centrip', topic: 'ch7', name: 'ความเร่งสู่ศูนย์กลาง', classic: 'a = v² / r', when: 'วัตถุเคลื่อนที่วงกลมด้วยอัตราเร็วคงตัว', vars: ['a', 'v', 'r'],
+    eq: equation(makeSide([makeTerm(1, [lit('a')])]), makeSide([makeTerm(1, [lit('v', 2)])], [lit('r')])) },
+  { id: 'hooke', topic: 'ch8', name: 'กฎของฮุก', classic: 'F = kx', when: 'แรงของสปริงแปรผันตรงกับการยืดหรือหด', vars: ['F', 'k', 'x'],
+    eq: equation(makeSide([makeTerm(1, [lit('F')])]), makeSide([makeTerm(1, [lit('k'), lit('x')])])) },
+  { id: 'pendulum', topic: 'ch8', name: 'คาบของลูกตุ้มอย่างง่าย', classic: 'T = 2π√(ℓ/g)', when: 'มุมแกว่งเล็ก และสายมีมวลน้อยมาก', boardNote: 'บนกระดานใช้รูปกำลังสอง T² = 4π²ℓ / g', vars: ['Tper', 'ell', 'g'],
+    eq: equation(makeSide([makeTerm(1, [lit('Tper', 2)])]), makeSide([makeTerm(1, [num(4 * Math.PI * Math.PI), lit('ell')])], [lit('g')])) },
+  { id: 'vflam', topic: 'ch9', name: 'อัตราเร็วคลื่น', classic: 'v = fλ', when: 'คลื่นมีความถี่และความยาวคลื่นคงตัว', vars: ['v', 'freq', 'lam'],
+    eq: equation(makeSide([makeTerm(1, [lit('v')])]), makeSide([makeTerm(1, [lit('freq'), lit('lam')])])) },
+  { id: 'young', topic: 'ch10', name: 'แถบสว่างของสลิตคู่', classic: 'y = λL / d', when: 'หาตำแหน่งแถบสว่างอันดับแรกบนฉากไกล', vars: ['y', 'lam', 'L', 'slit'],
+    eq: equation(makeSide([makeTerm(1, [lit('y')])]), makeSide([makeTerm(1, [lit('lam'), lit('L')])], [lit('slit')])) },
+  { id: 'refract', topic: 'ch11', name: 'ดัชนีหักเห', classic: 'n = c / v', when: 'เปรียบเทียบอัตราเร็วแสงในสุญญากาศกับในตัวกลาง', vars: ['n', 'c', 'v'],
+    eq: equation(makeSide([makeTerm(1, [lit('n')])]), makeSide([makeTerm(1, [lit('c')])], [lit('v')])) },
+  { id: 'circ', topic: 'ch7', name: 'อัตราเร็วในวงกลม', classic: 'v = 2πr / T', when: 'หนึ่งรอบใช้เวลาเท่ากับคาบ', vars: ['v', 'r', 'Tper'], soft: true,
+    eq: equation(makeSide([makeTerm(1, [lit('v')])]), makeSide([makeTerm(1, [num(2 * Math.PI), lit('r')])], [lit('Tper')])) },
+  { id: 'soundv', topic: 'ch12', name: 'อัตราเร็วเสียง', classic: 'v = fλ', when: 'คลื่นเสียงในตัวกลางเดียวกัน', vars: ['vs', 'freq', 'lam'],
+    eq: equation(makeSide([makeTerm(1, [lit('vs')])]), makeSide([makeTerm(1, [lit('freq'), lit('lam')])])) },
+  { id: 'efield', topic: 'ch13', name: 'สนามไฟฟ้าสม่ำเสมอ', classic: 'V = Ed', when: 'แผ่นคู่ขนานที่สนามระหว่างแผ่นสม่ำเสมอ', vars: ['V', 'EF', 'd'],
+    eq: equation(makeSide([makeTerm(1, [lit('V')])]), makeSide([makeTerm(1, [lit('EF'), lit('d')])])) },
+  { id: 'coulomb', topic: 'ch13', name: 'กฎของคูลอมบ์', classic: 'F = kq₁q₂ / r²', when: 'แรงระหว่างประจุจุดสองก้อน', boardNote: 'บนกระดานเขียน F = k·q₁·q₂ / r²', vars: ['F', 'kC', 'q1', 'q2', 'r'], soft: true,
+    eq: equation(makeSide([makeTerm(1, [lit('F')])]), makeSide([makeTerm(1, [lit('kC'), lit('q1'), lit('q2')])], [lit('r', 2)])) },
+  { id: 'bil', topic: 'ch15', name: 'แรงแม่เหล็กบนลวดตรง', classic: 'F = BIℓ', when: 'ลวดตั้งฉากกับสนามแม่เหล็กสม่ำเสมอ', vars: ['F', 'B', 'I', 'ell'],
+    eq: equation(makeSide([makeTerm(1, [lit('F')])]), makeSide([makeTerm(1, [lit('B'), lit('I'), lit('ell')])])) },
+  { id: 'heat', topic: 'ch16', name: 'ความร้อนที่ทำให้อุณหภูมิเปลี่ยน', classic: 'Q = mcΔT', when: 'ยังไม่เปลี่ยนสถานะ', vars: ['Qh', 'm', 'cSp', 'dT'],
+    eq: equation(makeSide([makeTerm(1, [lit('Qh')])]), makeSide([makeTerm(1, [lit('m'), lit('cSp'), lit('dT')])])) },
+  { id: 'hydro', topic: 'ch17', name: 'ความดันของของเหลว', classic: 'P = ρgh', when: 'ของเหลวอยู่กับที่ ความดันเกจที่ความลึก h', vars: ['Pf', 'rho', 'g', 'h'],
+    eq: equation(makeSide([makeTerm(1, [lit('Pf')])]), makeSide([makeTerm(1, [lit('rho'), lit('g'), lit('h')])])) },
+  { id: 'emwave', topic: 'ch18', name: 'คลื่นแม่เหล็กไฟฟ้า', classic: 'c = fλ', when: 'ในสุญญากาศ อัตราเร็วเท่ากับอัตราเร็วแสง', vars: ['c', 'freq', 'lam'],
+    eq: equation(makeSide([makeTerm(1, [lit('c')])]), makeSide([makeTerm(1, [lit('freq'), lit('lam')])])) },
+  { id: 'photon', topic: 'ch19', name: 'พลังงานโฟตอน', classic: 'E = hf', when: 'โฟตอนหนึ่งตัวของคลื่นความถี่ f', vars: ['En', 'hpk', 'freq'],
+    eq: equation(makeSide([makeTerm(1, [lit('En')])]), makeSide([makeTerm(1, [lit('hpk'), lit('freq')])])) },
+  { id: 'activity', topic: 'ch20', name: 'กัมมันตภาพ', classic: 'A = λN', when: 'จำนวนนิวเคลียสและค่าคงตัวการสลาย', vars: ['Aact', 'decay', 'Nn'],
+    eq: equation(makeSide([makeTerm(1, [lit('Aact')])]), makeSide([makeTerm(1, [lit('decay'), lit('Nn')])])) }
 ];
 
 var problems = [
-  { id: 'car-accel', topic: 'motion', title: 'รถยนต์เร่งเครื่อง',
+  { id: 'car-accel', topic: 'ch2', title: 'รถยนต์เร่งเครื่อง',
     text: 'รถยนต์คันหนึ่งแล่นด้วยความเร็วต้น 5 เมตรต่อวินาที แล้วเร่งจนมีความเร็ว 25 เมตรต่อวินาที ภายในเวลา 4 วินาที จงหาความเร่งของรถยนต์',
     given: [{ key: 'u', value: 5 }, { key: 'v', value: 25, name: 'ความเร็วปลาย' }, { key: 't', value: 4 }],
     unknown: 'a', answer: 5,
-    hints: ['ยังไม่ใช่เรื่องนี้ โจทย์ให้ความเร็วกับเวลา และถามความเร่ง ไม่ได้ให้แรงหรือมวล', 'ไม่ได้ถามงาน พลังงาน โมเมนตัม หรือวงจรไฟฟ้า', 'เรื่องที่ตรงคือการเคลื่อนที่แนวตรง'] },
-  { id: 'car-distance', topic: 'motion', title: 'รถออกตัว',
+    hints: ['ยังไม่ใช่บทนี้ โจทย์ให้ความเร็วกับเวลา และถามความเร่ง ไม่ได้ให้แรงหรือมวล', 'ไม่ได้ถามงาน พลังงาน โมเมนตัม หรือวงจรไฟฟ้า', 'บทที่ตรงคือบทที่ 2 การเคลื่อนที่แนวตรง (ม.4 เล่ม 1)'] },
+  { id: 'car-distance', topic: 'ch2', title: 'รถออกตัว',
     text: 'รถคันหนึ่งออกตัวจากหยุดนิ่งด้วยความเร่งคงที่ 2 เมตรต่อวินาทีกำลังสอง จนมีความเร็ว 10 เมตรต่อวินาที จงหาการกระจัดของรถในช่วงนี้',
     given: [{ key: 'u', value: 0 }, { key: 'a', value: 2 }, { key: 'v', value: 10, name: 'ความเร็วปลาย' }],
     unknown: 's', answer: 25,
-    hints: ['ยังไม่ใช่เรื่องนี้ มีความเร็วกับความเร่ง และถามการกระจัด ไม่ได้ให้แรง', 'โจทย์ไม่ได้ถามพลังงาน', 'เรื่องที่ตรงคือการเคลื่อนที่แนวตรง'] },
-  { id: 'timed-drive', topic: 'motion', title: 'รถในช่วงเวลา',
+    hints: ['ยังไม่ใช่บทนี้ มีความเร็วกับความเร่ง และถามการกระจัด ไม่ได้ให้แรง', 'โจทย์ไม่ได้ถามพลังงาน', 'บทที่ตรงคือบทที่ 2 การเคลื่อนที่แนวตรง (ม.4 เล่ม 1)'] },
+  { id: 'timed-drive', topic: 'ch2', title: 'รถในช่วงเวลา',
     text: 'รถมีความเร็วต้น 2 เมตรต่อวินาที เคลื่อนที่ด้วยความเร่งคงที่เป็นเวลา 2 วินาที แล้วมีการกระจัด 10 เมตร จงหาความเร่ง',
     given: [{ key: 'u', value: 2 }, { key: 't', value: 2 }, { key: 's', value: 10 }],
     unknown: 'a', answer: 3,
-    hints: ['มีเวลา การกระจัด และความเร็วต้น แต่ไม่มีความเร็วปลาย', 'ไม่ได้ให้แรงหรือมวล', 'เรื่องที่ตรงคือการเคลื่อนที่แนวตรง'] },
-  { id: 'push-box', topic: 'force', title: 'กล่องบนพื้นราบ',
+    hints: ['มีเวลา การกระจัด และความเร็วต้น แต่ไม่มีความเร็วปลาย', 'ไม่ได้ให้แรงหรือมวล', 'บทที่ตรงคือบทที่ 2 การเคลื่อนที่แนวตรง (ม.4 เล่ม 1)'] },
+  { id: 'push-box', topic: 'ch3', title: 'กล่องบนพื้นราบ',
     text: 'ออกแรงลัพธ์ 18 นิวตัน กระทำต่อวัตถุมวล 4 กิโลกรัม บนพื้นราบที่ไม่มีแรงเสียดทาน จงหาความเร่งของวัตถุ',
     given: [{ key: 'F', value: 18 }, { key: 'm', value: 4 }],
     unknown: 'a', answer: 4.5,
-    hints: ['โจทย์ให้แรงกับมวล และถามความเร่ง', 'ไม่ได้ให้ความเร็วต้นหรือเวลา จึงไม่ใช่สมการการเคลื่อนที่', 'เรื่องที่ตรงคือแรงและกฎของนิวตัน'] },
-  { id: 'held-mass', topic: 'force', title: 'ของที่ยกไว้',
+    hints: ['โจทย์ให้แรงกับมวล และถามความเร่ง', 'ไม่ได้ให้ความเร็วต้นหรือเวลา จึงไม่ใช่สมการการเคลื่อนที่', 'บทที่ตรงคือบทที่ 3 แรงและกฎการเคลื่อนที่ (ม.4 เล่ม 1)'] },
+  { id: 'held-mass', topic: 'ch3', title: 'ของที่ยกไว้',
     text: 'วัตถุชิ้นหนึ่งมีน้ำหนัก 50 นิวตัน กำหนดให้ความเร่งโน้มถ่วงเท่ากับ 10 เมตรต่อวินาทีกำลังสอง จงหามวลของวัตถุ',
     given: [{ key: 'w', value: 50 }, { key: 'g', value: 10 }],
     unknown: 'm', answer: 5,
-    hints: ['มีน้ำหนักกับความเร่งโน้มถ่วง และถามมวล', 'ไม่ได้ให้แรงลัพธ์ที่ทำให้เกิดการเคลื่อนที่', 'เรื่องที่ตรงคือแรงและกฎของนิวตัน'] },
-  { id: 'rough-floor', topic: 'force', title: 'วัตถุบนพื้นขรุขระ',
+    hints: ['มีน้ำหนักกับความเร่งโน้มถ่วง และถามมวล', 'ไม่ได้ให้แรงลัพธ์ที่ทำให้เกิดการเคลื่อนที่', 'บทที่ตรงคือบทที่ 3 แรงและกฎการเคลื่อนที่ (ม.4 เล่ม 1)'] },
+  { id: 'rough-floor', topic: 'ch3', title: 'วัตถุบนพื้นขรุขระ',
     text: 'วัตถุถูกแรงเสียดทาน 15 นิวตัน สัมประสิทธิ์แรงเสียดทานเท่ากับ 0.5 จงหาแรงตั้งฉาก',
     given: [{ key: 'f', value: 15 }, { key: 'mu', value: 0.5 }],
     unknown: 'N', answer: 30,
-    hints: ['มีแรงเสียดทานกับสัมประสิทธิ์ และถามแรงตั้งฉาก', 'ไม่ได้ให้มวลหรือความเร่งของการเคลื่อนที่', 'เรื่องที่ตรงคือแรงและกฎของนิวตัน'] },
-  { id: 'kinetic', topic: 'energy', title: 'วัตถุที่กำลังแล่น',
+    hints: ['มีแรงเสียดทานกับสัมประสิทธิ์ และถามแรงตั้งฉาก', 'ไม่ได้ให้มวลหรือความเร่งของการเคลื่อนที่', 'บทที่ตรงคือบทที่ 3 แรงและกฎการเคลื่อนที่ (ม.4 เล่ม 1)'] },
+  { id: 'kinetic', topic: 'ch5', title: 'วัตถุที่กำลังแล่น',
     text: 'วัตถุมวล 2 กิโลกรัมกำลังเคลื่อนที่ และมีพลังงานจลน์ 16 จูล จงหาความเร็วของวัตถุ',
     given: [{ key: 'm', value: 2 }, { key: 'Ek', value: 16 }],
     unknown: 'v', answer: 4,
-    hints: ['โจทย์พูดถึงพลังงานจลน์ มวล และถามความเร็ว', 'ไม่ได้ให้ความสูง และไม่ได้บอกแรงกับระยะทาง', 'เรื่องที่ตรงคืองาน พลังงาน และกำลัง'] },
-  { id: 'shelf', topic: 'energy', title: 'วัตถุบนชั้นวาง',
+    hints: ['โจทย์พูดถึงพลังงานจลน์ มวล และถามความเร็ว', 'ไม่ได้ให้ความสูง และไม่ได้บอกแรงกับระยะทาง', 'บทที่ตรงคือบทที่ 5 งานและพลังงาน (ม.4 เล่ม 2)'] },
+  { id: 'shelf', topic: 'ch5', title: 'วัตถุบนชั้นวาง',
     text: 'วัตถุมวล 2 กิโลกรัม มีพลังงานศักย์โน้มถ่วง 80 จูล กำหนดให้ความเร่งโน้มถ่วงเท่ากับ 10 เมตรต่อวินาทีกำลังสอง จงหาความสูงจากระดับอ้างอิง',
     given: [{ key: 'm', value: 2 }, { key: 'Ep', value: 80 }, { key: 'g', value: 10 }],
     unknown: 'h', answer: 4,
-    hints: ['มีพลังงานศักย์ มวล และความเร่งโน้มถ่วง ถามความสูง', 'ไม่ได้ถามความเร็ว', 'เรื่องที่ตรงคืองาน พลังงาน และกำลัง'] },
-  { id: 'machine', topic: 'energy', title: 'เครื่องจักรทำงาน',
+    hints: ['มีพลังงานศักย์ มวล และความเร่งโน้มถ่วง ถามความสูง', 'ไม่ได้ถามความเร็ว', 'บทที่ตรงคือบทที่ 5 งานและพลังงาน (ม.4 เล่ม 2)'] },
+  { id: 'machine', topic: 'ch5', title: 'เครื่องจักรทำงาน',
     text: 'เครื่องจักรทำงาน 200 จูล ด้วยกำลังคงที่ 40 วัตต์ จงหาเวลาที่ใช้',
     given: [{ key: 'W', value: 200 }, { key: 'P', value: 40 }],
     unknown: 't', answer: 5,
-    hints: ['มีงานกับกำลัง และถามเวลา', 'ไม่ได้ให้แรงกับการกระจัดแยกกัน และไม่ใช่วงจรไฟฟ้า', 'เรื่องที่ตรงคืองาน พลังงาน และกำลัง'] },
-  { id: 'momentum-speed', topic: 'momentum', title: 'วัตถุเคลื่อนที่ตรง',
+    hints: ['มีงานกับกำลัง และถามเวลา', 'ไม่ได้ให้แรงกับการกระจัดแยกกัน และไม่ใช่วงจรไฟฟ้า', 'บทที่ตรงคือบทที่ 5 งานและพลังงาน (ม.4 เล่ม 2)'] },
+  { id: 'momentum-speed', topic: 'ch6', title: 'วัตถุเคลื่อนที่ตรง',
     text: 'วัตถุมีมวล 8 กิโลกรัม และมีโมเมนตัม 24 กิโลกรัม·เมตรต่อวินาที จงหาความเร็วของวัตถุ',
     given: [{ key: 'm', value: 8 }, { key: 'p', value: 24 }],
     unknown: 'v', answer: 3,
-    hints: ['ปริมาณในโจทย์คือมวลกับโมเมนตัม', 'ไม่ได้ถามแรง และไม่ได้ให้เวลา', 'เรื่องที่ตรงคือโมเมนตัม'] },
-  { id: 'resistor', topic: 'electric', title: 'หลอดในวงจร',
+    hints: ['ปริมาณในโจทย์คือมวลกับโมเมนตัม', 'ไม่ได้ถามแรง และไม่ได้ให้เวลา', 'บทที่ตรงคือบทที่ 6 โมเมนตัมและการชน (ม.4 เล่ม 2)'] },
+  { id: 'resistor', topic: 'ch14', title: 'หลอดในวงจร',
     text: 'ตัวต้านทานตัวหนึ่งต่อกับความต่างศักย์ 12 โวลต์ แล้วมีกระแสไฟฟ้าไหลผ่าน 0.5 แอมแปร์ จงหาความต้านทาน',
     given: [{ key: 'V', value: 12 }, { key: 'I', value: 0.5 }],
     unknown: 'R', answer: 24,
-    hints: ['มีความต่างศักย์กับกระแส และถามความต้านทาน', 'ไม่ใช่แรงหรือการเคลื่อนที่', 'เรื่องที่ตรงคือไฟฟ้ากระแส'] },
-  { id: 'simple-circuit', topic: 'electric', title: 'วงจรอย่างง่าย',
+    hints: ['มีความต่างศักย์กับกระแส และถามความต้านทาน', 'ไม่ใช่แรงหรือการเคลื่อนที่', 'บทที่ตรงคือบทที่ 14 ไฟฟ้ากระแส (ม.5 เล่ม 4)'] },
+  { id: 'simple-circuit', topic: 'ch14', title: 'วงจรอย่างง่าย',
     text: 'ความต่างศักย์ 9 โวลต์คร่อมความต้านทาน 18 โอห์ม จงหากระแสไฟฟ้าที่ไหลผ่าน',
     given: [{ key: 'V', value: 9 }, { key: 'R', value: 18 }],
     unknown: 'I', answer: 0.5,
-    hints: ['มีความต่างศักย์กับความต้านทาน และถามกระแส', 'ไม่ใช่แรงหรือพลังงานกล', 'เรื่องที่ตรงคือไฟฟ้ากระแส'] }
+    hints: ['มีความต่างศักย์กับความต้านทาน และถามกระแส', 'ไม่ใช่แรงหรือพลังงานกล', 'บทที่ตรงคือบทที่ 14 ไฟฟ้ากระแส (ม.5 เล่ม 4)'] },
+  { id: 'door-torque', topic: 'ch4', title: 'แรงดึงมือจับประตู',
+    text: 'แรง 40 นิวตันดึงมือจับประตูในแนวตั้งฉากกับแขนโมเมนต์ แล้วให้ทอร์ก 10 นิวตัน·เมตร จงหาระยะตั้งฉากจากบานพับถึงแนวแรง',
+    given: [{ key: 'tau', value: 10 }, { key: 'F', value: 40, name: 'แรง' }],
+    unknown: 'd', answer: 0.25,
+    hints: ['มีทอร์กกับแรง และถามระยะตั้งฉาก', 'ไม่ได้ถามมวลหรือความเร่ง', 'บทที่ตรงคือบทที่ 4 สมดุลกล (ม.4 เล่ม 2)'] },
+  { id: 'bat-hit', topic: 'ch6', title: 'ไม้ตีลูกบอล',
+    text: 'ไม้ตีลูกบอลด้วยแรงเฉลี่ย 20 นิวตัน เป็นเวลา 0.5 วินาที จงหาขนาดการเปลี่ยนแปลงโมเมนตัมของลูกบอล',
+    given: [{ key: 'F', value: 20, name: 'แรงเฉลี่ย' }, { key: 't', value: 0.5 }],
+    unknown: 'dp', answer: 10,
+    hints: ['มีแรงกับเวลา และถามการเปลี่ยนโมเมนตัม', 'ไม่ได้ให้มวลหรือความเร็ว', 'บทที่ตรงคือบทที่ 6 โมเมนตัมและการชน (ม.4 เล่ม 2)'] },
+  { id: 'roundabout', topic: 'ch7', title: 'รถเลี้ยววงกลม',
+    text: 'รถยนต์เลี้ยวเป็นวงกลมด้วยอัตราเร็วคงตัว 4 เมตรต่อวินาที และมีความเร่งสู่ศูนย์กลาง 8 เมตรต่อวินาทีกำลังสอง จงหารัศมีของทางโค้ง',
+    given: [{ key: 'v', value: 4, name: 'อัตราเร็ว' }, { key: 'a', value: 8, name: 'ความเร่งสู่ศูนย์กลาง' }],
+    unknown: 'r', answer: 2,
+    hints: ['มีอัตราเร็วกับความเร่งสู่ศูนย์กลาง และถามรัศมี', 'ไม่ได้ให้เวลาหรือการกระจัดแนวตรง', 'บทที่ตรงคือบทที่ 7 การเคลื่อนที่แนวโค้ง (ม.4 เล่ม 2)'] },
+  { id: 'pendulum-lab', topic: 'ch8', title: 'ลูกตุ้มในห้องแล็บ',
+    text: 'ลูกตุ้มอย่างง่ายแกว่งมุมเล็กด้วยคาบ 2 วินาที ในที่ที่ความเร่งโน้มถ่วงเท่ากับ π² เมตรต่อวินาทีกำลังสอง จงหาความยาวของเส้นเชือก',
+    given: [{ key: 'Tper', value: 2 }, { key: 'g', value: Math.PI * Math.PI, show: 'π²' }],
+    unknown: 'ell', answer: 1,
+    hints: ['มีคาบกับความเร่งโน้มถ่วง และถามความยาวเชือก', 'ไม่ได้ให้มวลของลูกตุ้ม', 'บทที่ตรงคือบทที่ 8 การเคลื่อนที่แบบฮาร์มอนิกอย่างง่าย (ม.5 เล่ม 3)'] },
+  { id: 'rope-wave', topic: 'ch9', title: 'คลื่นบนเชือก',
+    text: 'คลื่นบนเชือกเดินทางด้วยอัตราเร็ว 340 เมตรต่อวินาที และมีความถี่ 170 เฮิรตซ์ จงหาความยาวคลื่น',
+    given: [{ key: 'v', value: 340, name: 'อัตราเร็วคลื่น' }, { key: 'freq', value: 170 }],
+    unknown: 'lam', answer: 2,
+    hints: ['มีอัตราเร็วคลื่นกับความถี่ และถามความยาวคลื่น', 'ไม่ได้พูดถึงแสงหรือเสียงในอากาศ', 'บทที่ตรงคือบทที่ 9 คลื่น (ม.5 เล่ม 3)'] },
+  { id: 'double-slit', topic: 'ch10', title: 'แถบสว่างบนฉาก',
+    text: 'แสงผ่านสลิตคู่ที่ห่างกัน 2 เมตร แล้วไปตกบนฉากห่าง 100 เมตร แถบสว่างอันดับแรกอยู่ห่างจากแนวกลาง 4 เมตร จงหาความยาวคลื่น',
+    given: [{ key: 'y', value: 4 }, { key: 'L', value: 100 }, { key: 'slit', value: 2 }],
+    unknown: 'lam', answer: 0.08,
+    hints: ['มีตำแหน่งแถบ ระยะถึงฉาก และระยะระหว่างสลิต', 'ถามความยาวคลื่นของแสงที่แทรกสอด', 'บทที่ตรงคือบทที่ 10 แสงเชิงคลื่น (ม.5 เล่ม 3)'] },
+  { id: 'glass-block', topic: 'ch11', title: 'แสงในแท่งแก้ว',
+    text: 'แสงในสุญญากาศมีอัตราเร็ว 3×10⁸ เมตรต่อวินาที แท่งแก้วใสก้อนหนึ่งมีดัชนีหักเห 1.5 จงหาอัตราเร็วแสงในแท่งแก้ว',
+    given: [{ key: 'c', value: 300000000, show: '3×10⁸' }, { key: 'n', value: 1.5 }],
+    unknown: 'v', answer: 200000000,
+    hints: ['มีอัตราเร็วในสุญญากาศกับดัชนีหักเห และถามอัตราเร็วในตัวกลาง', 'ไม่ได้ให้มุมตกกระทบ', 'บทที่ตรงคือบทที่ 11 แสงเชิงรังสี (ม.5 เล่ม 3)'] },
+  { id: 'tuning-fork', topic: 'ch12', title: 'ส้อมเสียง',
+    text: 'เสียงจากส้อมเสียงเดินทางในอากาศด้วยอัตราเร็ว 340 เมตรต่อวินาที และมีความยาวคลื่น 0.5 เมตร จงหาความถี่',
+    given: [{ key: 'vs', value: 340 }, { key: 'lam', value: 0.5 }],
+    unknown: 'freq', answer: 680,
+    hints: ['มีอัตราเร็วเสียงกับความยาวคลื่น และถามความถี่', 'เป็นคลื่นเสียง ไม่ใช่คลื่นบนเชือก', 'บทที่ตรงคือบทที่ 12 เสียง (ม.5 เล่ม 4)'] },
+  { id: 'parallel-plates', topic: 'ch13', title: 'แผ่นโลหะคู่ขนาน',
+    text: 'แผ่นโลหะคู่ขนานสองแผ่นห่างกัน 0.5 เมตร มีความต่างศักย์ 120 โวลต์ และสนามระหว่างแผ่นสม่ำเสมอ จงหาขนาดสนามไฟฟ้า',
+    given: [{ key: 'V', value: 120 }, { key: 'd', value: 0.5, name: 'ระยะห่างระหว่างแผ่น' }],
+    unknown: 'EF', answer: 240,
+    hints: ['มีความต่างศักย์กับระยะห่าง และถามสนามไฟฟ้า', 'ไม่ได้ให้กระแสหรือความต้านทาน', 'บทที่ตรงคือบทที่ 13 ไฟฟ้าสถิต (ม.5 เล่ม 4)'] },
+  { id: 'wire-magnet', topic: 'ch15', title: 'ลวดในสนามแม่เหล็ก',
+    text: 'ลวดตรงยาว 1.5 เมตรมีกระแส 4 แอมแปร์ และตั้งฉากกับสนามแม่เหล็กสม่ำเสมอ แรงที่กระทำต่อลวดเท่ากับ 12 นิวตัน จงหาความหนาแน่นฟลักซ์แม่เหล็ก',
+    given: [{ key: 'F', value: 12, name: 'แรงแม่เหล็ก' }, { key: 'I', value: 4 }, { key: 'ell', value: 1.5, name: 'ความยาวลวด' }],
+    unknown: 'B', answer: 2,
+    hints: ['มีแรง กระแส และความยาวลวด และถามสนามแม่เหล็ก', 'ลวดตั้งฉากกับสนาม', 'บทที่ตรงคือบทที่ 15 แม่เหล็กและไฟฟ้า (ม.6 เล่ม 5)'] },
+  { id: 'warm-water', topic: 'ch16', title: 'ทำน้ำให้อุ่น',
+    text: 'น้ำ 2 กิโลกรัมมีความร้อนจำเพาะ 400 จูลต่อกิโลกรัมต่อองศาเซลเซียส ได้รับความร้อน 2400 จูลโดยยังไม่เดือด จงหาอุณหภูมิที่เพิ่มขึ้น',
+    given: [{ key: 'Qh', value: 2400 }, { key: 'm', value: 2 }, { key: 'cSp', value: 400 }],
+    unknown: 'dT', answer: 3,
+    hints: ['มีความร้อน มวล และความร้อนจำเพาะ และถามผลต่างอุณหภูมิ', 'น้ำยังไม่เปลี่ยนสถานะ', 'บทที่ตรงคือบทที่ 16 ความร้อนและแก๊ส (ม.6 เล่ม 5)'] },
+  { id: 'tank-depth', topic: 'ch17', title: 'ความดันในถังน้ำ',
+    text: 'ของเหลวความหนาแน่น 1000 กิโลกรัมต่อลูกบาศก์เมตรอยู่ในถังนิ่ง ความเร่งโน้มถ่วง 10 เมตรต่อวินาทีกำลังสอง จุดหนึ่งมีความดันเกจ 5000 ปาสกาล จงหาความลึกของจุดนั้น',
+    given: [{ key: 'Pf', value: 5000 }, { key: 'rho', value: 1000 }, { key: 'g', value: 10 }],
+    unknown: 'h', answer: 0.5,
+    hints: ['มีความดัน ความหนาแน่น และความเร่งโน้มถ่วง และถามความลึก', 'ของเหลวอยู่กับที่', 'บทที่ตรงคือบทที่ 17 ของแข็งและของไหล (ม.6 เล่ม 5)'] },
+  { id: 'radio-wave', topic: 'ch18', title: 'คลื่นวิทยุ',
+    text: 'คลื่นวิทยุในสุญญากาศมีความยาวคลื่น 0.5 เมตร และเดินทางด้วยอัตราเร็วแสง 3×10⁸ เมตรต่อวินาที จงหาความถี่',
+    given: [{ key: 'c', value: 300000000, show: '3×10⁸' }, { key: 'lam', value: 0.5 }],
+    unknown: 'freq', answer: 600000000,
+    hints: ['มีอัตราเร็วแสงกับความยาวคลื่น และถามความถี่', 'เป็นคลื่นแม่เหล็กไฟฟ้าในสุญญากาศ', 'บทที่ตรงคือบทที่ 18 คลื่นแม่เหล็กไฟฟ้า (ม.6 เล่ม 6)'] },
+  { id: 'one-photon', topic: 'ch19', title: 'โฟตอนตัวเดียว',
+    text: 'โฟตอนตัวหนึ่งมีพลังงาน 2×10⁻³ จูล ค่าคงตัวพลังค์ในโจทย์นี้ใช้ 4×10⁻⁶ จูล·วินาที จงหาความถี่ของโฟตอน',
+    given: [{ key: 'En', value: 2e-3, show: '2×10⁻³' }, { key: 'hpk', value: 4e-6, show: '4×10⁻⁶' }],
+    unknown: 'freq', answer: 500,
+    hints: ['มีพลังงานกับค่าคงตัวพลังค์ และถามความถี่', 'เป็นพลังงานของโฟตอนหนึ่งตัว', 'บทที่ตรงคือบทที่ 19 ฟิสิกส์อะตอม (ม.6 เล่ม 6)'] },
+  { id: 'sample-activity', topic: 'ch20', title: 'ตัวอย่างสารกัมมันตรังสี',
+    text: 'สารกัมมันตรังสีตัวอย่างหนึ่งมีกัมมันตภาพ 50 เบ็กเคอเรล และค่าคงตัวการสลาย 0.25 ต่อวินาที จงหาจำนวนนิวเคลียสที่ยังไม่สลาย',
+    given: [{ key: 'Aact', value: 50 }, { key: 'decay', value: 0.25 }],
+    unknown: 'Nn', answer: 200,
+    hints: ['มีกัมมันตภาพกับค่าคงตัวการสลาย และถามจำนวนนิวเคลียส', 'ไม่ได้ให้ครึ่งชีวิตหรือเวลาที่ผ่านไป', 'บทที่ตรงคือบทที่ 20 ฟิสิกส์นิวเคลียร์และฟิสิกส์อนุภาค (ม.6 เล่ม 6)'] }
 ];
 
-var STEP_LABELS = ['วิเคราะห์เรื่อง', 'เลือกสูตร', 'จัดรูปสมการ', 'คำตอบ'];
+var STEP_LABELS = ['กรอกโจทย์', 'หัวข้อ', 'ตัวแปรและสูตร', 'จัดรูปและคำตอบ'];
 var STEP_HELP = [
-  'ดูปริมาณที่ให้กับสิ่งที่ถาม แล้วเลือกหน่วยการเรียนให้ตรง',
-  'ในเรื่องที่เลือก มีสูตรให้ครบ เลือกสูตรที่หาสิ่งที่ถามได้จากข้อมูลที่มี',
-  'ย้ายข้างเองจนตัวที่ถามอยู่ลำพัง ทุกครั้งที่ย้าย สมการยังเท่ากับสูตรเดิม',
-  'ตัวเลขนี้คำนวณจากสมการที่จัดไว้ ไม่ได้ดึงจากเฉลยล่วงหน้า'
+  'พิมพ์โจทย์ทางซ้าย ระบบอ่านข้อความแล้วชี้บทให้ทันที',
+  'ตรวจบทที่ระบบวิเคราะห์จากโจทย์ เปลี่ยนได้ถ้าไม่ตรง',
+  'ใส่ค่าเอง แล้วคลิกสูตร ถ้าโจทย์ยากระบบอาจแนะนำหลายสูตรทีละขั้น',
+  'ย้ายข้างหรือแทนค่า จากนั้นระบบวิเคราะห์คำตอบ ถ้ายังไม่จบจะพาไปสูตรถัดไป'
 ];
-var SAVE_KEY = 'phys-lab-v2';
+var SAVE_KEY = 'phys-lab-v6';
 
 function clone(x) { return JSON.parse(JSON.stringify(x)); }
 function other(side) { return side === 'left' ? 'right' : 'left'; }
@@ -446,7 +925,10 @@ function topicById(id) { return topics.filter(function (t) { return t.id === id;
 function formulaById(id) { return formulas.filter(function (f) { return f.id === id; })[0]; }
 function knownOf(problem) {
   var o = {};
-  problem.given.forEach(function (g) { o[g.key] = g.value; });
+  problem.given.forEach(function (g) {
+    if (g.blank || g.value == null || !isFinite(Number(g.value))) return;
+    o[g.key] = Number(g.value);
+  });
   return o;
 }
 function qtyName(key, problem) {
@@ -466,10 +948,21 @@ function formatNum(n) {
 function formatConst(v) {
   if (Math.abs(v - 0.5) < 1e-9) return '½';
   if (Math.abs(v - 0.25) < 1e-9) return '¼';
+  var fourPi2 = 4 * Math.PI * Math.PI;
+  var twoPi = 2 * Math.PI;
+  if (Math.abs(v - fourPi2) / fourPi2 < 1e-10) return '4π²';
+  if (Math.abs(v - twoPi) / twoPi < 1e-10) return '2π';
   return formatNum(v);
 }
-function factorText(f, map) {
+function factorText(f, map, labels) {
   if (f.type === 'const') return formatConst(f.value);
+  if (labels && labels[f.name]) {
+    var shown = labels[f.name];
+    if (f.power === 2) return shown + '²';
+    if (f.power === 3) return shown + '³';
+    if (f.power !== 1) return shown + '^' + f.power;
+    return shown;
+  }
   var has = map && Object.prototype.hasOwnProperty.call(map, f.name);
   var base = has ? formatNum(map[f.name]) : SYM[f.name].sym;
   if (f.power === 2) return base + '²';
@@ -670,31 +1163,160 @@ function evalSide(side, values) {
   }
   return result;
 }
-function sideText(side, map) {
+function labelMap(problem) {
+  if (!problem) return null;
+  var labels = null;
+  problem.given.forEach(function (g) {
+    if (!g.show) return;
+    if (!labels) labels = {};
+    labels[g.key] = g.show;
+  });
+  return labels;
+}
+function sideText(side, map, labels) {
   var num = side.terms.map(function (t, i) {
-    var body = t.factors.map(function (f) { return factorText(f, map); }).join('·') || '1';
+    var body = t.factors.map(function (f) { return factorText(f, map, labels); }).join('·') || '1';
     if (i === 0) return (t.sign < 0 ? '−' : '') + body;
     return (t.sign < 0 ? ' − ' : ' + ') + body;
   }).join('');
   if (side.denom.length) {
-    var den = side.denom.map(function (f) { return factorText(f, map); }).join('·');
+    var den = side.denom.map(function (f) { return factorText(f, map, labels); }).join('·');
     num = (side.terms.length > 1 ? '(' + num + ')' : num) + ' / ' + (side.denom.length > 1 ? '(' + den + ')' : den);
   }
   if (side.sqrt) num = '√(' + num + ')';
   return num;
 }
-function eqText(eq, map) { return sideText(eq.left, map) + ' = ' + sideText(eq.right, map); }
+function eqText(eq, map, labels) { return sideText(eq.left, map, labels) + ' = ' + sideText(eq.right, map, labels); }
 function canSolve(formula, problem) {
+  if (!formula || !problem || !problem.unknown || !SYM[problem.unknown]) {
+    return { ok: false, message: 'ยังไม่รู้ว่าต้องหาอะไร' };
+  }
   var known = knownOf(problem);
   if (formula.vars.indexOf(problem.unknown) === -1) {
     return { ok: false, message: 'สูตร ' + formula.classic + ' ไม่มี' + qtyName(problem.unknown, problem) + ' ซึ่งเป็นสิ่งที่โจทย์ถาม' };
   }
   var missing = formula.vars.filter(function (v) { return v !== problem.unknown && !Object.prototype.hasOwnProperty.call(known, v); });
   if (missing.length) {
-    var names = missing.map(function (v) { return qtyName(v, problem) + ' (' + SYM[v].sym + ')'; }).join(', ');
+    var names = missing.map(function (v) { return qtyName(v, problem) + ' (' + (SYM[v] ? SYM[v].sym : v) + ')'; }).join(', ');
     return { ok: false, message: 'สูตร ' + formula.classic + ' ต้องรู้' + names + ' ด้วย แต่โจทย์ข้อนี้ไม่ได้ให้' };
   }
   return { ok: true, message: '' };
+}
+function withUnknown(problem, unknown) {
+  return { given: problem.given || [], unknown: unknown };
+}
+function formulaPool(topicId, allowSoft) {
+  return formulas.filter(function (f) {
+    if (topicId && f.topic !== topicId) return false;
+    if (!allowSoft && f.soft) return false;
+    return true;
+  });
+}
+function shortestSolvers(problem, pool) {
+  return pool.filter(function (f) { return canSolve(f, problem).ok; })
+    .sort(function (a, b) { return a.vars.length - b.vars.length || a.classic.length - b.classic.length; });
+}
+function findPlan(problem, topicId) {
+  if (!problem || !problem.unknown || !SYM[problem.unknown]) return [];
+  var goal = problem.unknown;
+  var pools = [formulaPool(topicId, false), formulaPool(topicId, true), formulaPool(null, false)];
+  var i, pool, singles, plan;
+  for (i = 0; i < pools.length; i++) {
+    pool = pools[i];
+    singles = shortestSolvers(problem, pool);
+    if (singles.length) {
+      return [{ formulaId: singles[0].id, find: goal, classic: singles[0].classic }];
+    }
+  }
+  for (i = 0; i < pools.length; i++) {
+    pool = pools[i];
+    plan = findTwoStepPlan(problem, goal, pool);
+    if (plan) return plan;
+  }
+  for (i = 0; i < pools.length; i++) {
+    pool = pools[i];
+    plan = findThreeStepPlan(problem, goal, pool);
+    if (plan) return plan;
+  }
+  return [];
+}
+function findTwoStepPlan(problem, goal, pool) {
+  var known = knownOf(problem);
+  var best = null;
+  pool.forEach(function (f1) {
+    f1.vars.forEach(function (mid) {
+      if (mid === goal || Object.prototype.hasOwnProperty.call(known, mid) || !SYM[mid]) return;
+      if (!canSolve(f1, withUnknown(problem, mid)).ok) return;
+      var bridge = { given: (problem.given || []).concat([{ key: mid, value: 1 }]), unknown: goal };
+      var seconds = shortestSolvers(bridge, pool.filter(function (f2) { return f2.id !== f1.id; }));
+      if (!seconds.length) return;
+      var score = f1.vars.length + seconds[0].vars.length + (f1.soft || seconds[0].soft ? 20 : 0);
+      if (!best || score < best.score) {
+        best = {
+          score: score,
+          steps: [
+            { formulaId: f1.id, find: mid, classic: f1.classic },
+            { formulaId: seconds[0].id, find: goal, classic: seconds[0].classic }
+          ]
+        };
+      }
+    });
+  });
+  return best ? best.steps : null;
+}
+function findThreeStepPlan(problem, goal, pool) {
+  var known = knownOf(problem);
+  var best = null;
+  var limit = 0;
+  pool.forEach(function (f1) {
+    if (limit > 40) return;
+    f1.vars.forEach(function (mid1) {
+      if (limit > 40) return;
+      if (mid1 === goal || Object.prototype.hasOwnProperty.call(known, mid1) || !SYM[mid1]) return;
+      if (!canSolve(f1, withUnknown(problem, mid1)).ok) return;
+      var after1 = { given: (problem.given || []).concat([{ key: mid1, value: 1 }]), unknown: goal };
+      pool.forEach(function (f2) {
+        if (f2.id === f1.id) return;
+        f2.vars.forEach(function (mid2) {
+          if (mid2 === goal || mid2 === mid1 || Object.prototype.hasOwnProperty.call(known, mid2) || !SYM[mid2]) return;
+          limit += 1;
+          if (!canSolve(f2, withUnknown(after1, mid2)).ok) return;
+          var after2 = { given: after1.given.concat([{ key: mid2, value: 1 }]), unknown: goal };
+          var thirds = shortestSolvers(after2, pool.filter(function (f3) { return f3.id !== f1.id && f3.id !== f2.id; }));
+          if (!thirds.length) return;
+          var score = f1.vars.length + f2.vars.length + thirds[0].vars.length + 8;
+          if (!best || score < best.score) {
+            best = {
+              score: score,
+              steps: [
+                { formulaId: f1.id, find: mid1, classic: f1.classic },
+                { formulaId: f2.id, find: mid2, classic: f2.classic },
+                { formulaId: thirds[0].id, find: goal, classic: thirds[0].classic }
+              ]
+            };
+          }
+        });
+      });
+    });
+  });
+  return best ? best.steps : null;
+}
+function goalTarget() {
+  return state.goalUnknown || (state.problem && state.problem.unknown) || null;
+}
+function currentStep() {
+  if (state.plan && state.plan.length && state.planIndex < state.plan.length) return state.plan[state.planIndex];
+  return null;
+}
+function solveTarget() {
+  var step = currentStep();
+  if (step) return step.find;
+  return goalTarget();
+}
+function problemForSolve() {
+  var p = state.problem;
+  if (!p) return null;
+  return withUnknown(p, solveTarget());
 }
 function approxEqual(a, b) { return Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(b)); }
 function termLabel(t) {
@@ -736,94 +1358,483 @@ function nextHint(eq, unknown) {
   return 'ย้ายสิ่งที่ไม่ใช่ ' + sym + ' ออกไปทีละตัว จนมันอยู่ลำพัง';
 }
 
+var NUM_SRC = '(?:π²|π\\^2|\\d+(?:\\.\\d+)?(?:\\s*[×x]\\s*10(?:\\^\\s*-?\\d+|[⁻−]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+))?)';
+var EXTRACT_RULES = [
+  { key: 'g', src: 'ความเร่งโน้มถ่วง(?:เท่ากับ)?\\s*NUM\\s*เมตรต่อวินาทีกำลังสอง' },
+  { key: 'a', name: 'ความเร่งสู่ศูนย์กลาง', src: 'ความเร่งสู่ศูนย์กลาง\\s*NUM\\s*เมตรต่อวินาทีกำลังสอง' },
+  { key: 'a', src: 'ความเร่ง(?:คงที่)?\\s*NUM\\s*เมตรต่อวินาทีกำลังสอง' },
+  { key: 'u', src: 'ความเร็วต้น\\s*NUM\\s*เมตรต่อวินาที' },
+  { key: 'c', src: '(?:สุญญากาศมีอัตราเร็ว|อัตราเร็วแสง)\\s*NUM\\s*เมตรต่อวินาที' },
+  { key: 'v', src: '(?:ความเร็ว|อัตราเร็ว)(?:คงตัว|ปลาย)?\\s*NUM\\s*เมตรต่อวินาที' },
+  { key: 'Tper', src: 'คาบ\\s*NUM\\s*วินาที' },
+  { key: 't', src: '(?:เป็นเวลา|ภายในเวลา|ในเวลา)\\s*NUM\\s*วินาที' },
+  { key: 'freq', src: 'ความถี่\\s*NUM\\s*เฮิรตซ์' },
+  { key: 'lam', src: 'ความยาวคลื่น\\s*NUM\\s*เมตร' },
+  { key: 'slit', src: 'สลิตคู่ที่ห่างกัน\\s*NUM\\s*เมตร' },
+  { key: 'L', src: 'ฉากห่าง\\s*NUM\\s*เมตร' },
+  { key: 'y', src: 'ห่างจากแนวกลาง\\s*NUM\\s*เมตร' },
+  { key: 'd', name: 'ระยะห่างระหว่างแผ่น', src: 'ห่างกัน\\s*NUM\\s*เมตร' },
+  { key: 'ell', name: 'ความยาวลวด', src: 'ลวดตรงยาว\\s*NUM\\s*เมตร' },
+  { key: 's', src: 'การกระจัด\\s*NUM\\s*เมตร' },
+  { key: 'hpk', src: 'ค่าคงตัวพลังค์(?:ในโจทย์นี้ใช้)?\\s*NUM\\s*จูล' },
+  { key: 'cSp', src: 'ความร้อนจำเพาะ\\s*NUM' },
+  { key: 'Ek', src: 'พลังงานจลน์\\s*NUM\\s*จูล' },
+  { key: 'Ep', src: 'พลังงานศักย์(?:โน้มถ่วง)?\\s*NUM\\s*จูล' },
+  { key: 'En', src: 'พลังงาน\\s*NUM\\s*จูล' },
+  { key: 'Qh', src: 'ความร้อน(?!จำเพาะ)\\s*NUM\\s*จูล' },
+  { key: 'W', src: 'ทำงาน\\s*NUM\\s*จูล' },
+  { key: 'P', src: 'กำลัง(?:คงที่)?\\s*NUM\\s*วัตต์' },
+  { key: 'tau', src: 'ทอร์ก\\s*NUM\\s*นิวตัน' },
+  { key: 'f', src: 'แรงเสียดทาน\\s*NUM\\s*นิวตัน' },
+  { key: 'w', src: 'น้ำหนัก\\s*NUM\\s*นิวตัน' },
+  { key: 'F', name: 'แรง', src: 'แรง(?:ลัพธ์|เฉลี่ย|ที่กระทำต่อลวดเท่ากับ)?\\s*NUM\\s*นิวตัน(?!·)' },
+  { key: 'rho', src: 'ความหนาแน่น\\s*NUM\\s*กิโลกรัม' },
+  { key: 'm', src: '(?:มวล|น้ำ)\\s*NUM\\s*กิโลกรัม(?!ต่อ)' },
+  { key: 'p', src: 'มีโมเมนตัม\\s*NUM' },
+  { key: 'Pf', src: 'ความดัน(?:เกจ)?\\s*NUM\\s*ปาสกาล' },
+  { key: 'mu', src: 'สัมประสิทธิ์(?:แรงเสียดทาน)?(?:เท่ากับ)?\\s*NUM' },
+  { key: 'n', src: 'ดัชนีหักเห\\s*NUM' },
+  { key: 'R', src: 'ความต้านทาน\\s*NUM\\s*โอห์ม' },
+  { key: 'I', src: 'กระแส(?:ไฟฟ้า)?(?:ไหลผ่าน)?\\s*NUM\\s*แอมแปร์' },
+  { key: 'V', src: 'ความต่างศักย์\\s*NUM\\s*โวลต์' },
+  { key: 'Aact', src: 'กัมมันตภาพ\\s*NUM' },
+  { key: 'decay', src: 'ค่าคงตัวการสลาย\\s*NUM' }
+];
+var ASK_RULES = [
+  ['EF', /สนามไฟฟ้า/],
+  ['B', /ความหนาแน่นฟลักซ์แม่เหล็ก|สนามแม่เหล็ก/],
+  ['dT', /อุณหภูมิที่เพิ่มขึ้น|อุณหภูมิที่เปลี่ยน|ผลต่างอุณหภูมิ/],
+  ['dp', /การเปลี่ยนแปลงโมเมนตัม|การเปลี่ยนโมเมนตัม/],
+  ['Nn', /จำนวนนิวเคลียส/],
+  ['Aact', /กัมมันตภาพ/],
+  ['decay', /ค่าคงตัวการสลาย/],
+  ['hpk', /ค่าคงตัวพลังค์|พลังค์/],
+  ['cSp', /ความร้อนจำเพาะ/],
+  ['Qh', /ความร้อน/],
+  ['Ek', /พลังงานจลน์/],
+  ['Ep', /พลังงานศักย์/],
+  ['En', /พลังงานของโฟตอน|พลังงานโฟตอน|พลังงาน/],
+  ['Pe', /กำลังไฟฟ้า/],
+  ['P', /กำลัง/],
+  ['W', /งาน/],
+  ['tau', /ทอร์ก|ทอร์ค/],
+  ['Pf', /ความดัน/],
+  ['n', /ดัชนีหักเห/],
+  ['lam', /ความยาวคลื่น/],
+  ['freq', /ความถี่/],
+  ['Tper', /คาบ/],
+  ['g', /ความเร่งโน้มถ่วง/],
+  ['ell', /ความยาว/],
+  ['r', /รัศมี/],
+  ['d', /ระยะตั้งฉาก/],
+  ['mu', /สัมประสิทธิ์/],
+  ['f', /แรงเสียดทาน/],
+  ['N', /แรงตั้งฉาก/],
+  ['w', /น้ำหนัก/],
+  ['F', /แรง/],
+  ['h', /ความสูง|ความลึก/],
+  ['s', /การกระจัด|ระยะทาง/],
+  ['a', /ความเร่ง/],
+  ['m', /มวล/],
+  ['t', /เวลา/],
+  ['R', /ความต้านทาน/],
+  ['I', /กระแส/],
+  ['rho', /ความหนาแน่น/],
+  ['vs', /อัตราเร็วเสียง/],
+  ['v', /ความเร็ว|อัตราเร็ว/],
+  ['p', /โมเมนตัม/]
+];
+var TOPIC_HINTS = {
+  ch1: { strong: ['เลขนัยสำคัญ', 'หน่วยเอสไอ', 'หน่วย SI', 'กระบวนการทางวิทยาศาสตร์'], weak: ['การวัด', 'ความคลาดเคลื่อน'] },
+  ch2: { strong: ['การเคลื่อนที่แนวตรง', 'ความเร็วต้น', 'ความเร่งคงที่', 'ความเร่งคงตัว'], weak: ['การกระจัด', 'ระยะทาง', 'ความเร็ว', 'ความเร่ง', 'เคลื่อนที่'] },
+  ch3: { strong: ['แรงลัพธ์', 'แรงเสียดทาน', 'แรงตั้งฉาก', 'กฎของนิวตัน', 'น้ำหนัก'], weak: ['ไม่มีแรงเสียดทาน'] },
+  ch4: { strong: ['ทอร์ก', 'สมดุลกล', 'แขนโมเมนต์'], weak: ['บานพับ'] },
+  ch5: { strong: ['พลังงานจลน์', 'พลังงานศักย์', 'งานและพลังงาน'], weak: ['กำลัง', 'ทำงาน'] },
+  ch6: { strong: ['โมเมนตัม', 'แรงดล', 'การชน'], weak: [] },
+  ch7: { strong: ['วงกลม', 'สู่ศูนย์กลาง', 'การเคลื่อนที่แนวโค้ง'], weak: ['รัศมี', 'ทางโค้ง'] },
+  ch8: { strong: ['ลูกตุ้ม', 'ฮาร์มอนิก', 'สปริง'], weak: ['คาบ'] },
+  ch9: { strong: ['คลื่นบนเชือก', 'เชือก'], weak: ['คลื่นกล'] },
+  ch10: { strong: ['สลิต', 'แถบสว่าง', 'การเลี้ยวเบน', 'เกรตติง'], weak: ['การแทรกสอด'] },
+  ch11: { strong: ['ดัชนีหักเห', 'หักเห', 'เลนส์'], weak: ['การสะท้อน'] },
+  ch12: { strong: ['ส้อมเสียง', 'คลื่นเสียง', 'เสียง'], weak: [] },
+  ch13: { strong: ['สนามไฟฟ้า', 'ไฟฟ้าสถิต', 'คูลอมบ์', 'แผ่นโลหะ', 'ประจุ'], weak: [] },
+  ch14: { strong: ['โอห์ม', 'ความต้านทาน', 'ไฟฟ้ากระแส', 'วงจร'], weak: ['ตัวต้านทาน'] },
+  ch15: { strong: ['สนามแม่เหล็ก', 'ฟลักซ์แม่เหล็ก', 'แม่เหล็ก'], weak: ['ลวดตรง'] },
+  ch16: { strong: ['ความร้อนจำเพาะ', 'ความร้อนแฝง'], weak: ['อุณหภูมิ', 'ได้รับความร้อน'] },
+  ch17: { strong: ['ความดัน', 'ของเหลว', 'พาสคัล'], weak: ['ความหนาแน่น', 'ความลึก'] },
+  ch18: { strong: ['คลื่นวิทยุ', 'คลื่นแม่เหล็กไฟฟ้า', 'อัตราเร็วแสง'], weak: ['สเปกตรัม'] },
+  ch19: { strong: ['โฟตอน', 'พลังค์', 'โฟโตอิเล็กทริก'], weak: [] },
+  ch20: { strong: ['กัมมันต', 'นิวเคลียส', 'เบ็กเคอเรล'], weak: ['สลาย'] }
+};
+
+function thaiDigits(s) {
+  return String(s).replace(/[๐-๙]/g, function (ch) { return '๐๑๒๓๔๕๖๗๘๙'.indexOf(ch); });
+}
+function parseNumToken(raw) {
+  var t = String(raw).replace(/\s+/g, '');
+  if (t === 'π²' || t === 'π^2') return { value: Math.PI * Math.PI, show: 'π²' };
+  var sup = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9' };
+  var sci = t.match(/^(\d+(?:\.\d+)?)[×x]10(?:\^(-?\d+)|([⁻−]?)([⁰¹²³⁴⁵⁶⁷⁸⁹]+))$/);
+  if (sci) {
+    var exp;
+    if (sci[2] != null && sci[2] !== '') exp = Number(sci[2]);
+    else {
+      exp = Number(sci[4].split('').map(function (c) { return sup[c] || c; }).join(''));
+      if (sci[3]) exp = -exp;
+    }
+    return { value: Number(sci[1]) * Math.pow(10, exp), show: t.replace(/x/g, '×') };
+  }
+  return { value: Number(t), show: null };
+}
+function extractHits(text) {
+  var hits = [];
+  EXTRACT_RULES.forEach(function (rule, pri) {
+    var re = new RegExp(rule.src.replace(/NUM/g, NUM_SRC), 'g');
+    var m;
+    while ((m = re.exec(text))) {
+      var raw = m[0].match(new RegExp(NUM_SRC));
+      if (!raw) continue;
+      hits.push({ pri: pri, index: m.index, end: m.index + m[0].length, key: rule.key, name: rule.name || null, raw: raw[0] });
+    }
+  });
+  hits.sort(function (a, b) { return a.index - b.index || a.pri - b.pri || (b.end - a.end); });
+  var kept = [];
+  hits.forEach(function (h) {
+    if (kept.some(function (u) { return !(h.end <= u.index || h.index >= u.end); })) return;
+    kept.push(h);
+  });
+  return kept;
+}
+function askKey(text) {
+  var at = text.lastIndexOf('จงหา');
+  if (at < 0) at = text.lastIndexOf('จง');
+  var clause = at >= 0 ? text.slice(at) : text;
+  for (var i = 0; i < ASK_RULES.length; i++) {
+    if (ASK_RULES[i][1].test(clause)) return ASK_RULES[i][0];
+  }
+  return null;
+}
+function hintScore(text, topicId) {
+  var pack = TOPIC_HINTS[topicId] || { strong: [], weak: [] };
+  var score = 0;
+  (pack.strong || []).forEach(function (w) { if (w && text.indexOf(w) !== -1) score += 4; });
+  (pack.weak || []).forEach(function (w) { if (w && text.indexOf(w) !== -1) score += 1; });
+  return score;
+}
+var MENTION_RULES = [
+  { key: 'hpk', phrases: ['ค่าคงตัวพลังค์', 'พลังค์'] },
+  { key: 'cSp', phrases: ['ความร้อนจำเพาะ'] },
+  { key: 'Ek', phrases: ['พลังงานจลน์'] },
+  { key: 'Ep', phrases: ['พลังงานศักย์โน้มถ่วง', 'พลังงานศักย์'] },
+  { key: 'Qh', phrases: ['ความร้อน'] },
+  { key: 'En', phrases: ['พลังงาน'] },
+  { key: 'Aact', phrases: ['กัมมันตภาพ'] },
+  { key: 'decay', phrases: ['ค่าคงตัวการสลาย'] },
+  { key: 'Nn', phrases: ['จำนวนนิวเคลียส', 'นิวเคลียส'] },
+  { key: 'EF', phrases: ['สนามไฟฟ้า'] },
+  { key: 'B', phrases: ['ความหนาแน่นฟลักซ์แม่เหล็ก', 'สนามแม่เหล็ก'] },
+  { key: 'dT', phrases: ['อุณหภูมิที่เพิ่มขึ้น', 'ผลต่างอุณหภูมิ', 'อุณหภูมิ'] },
+  { key: 'dp', phrases: ['การเปลี่ยนแปลงโมเมนตัม', 'การเปลี่ยนโมเมนตัม'] },
+  { key: 'lam', phrases: ['ความยาวคลื่น'] },
+  { key: 'freq', phrases: ['ความถี่'] },
+  { key: 'Tper', phrases: ['คาบ'] },
+  { key: 'g', phrases: ['ความเร่งโน้มถ่วง'] },
+  { key: 'u', phrases: ['ความเร็วต้น', 'ความเร็วเริ่มต้น'] },
+  { key: 'a', phrases: ['ความเร่งสู่ศูนย์กลาง', 'ความเร่ง'] },
+  { key: 'vs', phrases: ['อัตราเร็วเสียง'] },
+  { key: 'v', phrases: ['ความเร็วปลาย', 'ความเร็ว', 'อัตราเร็ว'] },
+  { key: 's', phrases: ['การกระจัด', 'ระยะทาง'] },
+  { key: 't', phrases: ['เวลา'] },
+  { key: 'tau', phrases: ['ทอร์ก', 'ทอร์ค'] },
+  { key: 'mu', phrases: ['สัมประสิทธิ์แรงเสียดทาน', 'สัมประสิทธิ์'] },
+  { key: 'f', phrases: ['แรงเสียดทาน'] },
+  { key: 'N', phrases: ['แรงตั้งฉาก'] },
+  { key: 'w', phrases: ['น้ำหนัก'] },
+  { key: 'F', phrases: ['แรงลัพธ์', 'แรง'] },
+  { key: 'm', phrases: ['มวล'] },
+  { key: 'W', phrases: ['งาน'] },
+  { key: 'Pe', phrases: ['กำลังไฟฟ้า'] },
+  { key: 'Pf', phrases: ['ความดัน'] },
+  { key: 'P', phrases: ['กำลัง'] },
+  { key: 'p', phrases: ['โมเมนตัม'] },
+  { key: 'ell', phrases: ['ความยาวเชือก', 'ความยาวลวด', 'ความยาว'] },
+  { key: 'r', phrases: ['รัศมี'] },
+  { key: 'd', phrases: ['ระยะตั้งฉาก'] },
+  { key: 'h', phrases: ['ความสูง', 'ความลึก'] },
+  { key: 'n', phrases: ['ดัชนีหักเห'] },
+  { key: 'c', phrases: ['อัตราเร็วแสง'] },
+  { key: 'R', phrases: ['ความต้านทาน'] },
+  { key: 'I', phrases: ['กระแสไฟฟ้า', 'กระแส'] },
+  { key: 'V', phrases: ['ความต่างศักย์'] },
+  { key: 'rho', phrases: ['ความหนาแน่น'] },
+  { key: 'k', phrases: ['ค่าคงตัวสปริง'] },
+  { key: 'x', phrases: ['การยืด', 'ระยะยืด'] },
+  { key: 'slit', phrases: ['ระยะระหว่างสลิต', 'สลิต'] },
+  { key: 'L', phrases: ['ระยะฉาก', 'ฉากห่าง'] },
+  { key: 'y', phrases: ['แนวกลาง'] }
+];
+function mentionHits(text) {
+  var found = [];
+  MENTION_RULES.forEach(function (rule) {
+    rule.phrases.forEach(function (phrase) {
+      var from = 0;
+      while (from < text.length) {
+        var at = text.indexOf(phrase, from);
+        if (at < 0) break;
+        var before = text.slice(Math.max(0, at - 3), at);
+        if (before.indexOf('ไม่') !== -1) { from = at + phrase.length; continue; }
+        if (phrase === 'กำลัง' && text.slice(at, at + 12) === 'กำลังเคลื่อน') { from = at + phrase.length; continue; }
+        found.push({ key: rule.key, name: phrase, index: at, end: at + phrase.length });
+        from = at + phrase.length;
+      }
+    });
+  });
+  found.sort(function (a, b) { return (b.end - b.index) - (a.end - a.index) || a.index - b.index; });
+  var kept = [];
+  found.forEach(function (h) {
+    if (kept.some(function (u) { return !(h.end <= u.index || h.index >= u.end); })) return;
+    if (kept.some(function (u) { return u.key === h.key; })) return;
+    kept.push(h);
+  });
+  return kept;
+}
+function formulaFit(topicId, shadow) {
+  var best = 0;
+  formulas.forEach(function (f) {
+    if (f.topic !== topicId || !shadow.unknown) return;
+    if (canSolve(f, shadow).ok) { best = Math.max(best, 8); return; }
+    if (f.vars.indexOf(shadow.unknown) === -1) return;
+    var known = {};
+    shadow.given.forEach(function (g) { known[g.key] = true; });
+    var need = f.vars.filter(function (v) { return v !== shadow.unknown; });
+    var hit = need.filter(function (v) { return known[v]; }).length;
+    if (hit > 0) best = Math.max(best, Math.min(4, hit + 1));
+  });
+  return best;
+}
+function blankGiven(key, name) {
+  var item = { key: key, value: null, blank: true };
+  if (name) item.name = name;
+  return item;
+}
+function analyzePrompt(text) {
+  var clean = thaiDigits(text).replace(/\s+/g, ' ').trim();
+  if (clean.length < 8) return { ok: false, message: 'พิมพ์โจทย์ให้ยาวกว่านี้ แล้วลงท้ายด้วยสิ่งที่ต้องหา' };
+  var hits = extractHits(clean);
+  var given = [];
+  hits.forEach(function (h) {
+    if (given.some(function (g) { return g.key === h.key; })) return;
+    var item = blankGiven(h.key, h.name);
+    var parsed = parseNumToken(h.raw);
+    if (isFinite(parsed.value)) {
+      item.found = parsed.value;
+      if (parsed.show) item.foundShow = parsed.show;
+    }
+    given.push(item);
+  });
+  mentionHits(clean).forEach(function (h) {
+    if (given.some(function (g) { return g.key === h.key; })) return;
+    given.push(blankGiven(h.key, h.name));
+  });
+  if (/หยุดนิ่ง/.test(clean) && !given.some(function (g) { return g.key === 'u'; })) {
+    var u0 = blankGiven('u', 'ความเร็วต้น');
+    u0.found = 0;
+    u0.foundShow = '0';
+    given.push(u0);
+  }
+  if (!/แผ่น/.test(clean)) given = given.filter(function (g) { return g.key !== 'd' || /ระยะตั้งฉาก/.test(clean); });
+  var unknown = askKey(clean);
+  if (/เสียง|ส้อม/.test(clean) && !/เชือก|วงกลม/.test(clean)) {
+    given.forEach(function (g) { if (g.key === 'v') g.key = 'vs'; });
+    if (unknown === 'v') unknown = 'vs';
+  }
+  if (unknown) given = given.filter(function (g) { return g.key !== unknown; });
+  var conditions = [];
+  [[/หยุดนิ่ง/, 'เริ่มจากหยุดนิ่ง'], [/ความเร่งคงที่|ความเร่งคงตัว/, 'ความเร่งคงตัว'], [/ไม่มีแรงเสียดทาน/, 'ไม่คิดแรงเสียดทาน'], [/มุมเล็ก/, 'มุมแกว่งเล็ก'], [/สุญญากาศ/, 'อยู่ในสุญญากาศ'], [/ยังไม่เดือด|ไม่เปลี่ยนสถานะ/, 'ยังไม่เปลี่ยนสถานะ'], [/ตั้งฉาก/, 'ทิศตั้งฉาก']].forEach(function (pair) {
+    if (pair[0].test(clean)) conditions.push(pair[1]);
+  });
+  var shadow = { given: given.map(function (g) { return { key: g.key, value: 1 }; }), unknown: unknown };
+  var ranked = topics.map(function (t) {
+    var score = hintScore(clean, t.id);
+    if (clean.indexOf(t.name) !== -1) score += 6;
+    score += formulaFit(t.id, shadow);
+    return { id: t.id, score: score, topic: t };
+  }).filter(function (row) { return row.score > 0; }).sort(function (a, b) { return b.score - a.score; });
+  var bestTopic = ranked.length ? ranked[0].id : null;
+  var bestScore = ranked.length ? ranked[0].score : 0;
+  var second = ranked.length > 1 ? ranked[1].score : 0;
+  var confidence = bestScore <= 0 ? 0 : Math.max(28, Math.min(98, Math.round(42 + bestScore * 7 + Math.max(0, bestScore - second) * 5)));
+  var recommend = null;
+  if (bestTopic && unknown) {
+    var fits = formulas.filter(function (f) { return f.topic === bestTopic && canSolve(f, shadow).ok; });
+    fits.sort(function (a, b) { return a.vars.length - b.vars.length; });
+    recommend = fits[0] || null;
+  }
+  var topic = topicById(bestTopic);
+  var reasons = [
+    topic ? 'วิเคราะห์ได้บทที่ ' + topic.no + ' ' + topic.name + ' (' + topic.grade + ' ' + topic.vol + ') ความมั่นใจประมาณ ' + confidence + '%' : 'ยังจับบทจากข้อความไม่ได้ ลองใส่ปริมาณกับคำว่า จงหา',
+    conditions.length ? 'เงื่อนไขที่เห็น: ' + conditions.join(', ') : 'ยังไม่เห็นเงื่อนไขพิเศษในข้อความ',
+    given.length ? 'ตัวแปรที่ควรใส่ค่า: ' + given.map(function (g) { return SYM[g.key].sym + ' ' + SYM[g.key].name + (g.found != null ? ' (พบ ' + (g.foundShow || g.found) + ' ในโจทย์)' : ''); }).join(', ') : 'ยังไม่เห็นตัวแปรชัด เพิ่มเองในขั้นถัดไป',
+    (unknown ? 'สิ่งที่ถามน่าจะเป็น ' + SYM[unknown].name + ' (' + SYM[unknown].sym + ')' : 'เลือกสิ่งที่ต้องหาเอง') + (recommend ? ' · แนะนำสูตร ' + recommend.classic + ' นักเรียนเป็นคนคลิก' : '')
+  ];
+  return {
+    ok: true,
+    problem: { id: 'custom', title: 'โจทย์ที่พิมพ์', text: clean, given: given, unknown: unknown, answer: null, topic: bestTopic, conditions: conditions },
+    topicId: bestTopic,
+    recommendId: recommend ? recommend.id : null,
+    reasons: reasons,
+    confidence: confidence,
+    ranked: ranked.slice(0, 4).map(function (row) { return { id: row.id, score: row.score }; })
+  };
+}
+
 var state = {
-  index: 0, step: 1, topicId: null, formulaId: null, eq: null,
+  step: 1, prompt: '', problem: null, topicId: null, formulaId: null, recommendId: null, reasons: [], eq: null,
   undo: [], history: [], selected: null, message: null,
   topicTries: 0, formulaTries: 0, hintOn: false, result: null,
-  solved: [], confirmWipe: false
+  solved: [], confirmWipe: false, confidence: 0, ranked: [], clears: 0,
+  goalUnknown: null, plan: [], planIndex: 0, chainLog: []
 };
-var memory = { v: 1, solved: [], active: problems[0].id, drafts: {} };
+var memory = { v: 4, solved: [], session: null, clears: 0 };
 var dragPayload = null;
 var suppressClick = false;
 
-function current() { return problems[state.index]; }
+function current() { return state.problem; }
 function blankWork() {
   state.step = 1;
+  state.prompt = '';
+  state.problem = null;
   state.topicId = null;
   state.formulaId = null;
+  state.recommendId = null;
+  state.reasons = [];
+  state.exampleId = null;
   state.eq = null;
   state.undo = [];
   state.history = [];
   state.selected = null;
   state.message = null;
-  state.topicTries = 0;
-  state.formulaTries = 0;
   state.hintOn = false;
   state.result = null;
   state.confirmWipe = false;
+  state.confidence = 0;
+  state.ranked = [];
+  state.goalUnknown = null;
+  state.plan = [];
+  state.planIndex = 0;
+  state.chainLog = [];
 }
 function snapshot() {
   return {
-    step: state.step, topicId: state.topicId, formulaId: state.formulaId,
+    step: state.step, prompt: state.prompt, problem: state.problem,
+    topicId: state.topicId, formulaId: state.formulaId, recommendId: state.recommendId,
+    reasons: state.reasons, exampleId: state.exampleId || null,
     eq: state.eq, undo: state.undo.slice(-25), history: state.history,
-    topicTries: state.topicTries, formulaTries: state.formulaTries,
-    hintOn: !!state.hintOn, result: state.result, message: state.message
+    hintOn: !!state.hintOn, result: state.result, message: state.message,
+    confidence: state.confidence || 0, ranked: state.ranked || [],
+    goalUnknown: state.goalUnknown || null, plan: state.plan || [], planIndex: state.planIndex || 0,
+    chainLog: state.chainLog || []
   };
 }
 function sanitize(draft) {
   if (!draft || [1, 2, 3, 4].indexOf(draft.step) === -1) return null;
-  var out = {
-    step: draft.step,
-    topicId: draft.topicId || null,
-    formulaId: draft.formulaId || null,
-    eq: draft.eq || null,
-    undo: Array.isArray(draft.undo) ? draft.undo.slice(-25) : [],
-    history: Array.isArray(draft.history) ? draft.history : [],
-    topicTries: Number(draft.topicTries) || 0,
-    formulaTries: Number(draft.formulaTries) || 0,
-    hintOn: !!draft.hintOn,
-    result: draft.result || null,
-    message: draft.message && draft.message.text ? draft.message : null
-  };
-  if (out.step >= 2 && !topicById(out.topicId)) return null;
-  if (out.step >= 3 && (!formulaById(out.formulaId) || !out.eq || !out.eq.left || !out.eq.right)) return null;
-  if (out.step === 4 && (!out.result || !out.result.valueText)) out.step = 3;
-  return out;
+  if (draft.step > 1 && !draft.problem) return null;
+  if (draft.topicId && !topicById(draft.topicId)) return null;
+  if (draft.formulaId && (!formulaById(draft.formulaId) || !draft.eq)) { draft.formulaId = null; draft.eq = null; if (draft.step > 3) draft.step = 3; }
+  if (draft.result && !draft.result.valueText) draft.result = null;
+  if (!Array.isArray(draft.plan)) draft.plan = [];
+  if (!Array.isArray(draft.chainLog)) draft.chainLog = [];
+  draft.planIndex = Math.max(0, Number(draft.planIndex) || 0);
+  if (draft.planIndex > draft.plan.length) draft.planIndex = 0;
+  if (draft.goalUnknown && !SYM[draft.goalUnknown]) draft.goalUnknown = null;
+  return draft;
 }
 function applyDraft(draft) {
   state.step = draft.step;
+  state.prompt = draft.prompt || '';
+  state.problem = draft.problem;
   state.topicId = draft.topicId;
   state.formulaId = draft.formulaId;
+  state.recommendId = draft.recommendId || null;
+  state.reasons = draft.reasons || [];
+  state.exampleId = draft.exampleId || null;
   state.eq = draft.eq;
-  state.undo = draft.undo;
-  state.history = draft.history;
-  state.topicTries = draft.topicTries;
-  state.formulaTries = draft.formulaTries;
-  state.hintOn = draft.hintOn;
+  state.undo = draft.undo || [];
+  state.history = draft.history || [];
+  state.hintOn = !!draft.hintOn;
   state.result = draft.result;
   state.message = draft.message;
+  state.confidence = draft.confidence || 0;
+  state.ranked = draft.ranked || [];
+  state.goalUnknown = draft.goalUnknown || (draft.problem && draft.problem.unknown) || null;
+  state.plan = draft.plan || [];
+  state.planIndex = draft.planIndex || 0;
+  state.chainLog = draft.chainLog || [];
   state.selected = null;
   state.confirmWipe = false;
 }
 function persist() {
+  memory.v = 4;
   memory.solved = state.solved.slice();
-  memory.active = current().id;
-  memory.drafts[current().id] = clone(snapshot());
+  memory.clears = state.clears || 0;
+  memory.session = snapshot();
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(memory)); } catch (err) { /* ที่เก็บเต็มหรือถูกปิด */ }
 }
 function loadStore() {
   try {
-    var raw = localStorage.getItem(SAVE_KEY);
+    var raw = localStorage.getItem(SAVE_KEY) || localStorage.getItem('phys-lab-v5') || localStorage.getItem('phys-lab-v4');
     if (!raw) return;
     var data = JSON.parse(raw);
-    if (!data || data.v !== 1) return;
-    memory.drafts = data.drafts && typeof data.drafts === 'object' ? data.drafts : {};
+    if (!data || data.v < 2 || data.v > 4) return;
     state.solved = Array.isArray(data.solved) ? data.solved.filter(function (id) { return problems.some(function (p) { return p.id === id; }); }) : [];
-    var idx = problems.findIndex(function (p) { return p.id === data.active; });
-    if (idx >= 0) state.index = idx;
-    var draft = sanitize(memory.drafts[current().id]);
+    state.clears = data.clears || 0;
+    var draft = sanitize(data.session);
     if (draft) applyDraft(draft);
   } catch (err) { blankWork(); }
+}
+function applyAnalysis(res) {
+  state.problem = res.problem;
+  state.topicId = res.topicId;
+  state.goalUnknown = res.problem.unknown || null;
+  state.plan = [];
+  state.planIndex = 0;
+  state.chainLog = [];
+  state.recommendId = res.recommendId;
+  state.reasons = res.reasons.slice();
+  state.confidence = res.confidence || 0;
+  state.ranked = res.ranked || [];
+  state.formulaId = null;
+  state.eq = null;
+  state.undo = [];
+  state.history = [];
+  state.result = null;
+  state.exampleId = null;
+  state.step = 2;
+  refreshAdvice();
+  setMessage('good', res.topicId ? res.reasons[0] : 'ยังจับบทจากข้อความไม่ได้ ลองใส่ปริมาณกับคำว่า จงหา');
+}
+function refreshAdvice() {
+  var p = state.problem;
+  if (!p) return;
+  var topic = topicById(state.topicId);
+  p.topic = state.topicId || null;
+  if (!state.goalUnknown && p.unknown) state.goalUnknown = p.unknown;
+  if (state.goalUnknown) p.unknown = state.goalUnknown;
+  var plan = findPlan(p, state.topicId);
+  state.plan = plan;
+  if (state.planIndex >= plan.length) state.planIndex = 0;
+  var step = currentStep();
+  state.recommendId = step ? step.formulaId : null;
+  var goal = goalTarget();
+  var goalText = goal && SYM[goal] ? SYM[goal].name + ' (' + SYM[goal].sym + ')' : 'ยังไม่ได้เลือก';
+  state.reasons = [
+    p.given.length ? 'ตัวแปรที่กรอก ' + p.given.map(function (g) { return (SYM[g.key] ? SYM[g.key].sym : g.key) + ' = ' + (g.show || formatNum(g.value)); }).join(', ') : 'ยังไม่ได้กรอกตัวแปร',
+    'เป้าหมายสุดท้าย: ' + goalText,
+    topic ? 'บทที่ ' + topic.no + ' ' + topic.name + ' (' + topic.grade + ' ' + topic.vol + ')' : 'ยังไม่ได้เลือกบท',
+    plan.length > 1
+      ? 'โจทย์นี้น่าจะใช้ ' + plan.length + ' สูตร: ' + plan.map(function (s, i) { return (i + 1) + ') หา ' + SYM[s.find].sym + ' จาก ' + s.classic; }).join(' → ')
+      : (state.recommendId ? 'แนะนำสูตร ' + formulaById(state.recommendId).classic + ' แล้วคลิกเอง' : 'ยังไม่มีสูตรที่ตรงกับตัวแปรชุดนี้')
+  ];
 }
 function markSolved(id) { if (state.solved.indexOf(id) === -1) state.solved.push(id); }
 function esc(s) {
@@ -833,59 +1844,98 @@ function esc(s) {
 }
 function chipText(key, value, problem) {
   var info = SYM[key];
-  return qtyName(key, problem) + ' ' + info.sym + ' = ' + formatNum(value) + (info.unit ? ' ' + info.unit : '');
+  var g = problem && problem.given.filter(function (item) { return item.key === key; })[0];
+  var shown = g && g.show ? g.show : formatNum(value);
+  return qtyName(key, problem) + ' ' + info.sym + ' = ' + shown + (info.unit ? ' ' + info.unit : '');
 }
 function setMessage(type, text) { state.message = text ? { type: type, text: text } : null; }
 function ensureConsistent() {
-  if (state.step >= 2 && !topicById(state.topicId)) state.step = 1;
-  if (state.step >= 3 && (!formulaById(state.formulaId) || !state.eq)) {
-    state.step = state.topicId ? 2 : 1;
-    state.eq = null;
+  if (state.step >= 2 && !state.problem) state.step = 1;
+  if (state.step === 2 && state.problem && !topicById(state.topicId)) {
+    var again = analyzePrompt(state.problem.text || '');
+    if (again.ok && again.topicId) applyAnalysis(again);
   }
-  if (state.step === 4 && (!state.result || !state.result.valueText)) state.step = 3;
+  if (state.step >= 3 && !topicById(state.topicId)) state.step = 2;
+  if (state.step >= 4 && (!formulaById(state.formulaId) || !state.eq)) {
+    state.formulaId = null;
+    state.eq = null;
+    state.step = 3;
+  }
+  if (state.result && !state.result.valueText) state.result = null;
 }
 
 function render() {
   var app = document.getElementById('app');
   if (!app) return;
-  ensureConsistent();
-  var jump = render.step !== state.step || render.index !== state.index;
-  var side = document.querySelector('.sidebar');
-  var work = document.getElementById('workspace');
-  var ss = side ? side.scrollTop : 0;
-  var ws = work ? work.scrollTop : 0;
-  app.innerHTML = '<div class="shell">' + renderSidebar() + '<div class="workspace" id="workspace">' + renderMain() + '</div></div>';
-  var side2 = document.querySelector('.sidebar');
-  var work2 = document.getElementById('workspace');
-  if (side2) side2.scrollTop = ss;
-  if (jump) {
-    if (window.matchMedia && window.matchMedia('(max-width: 900px)').matches) window.scrollTo(0, 0);
-    else if (work2) work2.scrollTop = 0;
-  } else if (work2) work2.scrollTop = ws;
-  render.step = state.step;
-  render.index = state.index;
-  persist();
+  try {
+    ensureConsistent();
+    var jump = render.step !== state.step;
+    var side = document.querySelector('.sidebar');
+    var work = document.getElementById('workspace');
+    var ss = side ? side.scrollTop : 0;
+    var ws = work ? work.scrollTop : 0;
+    var focusKey = null;
+    var active = document.activeElement;
+    if (active && active.dataset && active.dataset.field === 'value') focusKey = active.dataset.key;
+    app.innerHTML = '<div class="shell">' + renderSidebar() + '<div class="workspace" id="workspace">' + renderMain() + '</div></div>';
+    var side2 = document.querySelector('.sidebar');
+    var work2 = document.getElementById('workspace');
+    if (side2) side2.scrollTop = ss;
+    if (jump) {
+      if (isMobileUi()) {
+        var anchor = document.getElementById('workspace') || work2;
+        if (anchor) {
+          try { anchor.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+          catch (err) { window.scrollTo(0, anchor.offsetTop || 0); }
+        } else window.scrollTo(0, 0);
+      } else if (work2) work2.scrollTop = 0;
+    } else if (work2) work2.scrollTop = ws;
+    if (focusKey) {
+      var again = app.querySelector('input[data-field="value"][data-key="' + focusKey + '"]');
+      if (again) { again.focus(); again.selectionStart = again.selectionEnd = again.value.length; }
+    }
+    render.step = state.step;
+    persist();
+    paintTopicLive();
+  } catch (err) {
+    app.innerHTML = '<div class="workspace" style="padding:2rem"><div class="msg bad">หน้าจอมีปัญหาชั่วคราว กดโจทย์ใหม่แล้วลองอีกครั้ง</div><button type="button" class="btn" data-act="fresh">โจทย์ใหม่</button></div>';
+  }
+}
+function filledCount(p) {
+  if (!p || !p.given) return 0;
+  return p.given.filter(function (g) { return !(g.blank || g.value == null || !isFinite(Number(g.value))); }).length;
+}
+function readiness(p) {
+  var total = (p && p.given ? p.given.length : 0) + ((p && (p.unknown || state.goalUnknown)) ? 1 : 0);
+  var done = filledCount(p) + ((p && (p.unknown || state.goalUnknown)) ? 1 : 0);
+  return { total: total, done: done, pct: total ? Math.round(100 * done / total) : 0 };
+}
+function isMobileUi() {
+  return !!(window.matchMedia && window.matchMedia('(max-width: 900px)').matches);
+}
+function canDragBoard() {
+  if (window.matchMedia && window.matchMedia('(pointer: fine)').matches) return true;
+  return !('ontouchstart' in window);
 }
 function renderSidebar() {
-  var done = problems.filter(function (p) { return state.solved.indexOf(p.id) !== -1; }).length;
-  var pct = Math.round(100 * done / problems.length);
-  var list = problems.map(function (p, i) {
-    var on = i === state.index;
-    var solved = state.solved.indexOf(p.id) !== -1;
-    var parked = memory.drafts[p.id] && memory.drafts[p.id].step > 1 && !solved && !on;
-    var status = solved ? 'ทำแล้ว' : (on ? 'กำลังทำ' : (parked ? 'ทำค้างไว้' : 'ยังไม่ทำ'));
-    return '<button type="button" class="prob' + (on ? ' on' : '') + '" data-act="problem" data-index="' + i + '" aria-current="' + (on ? 'true' : 'false') + '">' +
-      '<span class="n">' + (i + 1) + '</span><span><strong>' + esc(p.title) + '</strong><em>' + status + '</em></span>' +
-      (solved ? '<span class="tick">✓</span>' : '<span></span>') + '</button>';
-  }).join('');
-  return '<aside class="sidebar"><div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="14" cy="26" r="5" fill="currentColor"></circle><path d="M22 26h16M32 18l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div><p class="name">ฟิสิกส์ทีละขั้น</p><p class="sub">วิเคราะห์ · เลือกสูตร · จัดรูป · คำนวณ</p></div></div>' +
-    '<div class="progress"><div class="row"><span>ทำแล้ว ' + done + ' จาก ' + problems.length + ' ข้อ</span><span>' + pct + '%</span></div><div class="bar"><span style="width:' + pct + '%"></span></div></div>' +
-    '<div class="plist">' + list + '</div>' +
-    '<div class="side-foot"><span>บันทึกในเครื่องนี้</span><button type="button" class="linkish" data-act="wipe">' + (state.confirmWipe ? 'ยืนยันล้างทั้งหมด' : 'ล้างความคืบหน้า') + '</button></div></aside>';
+  var compact = isMobileUi() && state.step > 1;
+  var meter = '<div class="side-meter"><div class="row"><span>ความพร้อมของขั้นตอน</span><span>' + (state.step * 25) + '%</span></div><div class="meter"><span style="width:' + (state.step * 25) + '%"></span></div></div>';
+  var box = state.step === 1
+    ? '<p class="side-note">พิมพ์โจทย์เอง ใส่ตัวเลขพร้อมหน่วย และลงท้ายด้วย จงหา</p>' +
+      '<textarea id="prompt" class="side-prompt" data-field="prompt" placeholder="เช่น รถยนต์แล่นด้วยความเร็วต้น 5 เมตรต่อวินาที ... จงหาความเร่ง" enterkeyhint="done">' + esc(state.prompt) + '</textarea>' +
+      '<div id="topic-live"></div>' +
+      '<button type="button" class="btn side-go" data-act="analyze">วิเคราะห์โจทย์</button>' +
+      '<p class="kbd-hint">ทางลัด Ctrl+Enter เพื่อวิเคราะห์</p>'
+    : '<p class="side-note">โจทย์ที่นักเรียนกรอก</p><p class="side-story">' + esc(state.prompt) + '</p>' +
+      (state.confidence ? '<div class="topic-live hit"><p class="eyebrow">ความมั่นใจ ' + state.confidence + '%</p><p class="meta">ขั้นที่ ' + state.step + '/4</p></div>' : '') +
+      '<button type="button" class="btn secondary side-go" data-act="edit-prompt">แก้โจทย์</button>';
+  return '<aside class="sidebar' + (compact ? ' compact' : '') + '"><div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="14" cy="26" r="5" fill="currentColor"></circle><path d="M22 26h16M32 18l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div><p class="name">ฟิสิกส์ทีละขั้น</p><p class="sub">วิเคราะห์ · คิด · จัดรูป · ตรวจคำตอบ</p></div></div>' +
+    (compact ? '' : meter) + box +
+    '<div class="side-foot"><button type="button" class="linkish" data-act="fresh">โจทย์ใหม่</button><button type="button" class="linkish" data-act="wipe">' + (state.confirmWipe ? 'ยืนยันล้างทั้งหมด' : 'ล้างที่กรอกไว้') + '</button></div></aside>';
 }
 function renderMain() {
   var p = current();
-  return renderTop(p) + '<p class="help">' + esc(STEP_HELP[state.step - 1]) + '</p>' + renderProblem(p) +
+  return renderTop(p) + '<p class="help">' + esc(STEP_HELP[state.step - 1]) + '</p>' +
     (state.message ? '<div class="msg ' + state.message.type + '" role="status">' + esc(state.message.text) + '</div>' : '') +
     renderStep(p);
 }
@@ -893,55 +1943,195 @@ function renderTop(p) {
   var steps = STEP_LABELS.map(function (label, i) {
     var n = i + 1;
     var cls = n === state.step ? 'now' : (n < state.step ? 'did' : '');
-    return '<span class="' + cls + '"><i>' + (n < state.step ? '✓' : n) + '</i>' + label + '</span>';
+    var clickable = n < state.step && n >= 1;
+    var inner = '<i>' + (n < state.step ? '✓' : n) + '</i>' + label;
+    return clickable
+      ? '<button type="button" class="' + cls + '" data-act="jump-step" data-step="' + n + '">' + inner + '</button>'
+      : '<span class="' + cls + '">' + inner + '</span>';
   }).join('');
-  return '<div class="topbar"><div><p class="kicker">ข้อ ' + (state.index + 1) + ' จาก ' + problems.length + '</p><h1 class="page">' + esc(p.title) + '</h1></div><div class="stepper">' + steps + '</div></div>';
+  var title = p ? (topicById(state.topicId) ? 'บทที่ ' + topicById(state.topicId).no + ' · ' + p.title : p.title) : 'โจทย์ที่ต้องการแก้';
+  return '<div class="topbar"><div><p class="kicker">สสวท. ฟิสิกส์ เล่ม 1–6 · ม.4–ม.6</p><h1 class="page">' + esc(title) + '</h1></div><div class="stepper">' + steps + '</div></div>';
 }
-function renderProblem(p) {
-  var given = p.given.map(function (g) { return '<li>' + esc(chipText(g.key, g.value, p)) + '</li>'; }).join('');
-  var info = SYM[p.unknown];
-  return '<article class="sheet"><p class="story">' + esc(p.text) + '</p><div class="facts"><div class="fact"><h2>ข้อมูลที่ให้</h2><ul class="chips">' + given + '</ul></div><div class="fact asked"><h2>สิ่งที่ต้องหา</h2><p class="ask-sym">' + esc(info.sym) + ' = ?</p><p class="ask-name">' + esc(qtyName(p.unknown, p) + (info.unit ? ' · ' + info.unit : '')) + '</p></div></div></article>';
+function renderPrompt() {
+  return '<div class="welcome-hero"><div class="panel"><p class="kicker">ห้องทดลองคิดโจทย์</p><h2>พิมพ์โจทย์ แล้วให้ระบบวิเคราะห์บทให้เอง</h2><p class="lead">ระบบอ่านปริมาณ เงื่อนไข และสิ่งที่ถาม แล้วชี้บท สูตร และตัวแปร นักเรียนใส่ค่าเอง จัดรูปเอง และตรวจคำตอบจากสมการที่จัดไว้</p></div><div class="mini-board">v = u + a<span>t</span></div></div>' +
+    '<section class="card"><div class="headrow"><h2>สี่ขั้นของการคิด</h2></div>' +
+    '<ol class="guide"><li><strong><span class="n">1</span>กรอกโจทย์</strong>พิมพ์โจทย์ในช่องทางซ้าย</li>' +
+    '<li><strong><span class="n">2</span>หัวข้อ</strong>ระบบเลือกบทให้อัตโนมัติ</li>' +
+    '<li><strong><span class="n">3</span>ตัวแปรและสูตร</strong>ใส่ค่าเอง แล้วคลิกสูตร</li>' +
+    '<li><strong><span class="n">4</span>จัดรูปและคำตอบ</strong>ย้ายข้าง แทนค่า แล้ววิเคราะห์ผล</li></ol></section>';
 }
 function renderStep(p) {
-  if (state.step === 1) return renderTopics();
-  if (state.step === 2) return renderFormulas();
-  if (state.step === 3) return renderArrange(p);
-  return renderResult(p);
+  if (state.step === 1) return renderPrompt();
+  if (state.step === 2) return renderBrief(p) + renderTopicStep();
+  if (state.step === 3) return renderBrief(p) + renderVariables(p) + renderFormulas();
+  if (state.result) return renderResult(p);
+  return renderArrange(p);
 }
-function renderTopics() {
-  var cards = topics.map(function (t) {
-    return '<button type="button" class="plate" style="--stripe:' + t.stripe + '" data-act="topic" data-id="' + t.id + '"><span class="label">' + esc(t.name) + '</span><small>' + esc(t.blurb) + '</small></button>';
+function paintTopicLive() {
+  var box = document.getElementById('topic-live');
+  if (!box) return;
+  var text = (state.prompt || '').trim();
+  var res = text ? analyzePrompt(text) : { ok: false };
+  if (!res.ok || !res.topicId) {
+    box.className = 'topic-live wait';
+    box.innerHTML = '<p>' + (text.length >= 8 ? 'ยังจับบทจากข้อความนี้ไม่ได้ ใส่ปริมาณและคำว่า จงหา' : 'พิมพ์โจทย์ต่อไป ระบบจะบอกบทให้อัตโนมัติ') + '</p>';
+    return;
+  }
+  var topic = topicById(res.topicId);
+  box.className = 'topic-live hit';
+  box.innerHTML = '<p class="eyebrow">วิเคราะห์จากข้อความแล้ว · มั่นใจ ' + res.confidence + '%</p><p class="chap">บทที่ ' + topic.no + ' ' + esc(topic.name) + '</p><p class="meta">' + esc(topic.grade + ' · ' + topic.vol) + '</p><div class="conf"><div class="conf-bar"><i style="width:' + res.confidence + '%"></i></div></div>';
+}
+function renderTopicStep() {
+  var topic = topicById(state.topicId);
+  var alts = (state.ranked || []).slice(0, 3).map(function (row) {
+    var t = topicById(row.id);
+    if (!t) return '';
+    return '<button type="button" class="' + (row.id === state.topicId ? 'on' : '') + '" data-act="pick-topic" data-id="' + t.id + '">บทที่ ' + t.no + ' ' + esc(t.name) + '</button>';
   }).join('');
-  return '<section class="card"><div class="headrow"><h2>โจทย์นี้เป็นเรื่องอะไร</h2></div><div class="grid">' + cards + '</div></section>';
+  var banner = topic
+    ? '<div class="chapter-banner" style="border-color:' + topic.stripe + '"><p class="eyebrow">ระบบวิเคราะห์จากโจทย์แล้ว · ความมั่นใจ ' + (state.confidence || 0) + '%</p><h2>บทที่ ' + topic.no + ' ' + esc(topic.name) + '</h2><p class="note">' + esc(topic.grade + ' · ' + topic.vol + ' · ' + topic.blurb) + '</p>' +
+      (alts ? '<div class="alt-topics">' + alts + '</div>' : '') + '</div>'
+    : '<p class="note">ข้อความนี้ยังไม่พอให้ชี้บท ใส่ปริมาณกับสิ่งที่ต้องหา แล้วกดวิเคราะห์โจทย์อีกครั้ง</p>';
+  return '<section class="card"><div class="headrow"><h2>หัวข้อของโจทย์</h2></div>' + banner +
+    '<div class="row-actions"><button type="button" class="btn" data-act="next-vars"' + (topic ? '' : ' disabled') + '>ใช้บทนี้ ไปกรอกตัวแปร</button></div></section>';
+}
+function renderBrief(p) {
+  var lines = (state.reasons || []).map(function (line) { return '<p>' + esc(line) + '</p>'; }).join('');
+  var pills = '';
+  if (p.conditions && p.conditions.length) pills += p.conditions.map(function (c) { return '<span class="pill">' + esc(c) + '</span>'; }).join('');
+  if (p.unknown && SYM[p.unknown]) pills += '<span class="pill">หา ' + esc(SYM[p.unknown].sym + ' · ' + SYM[p.unknown].name) + '</span>';
+  if (state.plan && state.plan.length > 1) pills += '<span class="pill">ใช้ ' + state.plan.length + ' สูตร</span>';
+  return '<article class="sheet"><p class="story">' + esc(p.text) + '</p><div class="analysis"><h3>ผลการวิเคราะห์</h3>' + (pills ? '<p>' + pills + '</p>' : '') + lines + '</div></article>';
+}
+function symOptions(selected) {
+  return Object.keys(SYM).map(function (k) {
+    return '<option value="' + k + '"' + (k === selected ? ' selected' : '') + '>' + esc(SYM[k].sym + ' · ' + SYM[k].name) + '</option>';
+  }).join('');
+}
+function renderVariables(p) {
+  var topic = topicById(state.topicId);
+  var goal = goalTarget();
+  var step = currentStep();
+  var left = Math.max(0, p.given.length - filledCount(p));
+  var allFilled = p.given.length > 0 && left === 0;
+  var nextText = !goal
+    ? { title: 'ขั้นถัดไป: เลือกสิ่งที่ต้องหา', body: 'บอกระบบว่าโจทย์ถามหาอะไร เช่น ความเร่ง การกระจัด หรือกระแส' }
+    : left > 0
+      ? { title: 'ขั้นถัดไป: กรอกค่าที่โจทย์ให้ ' + left + ' ช่อง', body: 'ใส่ตัวเลขในช่องว่าง ถ้ามีปุ่มสีทองกดใช้ค่าที่พบในโจทย์ได้' }
+      : (state.plan && state.plan.length > 1 && step)
+        ? { title: 'ขั้นถัดไป: หา ' + SYM[step.find].sym + ' ก่อน (ขั้นที่ ' + (state.planIndex + 1) + '/' + state.plan.length + ')', body: 'โจทย์นี้ใช้หลายสูตร คลิก ' + step.classic + ' ด้านล่าง แล้วค่อยไปสูตรถัดไป' }
+        : state.recommendId
+          ? { title: 'ขั้นถัดไป: คลิกสูตรด้านล่าง', body: 'ค่าครบแล้ว เลือกสูตรที่ต้องการใช้แก้โจทย์' }
+          : { title: 'ขั้นถัดไป: ตรวจตัวแปรอีกครั้ง', body: 'ยังไม่มีสูตรที่ตรง ลองเพิ่มตัวแปรที่โจทย์ให้ หรือเปลี่ยนสิ่งที่ต้องหา' };
+  var askUnit = goal && SYM[goal] ? (SYM[goal].unit || '—') : '';
+  var askSym = goal && SYM[goal] ? SYM[goal].sym : '?';
+  var planHtml = '';
+  if (state.plan && state.plan.length > 1) {
+    planHtml = '<div class="plan-box"><strong>แผนหลายสูตร</strong><ol>' + state.plan.map(function (s, i) {
+      var cls = i < state.planIndex ? 'did' : (i === state.planIndex ? 'now' : '');
+      return '<li class="' + cls + '">หา ' + esc(SYM[s.find].sym) + ' จาก ' + esc(s.classic) + (i < state.planIndex ? ' ✓' : '') + '</li>';
+    }).join('') + '</ol></div>';
+  }
+  var cards = p.given.map(function (g) {
+    if (!SYM[g.key]) return '';
+    var blank = g.blank || g.value == null;
+    var shown = blank ? '' : (g.show || String(g.value));
+    var unit = SYM[g.key].unit || 'ไม่มีหน่วย';
+    var useBtn = (g.found != null && blank)
+      ? '<button type="button" class="btn use-found tiny" data-act="fill-found" data-key="' + esc(g.key) + '">ใช้ ' + esc(String(g.foundShow || g.found)) + '</button>'
+      : '';
+    var foundLine = g.found != null
+      ? '<span>พบในโจทย์: ' + esc(String(g.foundShow || g.found)) + (unit && unit !== 'ไม่มีหน่วย' ? ' ' + unit : '') + '</span>'
+      : '<span>หน่วย ' + esc(unit) + '</span>';
+    return '<div class="var-card' + (blank ? '' : ' filled') + '">' +
+      '<div class="sym">' + esc(SYM[g.key].sym) + '</div>' +
+      '<div class="meta"><strong>' + esc(qtyName(g.key, p)) + '</strong>' + foundLine + '</div>' +
+      '<button type="button" class="btn ghost tiny" data-act="drop-given" data-key="' + esc(g.key) + '" title="เอาตัวนี้ออก">ลบ</button>' +
+      '<div class="var-actions">' +
+      '<input data-field="value" data-key="' + esc(g.key) + '" value="' + esc(shown) + '" inputmode="decimal" placeholder="พิมพ์ค่าที่นี่" aria-label="' + esc(qtyName(g.key, p)) + '">' +
+      useBtn +
+      '</div></div>';
+  }).join('');
+  var empty = p.given.length ? '' : '<p class="note">ยังไม่พบตัวแปรจากโจทย์ เพิ่มเองด้านล่างได้</p>';
+  var fillAll = p.given.some(function (g) { return g.found != null && (g.blank || g.value == null); })
+    ? '<button type="button" class="btn use-found" data-act="fill-all-found">ใส่ค่าที่พบทั้งหมด</button>'
+    : '';
+  var cond = (p.conditions && p.conditions.length)
+    ? '<div class="cond-chips">' + p.conditions.map(function (c) { return '<span>' + esc(c) + '</span>'; }).join('') + '</div>'
+    : '';
+  return '<section class="card"><div class="headrow"><h2>ใส่ค่าจากโจทย์</h2><span class="note">' + filledCount(p) + '/' + p.given.length + ' ค่า</span></div>' +
+    '<div class="next-task"><strong>' + esc(nextText.title) + '</strong><p>' + esc(nextText.body) + '</p></div>' +
+    planHtml +
+    '<div class="section-label"><span class="stepn">1</span>สิ่งที่ต้องหา</div>' +
+    '<div class="ask-box"><div class="sym">' + esc(askSym) + '</div>' +
+    '<select class="ask-pick" data-field="unknown"><option value=""' + (goal ? '' : ' selected') + '>เลือกสิ่งที่ต้องหา</option>' + symOptions(goal) + '</select>' +
+    '<div class="unit">' + esc(askUnit) + '</div></div>' +
+    '<div class="section-label"><span class="stepn">2</span>ค่าที่โจทย์ให้มา</div>' +
+    cond +
+    (fillAll ? '<div class="row-actions" style="margin-top:0.35rem">' + fillAll + '</div>' : '') +
+    empty + '<div class="var-cards">' + cards + '</div>' +
+    '<div class="section-label"><span class="stepn">3</span>เพิ่มตัวแปรที่ขาด</div>' +
+    '<div class="add-box"><p class="note" style="margin-top:0">ถ้าโจทย์ให้ปริมาณอื่นที่ยังไม่มีในรายการ ให้เพิ่มที่นี่</p>' +
+    '<div class="row"><select id="add-key">' + symOptions('u') + '</select><input id="add-value" inputmode="decimal" placeholder="ค่าตัวเลข"><button type="button" class="btn secondary" data-act="add-given">เพิ่ม</button></div></div>' +
+    '<p class="note">' + esc(topic ? topic.grade + ' ' + topic.vol + ' · บทที่ ' + topic.no + ' ' + topic.name : 'ยังไม่ได้เลือกบท') +
+    (allFilled && state.recommendId ? ' · พร้อมเลือกสูตรด้านล่าง' : '') + '</p>' +
+    '<div class="row-actions"><button type="button" class="btn ghost" data-act="back-topic">กลับไปดูบท</button><button type="button" class="btn ghost" data-act="edit-prompt">แก้ข้อความโจทย์</button></div></section>';
 }
 function renderFormulas() {
   var topic = topicById(state.topicId);
+  if (!topic) return '';
+  var pSolve = problemForSolve();
+  var step = currentStep();
   var list = formulas.filter(function (f) { return f.topic === state.topicId; });
   var cards = list.map(function (f) {
-    var vars = f.vars.map(function (v) { return '<i>' + esc(SYM[v].sym) + '</i>'; }).join('');
-    return '<button type="button" class="plate" style="--stripe:' + topic.stripe + '" data-act="formula" data-id="' + f.id + '"><span class="label">' + esc(f.name) + '</span><div class="formula-face">' + esc(f.classic) + '</div><small>' + esc(f.when) + '</small><span class="vchips">' + vars + '</span></button>';
+    var vars = f.vars.map(function (v) { return '<i>' + esc(SYM[v] ? SYM[v].sym : v) + '</i>'; }).join('');
+    var rec = f.id === state.recommendId;
+    var check = pSolve ? canSolve(f, pSolve) : { ok: false, message: 'เลือกสิ่งที่ต้องหาก่อน' };
+    var planIdx = -1;
+    if (state.plan) {
+      for (var i = 0; i < state.plan.length; i++) if (state.plan[i].formulaId === f.id) planIdx = i;
+    }
+    var tag = rec ? '<span class="rec-tag">ใช้ตอนนี้</span>' : '';
+    if (planIdx >= 0) tag += '<span class="step-tag">ขั้นที่ ' + (planIdx + 1) + '</span>';
+    tag += check.ok ? '<span class="ready-tag">พร้อมใช้</span>' : '<span class="need-tag">ยังขาดค่า</span>';
+    return '<button type="button" class="plate' + (rec ? ' rec' : '') + (check.ok ? '' : ' locked') + '" style="--stripe:' + topic.stripe + '" data-act="formula" data-id="' + f.id + '"><span class="label">' + esc(f.name) + tag + '</span><div class="formula-face">' + esc(f.classic) + '</div><small>' + esc(check.ok ? f.when : check.message) + '</small><span class="vchips">' + vars + '</span></button>';
   }).join('');
-  return '<section class="card"><div class="headrow"><h2>สูตรทั้งหมดในเรื่อง' + esc(topic.name) + '</h2></div><p class="note">มี ' + list.length + ' สูตร เลือกสูตรที่หาสิ่งที่โจทย์ถามได้จากข้อมูลที่ให้มา</p><div class="grid">' + cards + '</div><div class="row-actions"><button type="button" class="btn ghost" data-act="back-topic">เลือกเรื่องใหม่</button></div></section>';
+  var empty = list.length ? '' : '<p class="note">บทนี้เน้นแนวคิดและการวัด จึงยังไม่มีสูตรคำนวณบนกระดาน</p>';
+  var head = state.plan && state.plan.length > 1 && step
+    ? 'เลือกสูตร · ขั้นที่ ' + (state.planIndex + 1) + '/' + state.plan.length + ' หา ' + SYM[step.find].sym
+    : 'เลือกสูตร';
+  return '<section class="card"><div class="headrow"><h2>' + esc(head) + '</h2></div><p class="note">คลิกสูตรที่มีแท็กเขียว เมื่อค่าครบ ถ้ามีหลายขั้น ให้ทำทีละสูตรตามแผน</p>' + empty + '<div class="grid">' + cards + '</div></section>';
 }
+
 function renderArrange(p) {
   var f = formulaById(state.formulaId);
+  if (!f || !state.eq) return '<section class="card"><p class="note">ยังไม่มีสมการบนกระดาน</p></section>';
+  var targetKey = solveTarget();
+  if (!targetKey || !SYM[targetKey]) return '<section class="card"><p class="note">ยังไม่รู้ว่าต้องหาอะไร</p></section>';
   var iso = findIsolated(state.eq);
-  var ready = !!(iso && iso.name === p.unknown);
+  var ready = !!(iso && iso.name === targetKey);
+  var goal = goalTarget();
+  var multi = state.plan && state.plan.length > 1;
   var target = ready
-    ? 'จัดรูปได้แล้ว ' + SYM[p.unknown].sym + ' อยู่ลำพัง'
-    : 'เป้าหมาย: ทำให้ ' + SYM[p.unknown].sym + ' (' + qtyName(p.unknown, p) + ') อยู่ลำพัง';
+    ? 'จัดรูปได้แล้ว ' + SYM[targetKey].sym + ' อยู่ลำพัง'
+    : 'เป้าหมายขั้นนี้: ทำให้ ' + SYM[targetKey].sym + ' (' + qtyName(targetKey, p) + ') อยู่ลำพัง';
+  if (multi && goal && goal !== targetKey) target += ' · เป้าหมายสุดท้ายคือ ' + SYM[goal].sym;
   var note = f.boardNote ? '<p class="note">' + esc(f.boardNote) + '</p>' : '';
   var preview = '';
   if (ready) {
     var symbolic = eqText(state.eq);
-    var plugged = eqText(state.eq, knownOf(p));
+    var plugged = eqText(state.eq, knownOf(p), labelMap(p));
     preview = '<div class="preview"><span>พร้อมแทนค่า</span><code>' + esc(plugged === symbolic ? symbolic : plugged) + '</code></div>';
   }
-  var hint = state.hintOn ? '<div class="hintbox">คำใบ้: ' + esc(nextHint(state.eq, p.unknown)) + '</div>' : '';
-  return '<section class="card"><div class="headrow"><h2>จัดรูป ' + esc(f.classic) + '</h2></div>' + note +
+  var hint = state.hintOn ? '<div class="hintbox">คำใบ้: ' + esc(nextHint(state.eq, targetKey)) + '</div>' : '';
+  var head = multi
+    ? 'จัดรูปขั้นที่ ' + (state.planIndex + 1) + '/' + state.plan.length + ' · ' + f.classic
+    : 'จัดรูป ' + f.classic;
+  return '<section class="card"><div class="headrow"><h2>' + esc(head) + '</h2></div>' + note +
     '<div class="target' + (ready ? ' ready' : '') + '">' + esc(target) + '</div>' +
     '<div class="board"><div class="eqline">' + sideHtml(state.eq.left, 'left') + '<span class="equals">=</span>' + sideHtml(state.eq.right, 'right') + '</div>' +
-    '<p class="legend">ลากไปวางอีกฝั่งได้ หรือคลิกแล้วกดย้าย · จุดคือเครื่องหมายคูณ · ขีดใต้คือตัวที่ต้องหา · Ctrl+Z ย้อนกลับ</p></div>' +
+    '<p class="legend">ลากไปวางอีกฝั่งได้ หรือคลิกแล้วกดย้าย · จุดคือเครื่องหมายคูณ · ขีดใต้คือตัวที่ต้องหา · Ctrl+Z ย้อนกลับ</p>' +
+    '<p class="mobile-tip">บนมือถือ: แตะตัวเลขหรือตัวแปรให้ขึ้นสีทอง แล้วกดปุ่มย้ายด้านล่าง</p></div>' +
     preview + renderTools(ready) + '<p class="coach">' + esc(coachText(p)) + '</p>' + hint + renderTimeline() + '</section>';
 }
 function sideHtml(side, sideName) {
@@ -956,19 +2146,21 @@ function fractionHtml(side, sideName) {
   return '<div class="frac">' + num + '<div class="fbar"></div><div class="den">' + den + '</div></div>';
 }
 function termsHtml(terms, sideName) {
+  var drag = canDragBoard() ? 'true' : 'false';
   return terms.map(function (t, i) {
     var selectedTerm = state.selected && state.selected.side === sideName && state.selected.term === i && (state.selected.kind === 'term' || state.selected.kind === 'factor');
     var factors = t.factors.map(function (f, fi) { return factorButton(f, sideName, 'factor', i, fi); }).join('<span class="cdot">·</span>');
     var sign = t.sign < 0 ? '<span class="sign">−</span>' : '';
     var plus = (i > 0 && t.sign > 0) ? '<span class="sign plus">+</span>' : '';
-    return plus + '<span class="term' + (selectedTerm ? ' selected' : '') + '" draggable="true" data-drag="term" data-act="pick-term" data-side="' + sideName + '" data-term="' + i + '" title="เลือกหรือลากทั้งพจน์">' + sign + factors + '</span>';
+    return plus + '<span class="term' + (selectedTerm ? ' selected' : '') + '" draggable="' + drag + '" data-drag="term" data-act="pick-term" data-side="' + sideName + '" data-term="' + i + '" title="เลือกหรือลากทั้งพจน์">' + sign + factors + '</span>';
   }).join('');
 }
 function factorButton(f, side, kind, termIndex, factorIndex) {
   var sel = state.selected && state.selected.kind === kind && state.selected.side === side && state.selected.term === termIndex && state.selected.factor === factorIndex;
   var act = kind === 'denom' ? 'pick-denom' : 'pick-factor';
-  var goal = f.type === 'var' && current().unknown === f.name ? ' goal' : '';
-  return '<button type="button" draggable="true" class="factor' + (sel ? ' selected' : '') + goal + '" data-drag="' + kind + '" data-act="' + act + '" data-side="' + side + '" data-term="' + termIndex + '" data-factor="' + factorIndex + '">' + esc(factorText(f)) + '</button>';
+  var goal = f.type === 'var' && solveTarget() === f.name ? ' goal' : '';
+  var drag = canDragBoard() ? 'true' : 'false';
+  return '<button type="button" draggable="' + drag + '" class="factor' + (sel ? ' selected' : '') + goal + '" data-drag="' + kind + '" data-act="' + act + '" data-side="' + side + '" data-term="' + termIndex + '" data-factor="' + factorIndex + '">' + esc(factorText(f)) + '</button>';
 }
 function renderTools(ready) {
   var action = primaryAction();
@@ -1000,10 +2192,12 @@ function primaryAction() {
   return { label: 'ย้ายพจน์นี้ไปอีกฝั่ง', enabled: true, whole: false };
 }
 function coachText(p) {
-  var target = SYM[p.unknown].sym;
+  var target = solveTarget();
+  if (!target || !SYM[target]) return 'เลือกสิ่งที่ต้องหาก่อน';
+  var sym = SYM[target].sym;
   var iso = findIsolated(state.eq);
-  if (iso && iso.name === p.unknown) return 'ตัวที่โจทย์ถามอยู่ลำพังแล้ว แถบด้านบนคือสมการหลังแทนค่า กดคำนวณเพื่อคิดตัวเลข';
-  if (iso) return 'ตอนนี้ ' + SYM[iso.name].sym + ' อยู่ลำพัง แต่โจทย์ถาม ' + target;
+  if (iso && iso.name === target) return 'ตัวที่ต้องหาในขั้นนี้อยู่ลำพังแล้ว กดคำนวณได้เลย';
+  if (iso) return 'ตอนนี้ ' + SYM[iso.name].sym + ' อยู่ลำพัง แต่ขั้นนี้ต้องหา ' + sym;
   var sel = state.selected;
   if (!sel) return 'คลิกตัวที่อยากย้าย แล้วกดปุ่ม หรือลากไปปล่อยอีกฝั่งของเครื่องหมายเท่ากับ';
   if (sel.kind === 'denom') return 'ตัวในตัวส่วนจะย้ายไปคูณอีกฝั่ง';
@@ -1021,18 +2215,34 @@ function renderTimeline() {
 }
 function renderResult(p) {
   var f = formulaById(state.formulaId);
-  var topic = topicById(p.topic);
+  var topic = topicById(state.topicId);
   var r = state.result;
-  var info = SYM[p.unknown];
+  if (!f || !topic || !r) return '<section class="card"><p class="note">ยังไม่มีคำตอบ</p></section>';
+  var key = r.unknown || solveTarget() || goalTarget();
+  var info = SYM[key];
+  if (!info) return '<section class="card"><p class="note">ไม่พบหน่วยของคำตอบ</p></section>';
   var rows = r.rows.map(function (row) {
     return '<p class="label">' + esc(row.label) + '</p><p class="work">' + esc(row.text) + '</p>';
   }).join('');
-  var nextLabel = problems.some(function (item) { return state.solved.indexOf(item.id) === -1; }) ? 'ข้อที่ยังไม่ได้ทำ' : 'เปิดข้อถัดไป';
-  return '<section class="card"><div class="hero"><div><p class="note">เรื่อง' + esc(topic.name) + ' · ' + esc(f.classic) + '</p><p class="answer-num">' + esc(info.sym + ' = ' + r.valueText + (info.unit ? ' ' + info.unit : '')) + '</p><p class="unit-th">' + esc(qtyName(p.unknown, p) + ' ' + r.valueText + ' ' + info.unitTh) + '</p></div><div class="seal">ตรงกับเฉลย</div></div><div class="work-block">' + rows + '</div>' + renderTimeline() +
-    '<div class="row-actions"><button type="button" class="btn" data-act="next">' + nextLabel + '</button><button type="button" class="btn secondary" data-act="retry">ฝึกข้อนี้อีกครั้ง</button><button type="button" class="btn ghost" data-act="print">พิมพ์ใบคำตอบ</button></div></section>';
+  var prose = (r.analysis || []).map(function (line) { return '<p>' + esc(line) + '</p>'; }).join('');
+  var scores = r.scores
+    ? '<div class="score-grid"><div class="score-card"><strong>' + r.scores.moves + '</strong><span>ครั้งที่ย้ายข้าง</span></div><div class="score-card"><strong>' + r.scores.confidence + '%</strong><span>ความมั่นใจตอนวิเคราะห์บท</span></div><div class="score-card"><strong>' + (state.plan.length || 1) + '</strong><span>จำนวนสูตรในแผน</span></div></div>'
+    : '';
+  var more = r.moreSteps
+    ? '<div class="next-task"><strong>ยังไม่จบโจทย์</strong><p>ได้ค่า ' + esc(info.sym) + ' แล้ว กดปุ่มด้านล่างเพื่อใช้ค่านี้ไปหา ' + esc(SYM[goalTarget()].sym) + ' ด้วยสูตรถัดไป</p></div>' +
+      '<div class="row-actions"><button type="button" class="btn calc" data-act="continue-chain">ใช้ค่านี้ ไปสูตรถัดไป</button></div>'
+    : '';
+  var chain = state.chainLog && state.chainLog.length
+    ? '<div class="plan-box"><strong>ค่าที่ได้ทีละขั้น</strong><ol>' + state.chainLog.map(function (c) {
+      return '<li class="did">' + esc(SYM[c.find].sym + ' = ' + c.valueText + ' จาก ' + c.classic) + '</li>';
+    }).join('') + (r.moreSteps ? '' : '<li class="now">ได้คำตอบสุดท้ายแล้ว</li>') + '</ol></div>'
+    : '';
+  return '<section class="card"><div class="hero"><div><p class="note">' + esc(topic.grade + ' ' + topic.vol + ' · บทที่ ' + topic.no + ' ' + topic.name) + ' · ' + esc(f.classic) + '</p><p class="answer-num">' + esc(info.sym + ' = ' + r.valueText + (info.unit ? ' ' + info.unit : '')) + '</p><p class="unit-th">' + esc(info.name + ' ' + r.valueText + ' ' + info.unitTh) + '</p></div><div class="seal">' + esc(r.seal || 'วิเคราะห์แล้ว') + '</div></div>' + scores + more + chain + '<div class="analysis"><h3>การวิเคราะห์คำตอบ</h3>' + prose + '</div><div class="work-block">' + rows + '</div>' + renderTimeline() +
+    '<div class="row-actions"><button type="button" class="btn" data-act="fresh">โจทย์ใหม่</button><button type="button" class="btn secondary" data-act="retry">จัดรูปข้อนี้อีกครั้ง</button><button type="button" class="btn ghost" data-act="print">พิมพ์ใบคำตอบ</button></div></section>';
 }
 
 function startArrange(formula) {
+  var target = solveTarget();
   state.formulaId = formula.id;
   state.eq = freshEquation(formula);
   state.undo = [];
@@ -1040,10 +2250,10 @@ function startArrange(formula) {
   state.selected = null;
   state.result = null;
   state.hintOn = false;
-  state.step = 3;
+  state.step = 4;
   var iso = findIsolated(state.eq);
-  if (iso && iso.name === current().unknown) setMessage('good', 'สูตรนี้อยู่ในรูปที่ตัวที่ถามอยู่ลำพังแล้ว ตรวจการแทนค่าแล้วกดคำนวณ');
-  else setMessage('info', 'จัดรูปจน ' + SYM[current().unknown].sym + ' อยู่ลำพัง แล้วกดคำนวณ');
+  if (iso && iso.name === target) setMessage('good', 'สูตรนี้อยู่ในรูปที่ตัวที่ต้องหาอยู่ลำพังแล้ว ตรวจการแทนค่าแล้วกดคำนวณ');
+  else setMessage('info', 'จัดรูปจน ' + SYM[target].sym + ' อยู่ลำพัง แล้วกดคำนวณ');
 }
 function applyOp(runner) {
   var next = clone(state.eq);
@@ -1056,35 +2266,25 @@ function applyOp(runner) {
   setMessage('info', res.message);
   render();
 }
-function chooseTopic(id) {
-  var p = current();
-  if (id === p.topic) {
-    state.topicId = id;
-    state.step = 2;
-    state.formulaTries = 0;
-    setMessage('good', 'ถูกต้อง โจทย์นี้เป็นเรื่อง' + topicById(id).name);
-    render();
-    return;
-  }
-  state.topicTries += 1;
-  setMessage('bad', p.hints[Math.min(state.topicTries - 1, p.hints.length - 1)]);
-  render();
-}
 function chooseFormula(id) {
   var formula = formulaById(id);
-  var p = current();
-  var check = canSolve(formula, p);
+  if (!formula) { setMessage('bad', 'ไม่พบสูตรนี้'); render(); return; }
+  var pSolve = problemForSolve();
+  var check = canSolve(formula, pSolve);
   if (!check.ok) {
-    state.formulaTries += 1;
     var text = check.message;
-    if (state.topicId !== p.topic) text += ' และเรื่องที่เลือกยังไม่ตรงกับโจทย์';
-    if (state.formulaTries >= 3) {
-      var right = formulas.filter(function (f) { return canSolve(f, p).ok; })[0];
-      if (right) text += ' แนวทางของข้อนี้คือสูตร ' + right.classic + ' ในเรื่อง' + topicById(right.topic).name;
+    if (state.recommendId && state.recommendId !== id) {
+      var right = formulaById(state.recommendId);
+      if (right) text += ' ตอนนี้แนะนำ ' + right.classic;
     }
     setMessage('bad', text);
     render();
     return;
+  }
+  if (state.plan && state.plan.length) {
+    var idx = -1;
+    for (var i = 0; i < state.plan.length; i++) if (state.plan[i].formulaId === id) idx = i;
+    if (idx >= 0) state.planIndex = idx;
   }
   startArrange(formula);
   render();
@@ -1096,45 +2296,181 @@ function doPrimary() {
   if (sel.kind === 'factor') { applyOp(function (eq) { return moveFactor(eq, sel.side, sel.factor); }); return; }
   applyOp(function (eq) { return moveTerm(eq, sel.side, sel.term); });
 }
+function reasonableness(key, value) {
+  var notes = [];
+  if (!isFinite(value)) return ['ค่าที่ได้ไม่ใช่จำนวนจริง'];
+  if (key === 'a' && Math.abs(value) > 50) notes.push('ความเร่งมีขนาดใหญ่ผิดปกติเมื่อเทียบกับโจทย์ระดับมัธยมทั่วไป ตรวจหน่วยและค่าที่ใส่');
+  if ((key === 'v' || key === 'u' || key === 'vs') && Math.abs(value) > 3e8) notes.push('อัตราเร็วเกินอัตราเร็วแสง ตรวจค่าและการจัดรูปอีกครั้ง');
+  if (key === 'm' && value <= 0) notes.push('มวลควรเป็นค่าบวก');
+  if (key === 't' && value < 0) notes.push('เวลาติดลบ ตรวจเครื่องหมายหลังย้ายข้าง');
+  if (key === 'R' && value <= 0) notes.push('ความต้านทานควรเป็นค่าบวก');
+  if (key === 'n' && (value < 1 || value > 3)) notes.push('ดัชนีหักเหของวัสดุทั่วไปมักอยู่ราว 1–2.5');
+  if (!notes.length) notes.push('ขนาดของคำตอบดูสมเหตุสมผลกับหน่วยและความหมายของปริมาณนี้');
+  return notes;
+}
 function doCalculate() {
   var p = current();
+  var target = solveTarget();
+  var goal = goalTarget();
   var iso = findIsolated(state.eq);
-  if (!iso || iso.name !== p.unknown) { setMessage('bad', 'ยังจัดรูปไม่ถึงตัวที่โจทย์ถาม'); render(); return; }
+  if (!target || !iso || iso.name !== target) { setMessage('bad', 'ยังจัดรูปไม่ถึงตัวที่ต้องหาในขั้นนี้'); render(); return; }
   var known = knownOf(p);
   var value;
   try { value = evalSide(state.eq[other(iso.side)], known); }
-  catch (err) { setMessage('bad', err.message); render(); return; }
-  if (!approxEqual(value, p.answer)) {
-    setMessage('bad', 'คำนวณได้ ' + formatNum(value) + ' ซึ่งยังไม่ตรงกับเฉลย ลองย้อนกลับแล้วจัดรูปใหม่');
+  catch (err) { setMessage('bad', err.message || 'คำนวณไม่ได้'); render(); return; }
+  if (!isFinite(value)) { setMessage('bad', 'ได้ค่าที่ไม่ใช่จำนวนจริง'); render(); return; }
+  var arranged = eqText(state.eq);
+  var plugged = eqText(state.eq, known, labelMap(p));
+  if (p.answer != null && target === goal && !approxEqual(value, p.answer)) {
+    setMessage('bad', 'คำนวณได้ ' + formatNum(value) + ' ยังไม่สอดคล้องกับแนวคำตอบของตัวอย่าง ลองย้อนกลับแล้วจัดรูปใหม่');
     render();
     return;
   }
-  var arranged = eqText(state.eq);
-  var plugged = eqText(state.eq, known);
+  var topic = topicById(state.topicId);
+  var formula = formulaById(state.formulaId);
+  var info = SYM[target];
+  var sense = reasonableness(target, value);
+  var moves = Math.max(0, state.history.length - 1);
+  var moreSteps = !!(state.plan && state.plan.length > 1 && state.planIndex < state.plan.length - 1 && target !== goal);
+  var analysis = [
+    moreSteps
+      ? 'ขั้นนี้หา' + info.name + ' เป็นค่ากลางก่อน ยังไม่ใช่คำตอบสุดท้ายของโจทย์'
+      : 'โจทย์ถาม' + info.name + ' จัดไว้ในบทที่ ' + topic.no + ' ' + topic.name,
+    'สูตรที่ใช้คือ ' + formula.classic + ' หลังย้ายข้าง ' + moves + ' ครั้ง ได้ ' + arranged,
+    plugged === arranged ? 'สมการนี้ใช้ค่าจากโจทย์ได้ทันที' : 'แทนค่าแล้วได้ ' + plugged,
+    'หน่วยของคำตอบคือ ' + (info.unit ? info.unit + ' (' + info.unitTh + ')' : info.unitTh),
+    sense[0],
+    'จึงได้ ' + info.sym + ' = ' + formatNum(value) + (info.unit ? ' ' + info.unit : '')
+  ];
+  if (!moreSteps && p.answer != null) analysis.push('ตัวเลขนี้สอดคล้องกับแนวคำตอบของตัวอย่างในชุดฝึก');
+  if (moreSteps) analysis.push('กด “ใช้ค่านี้ ไปสูตรถัดไป” เพื่อหา ' + SYM[goal].name + ' ต่อ');
   var rows = [{ label: 'สมการที่จัดแล้ว', text: arranged }];
   if (plugged !== arranged) rows.push({ label: 'แทนค่าจากโจทย์', text: plugged });
-  rows.push({ label: 'ผลลัพธ์', text: SYM[p.unknown].sym + ' = ' + formatNum(value) + (SYM[p.unknown].unit ? ' ' + SYM[p.unknown].unit : '') });
-  state.result = { valueText: formatNum(value), rows: rows };
+  rows.push({ label: 'ผลลัพธ์', text: info.sym + ' = ' + formatNum(value) + (info.unit ? ' ' + info.unit : '') });
+  state.result = {
+    valueText: formatNum(value),
+    value: value,
+    unknown: target,
+    rows: rows,
+    analysis: analysis,
+    moreSteps: moreSteps,
+    seal: moreSteps ? 'ค่ากลาง · ยังมีขั้นถัดไป' : (p.answer != null ? 'สอดคล้องกับตัวอย่าง' : 'คำตอบสุดท้าย'),
+    scores: { moves: moves, confidence: state.confidence || 0, filled: filledCount(p) }
+  };
   state.step = 4;
-  markSolved(p.id);
-  setMessage(null);
-  render();
-}
-function nextIndex() {
-  for (var i = 1; i <= problems.length; i++) {
-    var idx = (state.index + i) % problems.length;
-    if (state.solved.indexOf(problems[idx].id) === -1) return idx;
+  if (!moreSteps) {
+    if (state.exampleId) markSolved(state.exampleId);
+    state.clears = (state.clears || 0) + 1;
   }
-  return (state.index + 1) % problems.length;
-}
-function openProblem(index) {
-  if (index === state.index || index < 0 || index >= problems.length) return;
-  memory.drafts[current().id] = clone(snapshot());
-  state.index = index;
-  var draft = sanitize(memory.drafts[current().id]);
-  if (draft) applyDraft(draft);
-  else blankWork();
+  setMessage(moreSteps ? 'info' : null, moreSteps ? 'ได้ค่ากลางแล้ว พร้อมไปสูตรถัดไป' : null);
   render();
+}
+function continueChain() {
+  var r = state.result;
+  if (!r || !r.moreSteps || r.value == null) { setMessage('bad', 'ยังไม่มีค่ากลางให้ใช้ต่อ'); render(); return; }
+  var key = r.unknown;
+  var exist = state.problem.given.filter(function (g) { return g.key === key; })[0];
+  if (exist) { exist.value = r.value; exist.blank = false; delete exist.show; }
+  else state.problem.given.push({ key: key, value: r.value, blank: false });
+  state.chainLog = (state.chainLog || []).concat([{ find: key, valueText: r.valueText, classic: formulaById(state.formulaId).classic }]);
+  state.planIndex += 1;
+  state.problem.unknown = goalTarget();
+  state.problem.answer = null;
+  state.exampleId = null;
+  state.formulaId = null;
+  state.eq = null;
+  state.undo = [];
+  state.history = [];
+  state.result = null;
+  state.selected = null;
+  state.step = 3;
+  refreshAdvice();
+  var next = currentStep();
+  setMessage('good', next ? 'ต่อไปหา ' + SYM[next.find].sym + ' จาก ' + next.classic : 'ไปเลือกสูตรถัดไป');
+  render();
+}
+
+function readPrompt() {
+  var el = document.getElementById('prompt');
+  if (el) state.prompt = el.value;
+  return (state.prompt || '').trim();
+}
+function runAnalyze(example) {
+  var text = example ? example.text : readPrompt();
+  state.prompt = text;
+  var res = analyzePrompt(text);
+  if (!res.ok) { setMessage('bad', res.message); state.step = 1; render(); return; }
+  applyAnalysis(res, example || null);
+  render();
+}
+function addGiven() {
+  var keyEl = document.getElementById('add-key');
+  var valEl = document.getElementById('add-value');
+  if (!keyEl || !valEl || !state.problem) return;
+  var key = keyEl.value;
+  var num = parseNumToken(String(valEl.value || '').trim());
+  if (!isFinite(num.value)) { setMessage('bad', 'ใส่ค่าตัวเลขของตัวแปรที่เพิ่ม'); render(); return; }
+  if (key === state.problem.unknown) { setMessage('bad', 'ตัวนี้เป็นสิ่งที่ต้องหาอยู่แล้ว'); render(); return; }
+  var item = { key: key, value: num.value, blank: false };
+  if (num.show) item.show = num.show;
+  var exist = state.problem.given.filter(function (g) { return g.key === key; })[0];
+  if (exist) { exist.value = item.value; exist.blank = false; if (item.show) exist.show = item.show; else delete exist.show; }
+  else state.problem.given.push(item);
+  state.problem.answer = null;
+  state.exampleId = null;
+  refreshAdvice();
+  setMessage('info', 'เพิ่ม ' + SYM[key].sym + ' แล้ว');
+  render();
+}
+function setGivenValue(key, raw) {
+  var g = state.problem && state.problem.given.filter(function (item) { return item.key === key; })[0];
+  if (!g) return;
+  var num = parseNumToken(String(raw).trim());
+  if (!String(raw).trim()) { g.value = null; g.blank = true; delete g.show; refreshAdvice(); return; }
+  if (!isFinite(num.value)) return;
+  g.value = num.value;
+  g.blank = false;
+  if (num.show) g.show = num.show; else delete g.show;
+  state.problem.answer = null;
+  state.exampleId = null;
+  refreshAdvice();
+}
+function fillFound(key) {
+  var g = state.problem && state.problem.given.filter(function (item) { return item.key === key; })[0];
+  if (!g || g.found == null) return;
+  g.value = g.found;
+  g.blank = false;
+  if (g.foundShow) g.show = g.foundShow; else delete g.show;
+  state.problem.answer = null;
+  state.exampleId = null;
+  refreshAdvice();
+}
+function fillAllFound() {
+  if (!state.problem) return;
+  state.problem.given.forEach(function (g) {
+    if (g.found == null || !(g.blank || g.value == null)) return;
+    g.value = g.found;
+    g.blank = false;
+    if (g.foundShow) g.show = g.foundShow; else delete g.show;
+  });
+  state.problem.answer = null;
+  state.exampleId = null;
+  refreshAdvice();
+}
+function pickTopic(id) {
+  if (!topicById(id) || !state.problem) return;
+  state.topicId = id;
+  state.problem.topic = id;
+  state.problem.answer = null;
+  state.exampleId = null;
+  state.formulaId = null;
+  state.eq = null;
+  state.result = null;
+  state.planIndex = 0;
+  state.chainLog = [];
+  refreshAdvice();
+  var topic = topicById(id);
+  setMessage('info', 'เปลี่ยนเป็นบทที่ ' + topic.no + ' ' + topic.name);
 }
 function handle(ds) {
   var act = ds.act;
@@ -1144,7 +2480,7 @@ function handle(ds) {
       render();
       return;
     }
-    memory.drafts = {};
+    memory.session = null;
     state.solved = [];
     blankWork();
     try { localStorage.removeItem(SAVE_KEY); } catch (err) { /* ignore */ }
@@ -1153,14 +2489,46 @@ function handle(ds) {
   }
   state.confirmWipe = false;
   try {
-    if (act === 'problem') return openProblem(Number(ds.index));
-    if (act === 'topic') return chooseTopic(ds.id);
+    if (act === 'analyze') return runAnalyze(null);
+    if (act === 'example') return runAnalyze(problems[Number(ds.index)]);
+    if (act === 'fresh') { blankWork(); render(); return; }
+    if (act === 'edit-prompt') { state.step = 1; state.formulaId = null; state.eq = null; setMessage(null); render(); return; }
+    if (act === 'pick-topic') { pickTopic(ds.id); render(); return; }
+    if (act === 'fill-found') { fillFound(ds.key); setMessage('info', 'ใส่ค่าที่พบในโจทย์แล้ว'); render(); return; }
+    if (act === 'fill-all-found') { fillAllFound(); setMessage('info', 'ใส่ค่าที่พบทั้งหมดแล้ว ตรวจอีกครั้งก่อนคำนวณ'); render(); return; }
+    if (act === 'jump-step') {
+      var to = Number(ds.step);
+      if (!(to >= 1 && to < state.step)) return;
+      state.step = to;
+      if (to < 4) { state.eq = null; state.formulaId = null; state.result = null; state.selected = null; }
+      if (to < 3) { state.formulaId = null; }
+      setMessage(null);
+      render(); return;
+    }
+    if (act === 'next-vars') {
+      if (!state.topicId) { setMessage('bad', 'เลือกบทก่อน'); render(); return; }
+      refreshAdvice();
+      state.step = 3;
+      state.formulaId = null;
+      state.eq = null;
+      state.result = null;
+      setMessage(state.recommendId ? 'good' : 'info', state.reasons[3] || 'ใส่ค่าตัวแปร แล้วคลิกสูตร');
+      render(); return;
+    }
+    if (act === 'add-given') return addGiven();
+    if (act === 'drop-given') {
+      state.problem.given = state.problem.given.filter(function (g) { return g.key !== ds.key; });
+      state.problem.answer = null;
+      state.exampleId = null;
+      refreshAdvice();
+      render(); return;
+    }
     if (act === 'formula') return chooseFormula(ds.id);
     if (act === 'back-topic') {
-      state.step = 1; state.topicId = null; state.formulaId = null; state.eq = null; setMessage(null); render(); return;
+      state.step = 2; state.formulaId = null; state.eq = null; state.result = null; state.selected = null; setMessage(null); render(); return;
     }
     if (act === 'back-formula') {
-      state.step = 2; state.formulaId = null; state.eq = null; state.selected = null; state.hintOn = false; setMessage(null); render(); return;
+      state.step = 3; state.formulaId = null; state.eq = null; state.result = null; state.selected = null; state.hintOn = false; setMessage(null); render(); return;
     }
     if (act === 'pick-factor') {
       var term = state.eq[ds.side].terms[Number(ds.term)];
@@ -1190,8 +2558,14 @@ function handle(ds) {
     }
     if (act === 'reset-eq') { startArrange(formulaById(state.formulaId)); render(); return; }
     if (act === 'calc') return doCalculate();
-    if (act === 'retry') { blankWork(); render(); return; }
-    if (act === 'next') return openProblem(nextIndex());
+    if (act === 'continue-chain') return continueChain();
+    if (act === 'retry') {
+      state.result = null;
+      if (state.formulaId && formulaById(state.formulaId)) startArrange(formulaById(state.formulaId));
+      else { state.step = 3; state.eq = null; }
+      setMessage(null);
+      render(); return;
+    }
     if (act === 'print') { window.print(); return; }
   } catch (err) {
     setMessage('bad', 'ทำขั้นนี้ไม่สำเร็จ ลองย้อนกลับหรือเริ่มจัดรูปใหม่');
@@ -1199,7 +2573,7 @@ function handle(ds) {
   }
 }
 function onDrop(sideName) {
-  if (!dragPayload || state.step !== 3 || !state.eq) return;
+  if (!dragPayload || state.step !== 4 || !state.eq) return;
   var payload = dragPayload;
   dragPayload = null;
   if (payload.side === sideName) { setMessage('info', 'ปล่อยที่อีกฝั่งของเครื่องหมายเท่ากับ'); render(); return; }
@@ -1215,6 +2589,50 @@ function onDrop(sideName) {
 function boot() {
   loadStore();
   var app = document.getElementById('app');
+  if (!app) return;
+  var topicTimer = null;
+  app.addEventListener('input', function (e) {
+    var el = e.target;
+    if (!el || !el.dataset) return;
+    if (el.dataset.field === 'prompt') {
+      state.prompt = el.value;
+      clearTimeout(topicTimer);
+      topicTimer = setTimeout(paintTopicLive, 180);
+    }
+  });
+  app.addEventListener('change', function (e) {
+    var el = e.target;
+    if (!el || !el.dataset || !state.problem) return;
+    if (el.dataset.field === 'value') { setGivenValue(el.dataset.key, el.value); render(); }
+    if (el.dataset.field === 'unknown') {
+      state.problem.given = state.problem.given.filter(function (g) { return g.key !== el.value; });
+      state.problem.unknown = el.value || null;
+      state.goalUnknown = el.value || null;
+      state.planIndex = 0;
+      state.chainLog = [];
+      state.problem.answer = null;
+      state.exampleId = null;
+      refreshAdvice();
+      render();
+    }
+    if (el.dataset.field === 'topic') {
+      state.topicId = el.value || null;
+      state.problem.answer = null;
+      state.exampleId = null;
+      refreshAdvice();
+      setMessage('info', state.reasons[2] || '');
+      render();
+    }
+  });
+  app.addEventListener('focusin', function (e) {
+    var el = e.target;
+    if (!el || !isMobileUi()) return;
+    if (el.matches && el.matches('input, textarea, select')) {
+      setTimeout(function () {
+        try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (err) { el.scrollIntoView(true); }
+      }, 120);
+    }
+  });
   app.addEventListener('click', function (e) {
     if (suppressClick) { suppressClick = false; return; }
     var el = e.target.closest('[data-act]');
@@ -1222,17 +2640,20 @@ function boot() {
     handle(el.dataset);
   });
   app.addEventListener('dblclick', function (e) {
+    if (isMobileUi()) return;
     var el = e.target.closest('[data-act]');
     if (!el) return;
     if (el.dataset.act === 'pick-factor' || el.dataset.act === 'pick-term' || el.dataset.act === 'pick-denom') doPrimary();
   });
   app.addEventListener('dragstart', function (e) {
+    if (!canDragBoard()) { e.preventDefault(); return; }
     var el = e.target.closest('[data-drag]');
     if (!el) return;
     dragPayload = { kind: el.dataset.drag, side: el.dataset.side, term: Number(el.dataset.term), factor: Number(el.dataset.factor) };
     if (e.dataTransfer) { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', 'move'); }
   });
   app.addEventListener('dragover', function (e) {
+    if (!canDragBoard()) return;
     var zone = e.target.closest('[data-drop]');
     if (!zone) return;
     e.preventDefault();
@@ -1240,6 +2661,7 @@ function boot() {
     zone.classList.add('over');
   });
   app.addEventListener('drop', function (e) {
+    if (!canDragBoard()) return;
     var zone = e.target.closest('[data-drop]');
     if (!zone) return;
     e.preventDefault();
@@ -1251,9 +2673,28 @@ function boot() {
     document.querySelectorAll('.side.over').forEach(function (node) { node.classList.remove('over'); });
   });
   document.addEventListener('keydown', function (e) {
-    if (state.step !== 3) return;
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && state.step === 1) {
+      e.preventDefault();
+      handle({ act: 'analyze' });
+      return;
+    }
+    if (state.step !== 4) return;
     if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); handle({ act: 'undo' }); }
     else if (e.key === 'Escape' && state.selected) { state.selected = null; render(); }
+    else if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey) {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) return;
+      var iso = state.eq && findIsolated(state.eq);
+      var target = solveTarget();
+      if (state.result && state.result.moreSteps) { e.preventDefault(); handle({ act: 'continue-chain' }); }
+      else if (iso && target && iso.name === target) { e.preventDefault(); handle({ act: 'calc' }); }
+      else if (state.selected) { e.preventDefault(); handle({ act: 'move' }); }
+    }
+  });
+  window.addEventListener('resize', function () {
+    clearTimeout(window.__physResize);
+    window.__physResize = setTimeout(function () {
+      if (state.step >= 1) render();
+    }, 250);
   });
   render();
 }
@@ -1261,11 +2702,11 @@ function boot() {
 if (typeof document !== 'undefined') boot();
 if (globalThis.RUN_PHYSICS_TEST) {
   globalThis.PhysicsLab = {
-    problems: problems, formulas: formulas, topics: topics, state: state, memory: memory,
+    problems: problems, formulas: formulas, topics: topics, SYM: SYM, state: state, memory: memory,
     freshEquation: freshEquation, moveTerm: moveTerm, moveFactor: moveFactor, moveDenom: moveDenom,
     takeSqrt: takeSqrt, findIsolated: findIsolated, evalSide: evalSide, eqText: eqText,
-    canSolve: canSolve, knownOf: knownOf, other: other, nextHint: nextHint, approxEqual: approxEqual,
-    handle: handle, blankWork: blankWork
+    canSolve: canSolve, knownOf: knownOf, other: other, nextHint: nextHint, approxEqual: approxEqual, analyzePrompt: analyzePrompt,
+    findPlan: findPlan, handle: handle, blankWork: blankWork, solveTarget: solveTarget
   };
 }
 </script>
