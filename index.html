@@ -3,11 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#141c2f">
+<meta name="theme-color" content="#040a20">
+<meta name="description" content="Physics Learning ระบบฝึกคิดโจทย์ฟิสิกส์ ม.4–ม.6 พิมพ์โจทย์เอง ระบบชี้บท สูตร และตัวแปร พร้อมคลังสูตร สื่อจำลอง และติดตามความก้าวหน้า">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%23071233'/%3E%3Cg fill='none' stroke='%237dd3fc' stroke-width='2.4'%3E%3Cellipse cx='24' cy='24' rx='17' ry='6.5'/%3E%3Cellipse cx='24' cy='24' rx='17' ry='6.5' transform='rotate(60 24 24)'/%3E%3Cellipse cx='24' cy='24' rx='17' ry='6.5' transform='rotate(-60 24 24)'/%3E%3C/g%3E%3Ccircle cx='24' cy='24' r='4' fill='%23fff'/%3E%3C/svg%3E">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>ฟิสิกส์ทีละขั้น</title>
+<title>Physics Learning</title>
 <style>
   :root {
     --paper: #ebe4d8;
@@ -923,6 +925,437 @@
     .board { background: white; color: black; box-shadow: none; }
     .sheet, .card { box-shadow: none; }
   }
+
+  /* ===== Physics Learning · navy space theme ===== */
+  :root {
+    --paper: #050c22; --sheet: rgba(13,27,64,0.62); --ink: #e8eeff; --muted: #9fb0d8; --line: rgba(140,170,255,0.18);
+    --sidebar: #06102a; --cream: #e8eeff; --brass: #7dd3fc;
+    --teal: #3b74ff; --teal-deep: #9cc0ff; --teal-soft: rgba(59,116,255,0.14);
+    --good: #4ade80; --good-bg: rgba(74,222,128,0.12); --bad: #ff8f86; --bad-bg: rgba(255,107,97,0.13);
+    --info-bg: rgba(59,116,255,0.14); --warn: #fcd34d; --warn-bg: rgba(252,211,77,0.12);
+    --shadow: 0 18px 44px rgba(0,0,0,0.35); --nav-h: 4.7rem;
+  }
+  body {
+    background:
+      radial-gradient(1000px 600px at 75% -10%, rgba(47,107,255,0.22), transparent 60%),
+      radial-gradient(800px 500px at 0% 30%, rgba(30,64,175,0.20), transparent 60%),
+      radial-gradient(900px 600px at 50% 120%, rgba(56,189,248,0.10), transparent 60%),
+      linear-gradient(180deg, #030817 0%, #061032 55%, #040a20 100%);
+    background-attachment: fixed;
+  }
+  ::selection { background: rgba(59,116,255,0.4); color: #fff; }
+  * { scrollbar-color: rgba(125,170,255,0.35) transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(125,170,255,0.3); background-clip: padding-box; }
+  .sidebar::-webkit-scrollbar-thumb { background: rgba(125,170,255,0.3); background-clip: padding-box; }
+  :focus-visible { outline-color: #7dd3fc; }
+  .skip { background: #0b1f4d; color: #fff; }
+  .fx-bg:before {
+    background-image: linear-gradient(rgba(125,170,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(125,170,255,0.035) 1px, transparent 1px);
+    background-size: 46px 46px;
+  }
+  .fx-bg:after {
+    content: ""; position: absolute; inset: 0; opacity: 0.7;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, #fff, transparent), radial-gradient(1px 1px at 28% 62%, #cfe0ff, transparent),
+      radial-gradient(1.5px 1.5px at 44% 30%, #fff, transparent), radial-gradient(1px 1px at 63% 78%, #fff, transparent),
+      radial-gradient(1px 1px at 78% 22%, #cfe0ff, transparent), radial-gradient(1.5px 1.5px at 88% 54%, #fff, transparent),
+      radial-gradient(1px 1px at 6% 86%, #cfe0ff, transparent), radial-gradient(1px 1px at 52% 92%, #fff, transparent);
+    background-size: 420px 420px;
+  }
+  .blob.b1 { background: radial-gradient(circle, rgba(47,107,255,0.35), transparent 65%); }
+  .blob.b2 { background: radial-gradient(circle, rgba(56,189,248,0.22), transparent 65%); }
+  .blob.b3 { background: radial-gradient(circle, rgba(99,102,241,0.25), transparent 65%); }
+
+  .shell { grid-template-columns: 300px minmax(0, 1fr); grid-template-rows: auto 1fr; }
+  .shell.home, .shell.solo { grid-template-columns: minmax(0, 1fr); }
+  .topnav {
+    grid-column: 1 / -1; position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    min-height: var(--nav-h); padding: 0.6rem clamp(1rem, 4vw, 3.5rem);
+    background: rgba(3,8,23,0.62); backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    border-bottom: 1px solid rgba(140,170,255,0.12);
+  }
+  .topnav .brand { padding: 0; gap: 0.65rem; background: transparent; border: 0; color: inherit; text-align: left; cursor: pointer; }
+  .topnav .brand .name { display: block; }
+  .topnav .brand:hover .mark { box-shadow: 0 0 26px rgba(91,140,255,0.75); }
+  .mark {
+    width: 48px; height: 48px; border-radius: 14px; color: #dbe7ff;
+    border: 1px solid rgba(125,170,255,0.45);
+    background: linear-gradient(135deg, rgba(59,116,255,0.45), rgba(30,58,138,0.55));
+    box-shadow: 0 0 18px rgba(59,116,255,0.45);
+  }
+  .mark svg { width: 30px; height: 30px; }
+  .mark:before { border-color: rgba(125,170,255,0.35); border-radius: 17px; }
+  .mark:after { background: #7dd3fc; box-shadow: 0 0 10px #7dd3fc; transform-origin: 0 24px; }
+  .brand .name {
+    font-size: 1.3rem; font-weight: 700;
+    background: linear-gradient(90deg, #ffffff 0%, #bcd4ff 35%, #ffffff 55%, #7dd3fc 80%, #ffffff 100%);
+    background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .nav-tabs {
+    display: flex; grid-template-columns: none; gap: 0.25rem; margin: 0; padding: 0.25rem;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(140,170,255,0.14); border-radius: 999px;
+  }
+  .nav-tabs button { min-height: 2.3rem; padding: 0.4rem 1.05rem; border-radius: 999px; color: #b9c7e8; font-size: 0.9rem; }
+  .nav-tabs button:hover:not(.on) { background: rgba(255,255,255,0.07); color: #fff; }
+  .nav-tabs button.on { background: linear-gradient(135deg, rgba(91,140,255,0.55), rgba(47,107,255,0.45)); color: #fff; box-shadow: 0 0 0 1px rgba(160,190,255,0.35) inset, 0 6px 20px -6px rgba(47,107,255,0.8); }
+
+  .sidebar {
+    position: sticky; top: var(--nav-h); align-self: start;
+    height: calc(100vh - var(--nav-h)); height: calc(100dvh - var(--nav-h));
+    background: linear-gradient(180deg, rgba(8,18,48,0.72), rgba(4,10,30,0.72));
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(140,170,255,0.12); box-shadow: none; padding-top: 1.1rem;
+  }
+  .sidebar:after { background: linear-gradient(180deg, transparent, rgba(125,211,252,0.7), transparent); background-size: 100% 40%; background-repeat: no-repeat; }
+  .shell.sim-mode .sidebar { position: relative; top: 0; height: auto; min-height: 0; }
+  .side-note, .side-foot, .kbd-hint { color: #9fb0d8; }
+  .side-meter { background: rgba(255,255,255,0.04); border: 1px solid rgba(140,170,255,0.1); }
+  .side-meter .row { color: #b9c7e8; }
+  .meter span { background: linear-gradient(90deg, #3b74ff, #7dd3fc); }
+  .linkish { color: #9cc0ff; }
+  .side-prompt {
+    background: rgba(3,9,28,0.7); color: var(--ink); border: 1px solid rgba(140,170,255,0.28);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+  .side-prompt::placeholder { color: #6f80a8; }
+  .side-prompt:focus { border-color: #5b8cff; box-shadow: 0 0 0 3px rgba(59,116,255,0.25), 0 10px 30px rgba(0,0,0,0.3); }
+  .topic-live.wait { background: rgba(255,255,255,0.04); color: #9fb0d8; }
+  .topic-live.hit { background: linear-gradient(135deg, rgba(59,116,255,0.2), rgba(56,189,248,0.1)); border-color: rgba(125,170,255,0.45); }
+  .topic-live .meta { color: #b9c7e8; }
+  .conf-bar i { background: linear-gradient(90deg, #3b74ff, #7dd3fc); }
+  .side-sims button { background: rgba(255,255,255,0.04); }
+  .side-sims button.on { background: rgba(59,116,255,0.16); border-color: rgba(125,170,255,0.5); }
+  .side-sims em { color: #8fa1cb; }
+
+  .workspace { padding: 1.4rem clamp(1rem, 2.4vw, 2rem) 2.5rem; scroll-margin-top: var(--nav-h); }
+  .kicker { color: #7dd3fc; }
+  .kicker:before { background: linear-gradient(90deg, #3b74ff, #7dd3fc); }
+  h1.page { background: linear-gradient(90deg, #ffffff, #bcd4ff 55%, #7dd3fc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .stepper button:hover { background: rgba(59,116,255,0.12); }
+  .stepper i { background: rgba(255,255,255,0.06); border-color: rgba(140,170,255,0.25); }
+  .stepper .now { background: rgba(59,116,255,0.16); }
+  .stepper .now i { box-shadow: 0 0 0 4px rgba(59,116,255,0.2); }
+  .stepper .did i { color: #052e16; }
+  @keyframes beat { 50% { box-shadow: 0 0 0 7px rgba(59,116,255,0.06); } }
+  .sheet, .card {
+    background: linear-gradient(180deg, rgba(16,32,76,0.66), rgba(9,20,52,0.62));
+    border-color: rgba(140,170,255,0.16);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 24px 50px -24px rgba(0,0,0,0.7);
+  }
+  .msg { box-shadow: 0 10px 24px -14px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.06); }
+  .msg.good:before { color: #052e16; }
+  .msg.warn:before { color: #3a2a00; }
+  .chapter-banner { background: linear-gradient(135deg, rgba(59,116,255,0.18), rgba(56,189,248,0.06)); box-shadow: 0 16px 36px -20px rgba(47,107,255,0.7); }
+  .chapter-banner:after { background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.12) 50%, transparent 70%); }
+  .chapter-banner .eyebrow { color: #7dd3fc; }
+  .alt-topics button { background: rgba(255,255,255,0.05); border-color: rgba(140,170,255,0.2); color: #b9c7e8; }
+  .guide li { background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-color: rgba(140,170,255,0.16); color: #b9c7e8; }
+  .guide strong { color: #fff; }
+  .guide .n { background: linear-gradient(135deg, #5b8cff, #2f6bff); }
+  .check-list li { background: rgba(255,255,255,0.05); }
+  .dot { background: rgba(140,170,255,0.3); }
+  .next-task { background: linear-gradient(135deg, rgba(59,116,255,0.16), rgba(56,189,248,0.06)); border-color: rgba(140,170,255,0.25); }
+  .next-task:before { background: linear-gradient(180deg, #3b74ff, #7dd3fc); }
+  .section-label .stepn { background: linear-gradient(135deg, #5b8cff, #2f6bff); }
+  .ask-box { border-color: rgba(125,170,255,0.3); }
+  .ask-box select, .var-row input, .var-row select, .ask-pick, .add-box select, .add-box input, .var-card input[data-field="value"] {
+    background: rgba(3,9,28,0.7); color: var(--ink); border-color: rgba(140,170,255,0.28);
+  }
+  select option { background: #0b1a42; color: #e8eeff; }
+  .var-row input:focus, .var-row select:focus, .ask-pick:focus, .var-card input:focus, .ask-box select:focus, .add-box select:focus, .add-box input:focus {
+    border-color: #5b8cff; box-shadow: 0 0 0 3px rgba(59,116,255,0.25);
+  }
+  .var-card { background: rgba(255,255,255,0.04); border-color: rgba(140,170,255,0.16); }
+  .var-card.filled { background: rgba(74,222,128,0.06); border-color: rgba(74,222,128,0.35); box-shadow: 0 0 0 3px rgba(74,222,128,0.06); }
+  .var-card.filled input[data-field="value"] { border-color: rgba(74,222,128,0.5); }
+  .var-card.invalid { background: rgba(255,107,97,0.07); border-color: rgba(255,143,134,0.5); }
+  .var-card .sym, .ask-box .sym { color: #9cc0ff; text-shadow: 0 0 14px rgba(91,140,255,0.45); }
+  .add-box { background: rgba(255,255,255,0.04); border: 1px solid rgba(140,170,255,0.12); }
+  .plan-box { background: rgba(59,116,255,0.1); border-color: rgba(125,170,255,0.3); }
+  .step-tag { background: rgba(59,116,255,0.22); }
+  .plate { background: rgba(255,255,255,0.04); border-color: rgba(140,170,255,0.16); }
+  .plate:hover { border-color: rgba(125,170,255,0.45); }
+  .plate:before, .sim-card:before, .guide li:before, .score-card:before { background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), rgba(91,140,255,0.18), transparent 45%); }
+  .plate.lit, .sim-card.lit { box-shadow: 0 22px 40px -16px rgba(47,107,255,0.55); }
+  .plate.rec { background: linear-gradient(#0e1f4c, #0e1f4c) padding-box, linear-gradient(120deg, #3b74ff, #7dd3fc, #3b74ff) border-box; background-size: 100% 100%, 240% 100%; }
+  .formula-face { color: #bcd4ff; }
+  .vchips i { background: rgba(255,255,255,0.07); }
+  .analysis { background: linear-gradient(135deg, rgba(59,116,255,0.14), rgba(56,189,248,0.05)); border-color: rgba(125,170,255,0.2); }
+  .analysis .pill { background: rgba(255,255,255,0.08); }
+  .preview { background: rgba(255,255,255,0.05); }
+  .hintbox { background: rgba(252,211,77,0.1); color: #fde68a; }
+  .timeline li { border-top-color: rgba(140,170,255,0.18); }
+  .score-card { background: rgba(255,255,255,0.05); }
+  .score-card strong { color: #9cc0ff; }
+  .tips-box { background: linear-gradient(135deg, rgba(125,211,252,0.08), rgba(59,116,255,0.06)); border-color: rgba(125,211,252,0.35); }
+  .miss-box { background: rgba(252,211,77,0.07); border-color: rgba(252,211,77,0.45); }
+  .miss-chip { background: rgba(255,255,255,0.06); border-color: rgba(140,170,255,0.25); }
+  .target { box-shadow: 0 6px 16px -10px rgba(47,107,255,0.7); }
+  .answer-num {
+    background: linear-gradient(90deg, #ffffff, #9cc0ff 40%, #7dd3fc 70%, #ffffff);
+    background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 6px 22px rgba(59,116,255,0.45));
+  }
+  .sim-card { background: linear-gradient(180deg, rgba(16,32,76,0.66), rgba(9,20,52,0.62)); border-color: rgba(140,170,255,0.16); }
+  .sim-card .go { color: #9cc0ff; }
+  .sim-frame-wrap { border-color: rgba(140,170,255,0.2); background: #050c22; }
+
+  .btn {
+    background: linear-gradient(135deg, #5b8cff, #2f6bff 55%, #1f4fd6);
+    box-shadow: 0 8px 20px -8px rgba(47,107,255,0.8), inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .btn.calc { background: linear-gradient(135deg, #38bdf8, #2f6bff 60%, #1e40af); animation: glow-blue 2.4s ease-in-out infinite; }
+  @keyframes glow-blue { 0%, 100% { box-shadow: 0 10px 24px -8px rgba(47,107,255,0.7); } 50% { box-shadow: 0 10px 32px -4px rgba(56,189,248,0.75); } }
+  .btn.secondary { background: rgba(255,255,255,0.07); color: var(--ink); box-shadow: inset 0 0 0 1px rgba(140,170,255,0.22); }
+  .btn.ghost { background: transparent; color: #9cc0ff; border-color: rgba(140,170,255,0.3); }
+  .btn:disabled { animation: none; box-shadow: none; }
+
+  .board {
+    background:
+      radial-gradient(700px 220px at 50% -30%, rgba(125,211,252,0.14), transparent 60%),
+      radial-gradient(400px 200px at 100% 120%, rgba(99,102,241,0.16), transparent 60%),
+      linear-gradient(180deg, #0f2559, #071537);
+    box-shadow: inset 0 0 0 1px rgba(125,170,255,0.35), inset 0 22px 50px rgba(0,0,0,0.3), 0 24px 50px -24px rgba(0,0,0,0.8);
+  }
+  .board:before, .board:after { border-color: rgba(125,211,252,0.75); }
+  .equals, .cdot { color: #7dd3fc; }
+  .sign.plus { color: #a5b4fc; }
+  .factor.selected { background: #7dd3fc; color: #04122e; box-shadow: 0 0 0 3px rgba(125,211,252,0.3), 0 0 22px rgba(125,211,252,0.6); }
+  .term.selected { border-color: #7dd3fc; background: rgba(125,211,252,0.12); }
+  .side.over { outline-color: #7dd3fc; background: rgba(125,211,252,0.08); }
+
+  .shell.solo .workspace { width: 100%; max-width: 1180px; margin: 0 auto; }
+  .shell.solo .studio { margin-top: 0.5rem; }
+  .back-home {
+    display: inline-flex; align-items: center; gap: 0.35rem; margin: 0 0 0.7rem; padding: 0.42rem 0.9rem;
+    border: 1px solid rgba(125,211,252,0.35); border-radius: 999px; background: rgba(125,211,252,0.08);
+    color: #cfe8ff; font: inherit; font-size: 0.86rem; font-weight: 600; cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .back-home:hover { background: rgba(125,211,252,0.18); border-color: #7dd3fc; transform: translateX(-2px); }
+  .back-home:focus-visible { outline: 2px solid #7dd3fc; outline-offset: 2px; }
+  .topbar .back-home + .kicker { display: flex; }
+  .hero-stats { display: flex; gap: 2.4rem; margin: 2.2rem 0 0; padding: 0; }
+  .hero-stats div { position: relative; }
+  .hero-stats div + div::before { content: ""; position: absolute; left: -1.2rem; top: 15%; height: 70%; width: 1px; background: rgba(140,170,255,0.25); }
+  .hero-stats dt { font-size: 2rem; font-weight: 800; line-height: 1.1; background: linear-gradient(90deg, #fff, #7dd3fc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero-stats dd { margin: 0.15rem 0 0; color: #9fb0d8; font-size: 0.85rem; }
+
+  .page-head { margin: 0.2rem 0 1.4rem; }
+  .page-head h2 { margin: 0.45rem 0 0.35rem; color: #fff; font-size: clamp(1.6rem, 3.2vw, 2.3rem); line-height: 1.25; }
+  .page-head .j-sub { margin: 0; max-width: 46rem; }
+  .shell.solo .workspace { padding-bottom: 2.5rem; }
+
+  .lib-tools { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .lib-search { flex: 1 1 22rem; display: flex; align-items: center; gap: 0.6rem; padding: 0 1rem; border-radius: 14px; border: 1px solid rgba(140,170,255,0.28); background: rgba(6,14,40,0.75); transition: border-color 0.2s, box-shadow 0.2s; }
+  .lib-search:focus-within { border-color: #7dd3fc; box-shadow: 0 0 0 4px rgba(125,211,252,0.15); }
+  .lib-search span { color: #7dd3fc; font-size: 1.25rem; }
+  .lib-search input { flex: 1; min-width: 0; padding: 0.85rem 0; border: 0; outline: 0; background: transparent; color: #fff; font: inherit; font-size: 1rem; }
+  .lib-search input::placeholder { color: #6f80a8; }
+  .lib-count { color: #9fb0d8; font-size: 0.88rem; }
+  .lib-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.9rem 0 1.4rem; }
+  .lib-chip { min-width: 2.4rem; padding: 0.38rem 0.75rem; border-radius: 999px; border: 1px solid rgba(140,170,255,0.22); background: rgba(255,255,255,0.03); color: #b9c8ea; font: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+  .lib-chip:hover { border-color: rgba(125,211,252,0.6); color: #fff; }
+  .lib-chip.on { background: linear-gradient(135deg, #3b74ff, #22b8f0); border-color: transparent; color: #fff; box-shadow: 0 8px 20px -10px rgba(47,107,255,0.9); }
+  .lib-group { margin: 0 0 1.8rem; }
+  .lib-ghead { display: flex; align-items: center; gap: 0.9rem; padding: 0 0 0.75rem; margin-bottom: 0.9rem; border-bottom: 1px solid rgba(140,170,255,0.14); }
+  .lib-no { flex: none; width: 2.6rem; height: 2.6rem; display: grid; place-items: center; border-radius: 12px; background: var(--c); color: #fff; font-weight: 800; box-shadow: 0 6px 18px -8px var(--c); }
+  .lib-ghead h3 { margin: 0; color: #fff; font-size: 1.12rem; }
+  .lib-ghead p { margin: 0.1rem 0 0; color: #8798c2; font-size: 0.82rem; }
+  .lib-gact { margin-left: auto; display: flex; gap: 1rem; }
+  .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 0.85rem; }
+  .fcard { display: flex; flex-direction: column; gap: 0.55rem; padding: 1rem 1.1rem; border-radius: 16px; border: 1px solid rgba(140,170,255,0.16); border-top: 3px solid var(--c); background: linear-gradient(180deg, rgba(30,58,138,0.26), rgba(9,20,52,0.6)); transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; }
+  .fcard:hover { transform: translateY(-3px); border-color: rgba(125,170,255,0.4); box-shadow: 0 18px 36px -22px rgba(47,107,255,0.8); }
+  .fcard-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+  .fcard-top strong { color: #fff; font-size: 0.98rem; }
+  .fcard .used { flex: none; padding: 0.1rem 0.5rem; border-radius: 999px; background: rgba(74,222,128,0.14); color: #86efac; font-size: 0.72rem; font-weight: 700; }
+  .fcard-eq { padding: 0.6rem 0.8rem; border-radius: 10px; background: rgba(2,6,23,0.55); color: #e0f2fe; font: italic 1.2rem Cambria, "Cambria Math", Georgia, serif; text-align: center; overflow-x: auto; white-space: nowrap; }
+  .fcard-when { margin: 0; color: #9fb0d8; font-size: 0.85rem; }
+  .fcard-vars { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .vchip { display: inline-flex; align-items: baseline; gap: 0.3rem; padding: 0.15rem 0.5rem; border-radius: 8px; background: rgba(125,211,252,0.08); color: #b9c8ea; font-size: 0.74rem; }
+  .vchip b { color: #7dd3fc; font: italic 700 0.9rem Cambria, Georgia, serif; }
+  .vchip i { color: #6f80a8; font-style: normal; }
+  .lib-empty { padding: 2rem; text-align: center; color: #9fb0d8; border: 1px dashed rgba(140,170,255,0.25); border-radius: 16px; }
+  [hidden] { display: none !important; }
+
+  .pstats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.9rem; margin-bottom: 1.1rem; }
+  .pstat { padding: 1.1rem 1.2rem; border-radius: 18px; border: 1px solid rgba(140,170,255,0.18); background: linear-gradient(160deg, rgba(47,107,255,0.22), rgba(9,20,52,0.6)); }
+  .pstat strong { display: block; font-size: 2.2rem; line-height: 1.1; color: #fff; }
+  .pstat strong small { font-size: 1rem; color: #8798c2; font-weight: 600; }
+  .pstat span { color: #9fb0d8; font-size: 0.86rem; }
+  .pgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; }
+  .pcard { padding: 1.2rem 1.3rem; border-radius: 20px; border: 1px solid rgba(140,170,255,0.16); background: linear-gradient(180deg, rgba(20,40,100,0.3), rgba(6,14,40,0.7)); }
+  .pcard.pwide { grid-column: 1 / -1; }
+  .pcard h3 { margin: 0 0 0.9rem; color: #fff; font-size: 1.08rem; }
+  .pcard-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  .pcard-head h3 { margin-bottom: 0.9rem; }
+  .heat-legend { display: flex; gap: 3px; margin-bottom: 0.9rem; }
+  .heat-legend i { width: 14px; height: 14px; border-radius: 4px; }
+  .heatmap { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 0.5rem; }
+  .heat { display: flex; flex-direction: column; gap: 0.15rem; min-height: 5.4rem; padding: 0.55rem 0.6rem; border-radius: 12px; border: 1px solid rgba(140,170,255,0.14); color: #b9c8ea; text-align: left; font: inherit; cursor: pointer; overflow: hidden; transition: transform 0.2s, border-color 0.2s; }
+  .heat:hover { transform: translateY(-2px); border-color: #7dd3fc; }
+  .heat b { font-size: 1.1rem; color: #fff; }
+  .heat span { font-size: 0.7rem; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .heat em { margin-top: auto; font-style: normal; font-size: 0.7rem; color: #8798c2; }
+  .lv0 { background: rgba(255,255,255,0.03); }
+  .lv1 { background: rgba(59,116,255,0.2); }
+  .lv2 { background: rgba(59,116,255,0.38); }
+  .lv3 { background: rgba(59,130,255,0.58); }
+  .lv4 { background: linear-gradient(135deg, #3b74ff, #22b8f0); }
+  .heat.lv3 em, .heat.lv4 em { color: #e0f2fe; }
+  .pnote { margin: 0.8rem 0 0; color: #7183ad; font-size: 0.8rem; }
+  .pempty { margin: 0; padding: 1.2rem; border-radius: 12px; border: 1px dashed rgba(140,170,255,0.22); color: #9fb0d8; font-size: 0.9rem; }
+  .recent { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+  .recent li { display: flex; align-items: center; gap: 0.75rem; padding: 0.55rem 0.7rem; border-radius: 12px; background: rgba(255,255,255,0.03); }
+  .recent .rdot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--c); box-shadow: 0 0 10px var(--c); }
+  .recent div { flex: 1; min-width: 0; }
+  .recent strong { color: #fff; font-size: 0.9rem; }
+  .recent p { margin: 0; color: #8798c2; font-size: 0.78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .recent time { flex: none; color: #7183ad; font-size: 0.75rem; }
+  .topf { list-style: none; margin: 0 0 1rem; padding: 0; display: grid; gap: 0.45rem; counter-reset: tf; }
+  .topf li { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.7rem; padding: 0.5rem 0.7rem; border-radius: 12px; background: rgba(255,255,255,0.03); color: #b9c8ea; font-size: 0.85rem; }
+  .topf .eqmini { color: #e0f2fe; font: italic 0.98rem Cambria, Georgia, serif; white-space: nowrap; }
+  .topf b { color: #7dd3fc; }
+  .psuggest { padding: 1rem 1.1rem; border-radius: 16px; border: 1px solid rgba(125,211,252,0.25); background: radial-gradient(120% 140% at 0% 0%, rgba(59,116,255,0.25), rgba(6,14,40,0.4)); }
+  .psuggest span { color: #7dd3fc; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; }
+  .psuggest strong { display: block; margin: 0.2rem 0; color: #fff; }
+  .psuggest p { margin: 0 0 0.8rem; color: #9fb0d8; font-size: 0.85rem; }
+  .psuggest-act { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .psuggest .btn.hero-go { padding: 0.6rem 1.2rem; }
+  .shell.enter .page-head, .shell.enter .pstats, .shell.enter .pgrid, .shell.enter .lib-tools, .shell.enter #lib-body { animation: card-in 560ms cubic-bezier(.2,.8,.2,1) both; }
+  .shell.enter .pstats, .shell.enter .lib-tools { animation-delay: 80ms; }
+  .shell.enter .pgrid, .shell.enter #lib-body { animation-delay: 160ms; }
+  @media (max-width: 1200px) {
+    .journey-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .heatmap { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  }
+  @media (max-width: 900px) {
+    .hero-stats { gap: 1.8rem; justify-content: center; }
+    .hero-stats div + div::before { left: -0.9rem; }
+    .pstats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pgrid { grid-template-columns: minmax(0, 1fr); }
+    .lib-ghead { flex-wrap: wrap; }
+    .lib-gact { margin-left: 0; width: 100%; }
+    .shell.solo .workspace { padding-left: 0.95rem; padding-right: 0.95rem; }
+  }
+  @media (max-width: 560px) {
+    .journey-grid { grid-template-columns: minmax(0, 1fr) !important; }
+    .heatmap { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .heat span { display: none; }
+    .heat { min-height: 3.6rem; }
+  }
+  .shell.home .workspace { width: 100%; max-width: 1380px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 3.5rem) 1rem; overflow: visible; }
+  .home-hero {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;
+    min-height: min(calc(100vh - var(--nav-h) - 2rem), 760px); min-height: min(calc(100dvh - var(--nav-h) - 2rem), 760px); padding: 2.2rem 0 1.5rem;
+  }
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 0.6rem; margin: 0 0 1.5rem;
+    padding: 0.5rem 1.2rem; border-radius: 999px; font-size: 0.98rem; color: #cfe0ff;
+    border: 1px solid rgba(125,170,255,0.3); background: rgba(59,116,255,0.1);
+  }
+  .hero-pill i { width: 10px; height: 10px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 10px #4ade80; animation: blink 2s ease-in-out infinite; }
+  @keyframes blink { 50% { opacity: 0.35; } }
+  .hero-title {
+    margin: 0; color: #fff; font-family: "Segoe UI", "Leelawadee UI", sans-serif; font-weight: 800;
+    font-size: clamp(3.4rem, 8.2vw, 7rem); line-height: 1.0; letter-spacing: -0.025em;
+    text-shadow: 0 10px 40px rgba(47,107,255,0.25);
+  }
+  .hero-title span {
+    background: linear-gradient(90deg, #ffffff 0%, #d6e4ff 30%, #6ea8ff 65%, #7dd3fc 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero-lead { margin: 1.15rem 0 1rem; max-width: 35rem; color: #c3d0ee; font-size: 1rem; }
+  .hero-quote { margin: 1.8rem 0 2.3rem; max-width: 36rem; padding: 0.55rem 0 0.55rem 1.25rem; border-left: 4px solid #5b8cff; color: #dbe6ff; font-size: 1.28rem; line-height: 1.6; }
+  .hero-copy { padding-bottom: 1.2rem; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .btn.hero-go {
+    padding: 0.8rem 1.55rem; border-radius: 14px; font-weight: 700;
+    background: linear-gradient(135deg, #5b8cff, #2f6bff 50%, #22b8f0);
+  }
+  .hero-actions .btn.hero-go, .hero-actions .btn.hero-alt { padding: 1rem 2.1rem; font-size: 1.15rem; border-radius: 16px; }
+  .hero-actions { gap: 1rem; }
+  .btn.hero-go {
+    box-shadow: 0 12px 32px -8px rgba(47,107,255,0.85), inset 0 0 0 1px rgba(255,255,255,0.14);
+  }
+  .btn.hero-alt { padding: 0.8rem 1.55rem; border-radius: 14px; font-weight: 700; background: rgba(255,255,255,0.06); color: #e8eeff; box-shadow: inset 0 0 0 1px rgba(140,170,255,0.28); }
+  .hero-art { position: relative; text-align: center; }
+  .hero-tag { margin: 0 0 0.6rem; color: #a9bce6; font-size: 0.9rem; letter-spacing: 0.34em; }
+  .hero-atom { width: 100%; max-width: 640px; height: auto; overflow: visible; user-select: none; -webkit-user-select: none; }
+  .hero-atom .nucleus { animation: nuc 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes nuc { 50% { transform: scale(1.08); filter: drop-shadow(0 0 16px rgba(110,168,255,0.9)); } }
+  .hero-atom .pendulum { transform-box: view-box; transform-origin: 70px 150px; animation: swing 2.2s ease-in-out infinite alternate; }
+  @keyframes swing { from { transform: rotate(-24deg); } to { transform: rotate(24deg); } }
+  .hero-atom .wave { stroke-dasharray: 10 6; animation: wave-run 1.8s linear infinite; }
+  @keyframes wave-run { to { stroke-dashoffset: -32; } }
+  .hero-atom .electron { filter: drop-shadow(0 0 6px rgba(191,219,254,0.95)); }
+  .hero-atom .glyph { fill: rgba(190,210,255,0.6); font: italic 17px Cambria, Georgia, serif; }
+  .journey { text-align: center; padding: 2.5rem 0 0.5rem; scroll-margin-top: var(--nav-h); }
+  .hero-go span { display: inline-block; margin-left: 0.35rem; animation: nudge 1.6s ease-in-out infinite; }
+  @keyframes nudge { 50% { transform: translateY(4px); } }
+  .j-kicker { margin: 0; color: #7da7ff; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.28em; }
+  .journey h2, .studio h2 { margin: 0.5rem 0 0.4rem; color: #fff; font-size: clamp(1.6rem, 3.4vw, 2.4rem); line-height: 1.25; }
+  .j-sub { margin: 0 auto; max-width: 40rem; color: #9fb0d8; font-size: 0.95rem; }
+  .journey-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.1rem; margin-top: 1.9rem; text-align: left; }
+  .journey-card {
+    display: flex; flex-direction: column; gap: 0.55rem; width: 100%; text-align: left; color: var(--ink);
+    padding: 1.4rem 1.35rem; border-radius: 20px; border: 1px solid rgba(140,170,255,0.18);
+    background: linear-gradient(180deg, rgba(30,58,138,0.32), rgba(9,20,52,0.6));
+    transition: transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
+  }
+  .journey-card:hover { transform: translateY(-5px); border-color: rgba(125,170,255,0.5); box-shadow: 0 22px 44px -22px rgba(47,107,255,0.75); }
+  .j-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 12px; font-size: 1.15rem; color: #cfe0ff; background: rgba(59,116,255,0.18); border: 1px solid rgba(125,170,255,0.3); }
+  .journey-card strong { font-size: 1.1rem; color: #fff; }
+  .journey-card p { margin: 0; flex: 1; color: #9fb0d8; font-size: 0.92rem; }
+  .journey-card .go { color: #cfe0ff; font-weight: 700; font-size: 0.92rem; transition: letter-spacing 200ms ease; }
+  .journey-card:hover .go { letter-spacing: 0.02em; }
+  .studio {
+    display: grid; grid-template-columns: 1.45fr 1fr; gap: 1.4rem; align-items: center; scroll-margin-top: calc(var(--nav-h) + 1rem);
+    margin: 3rem 0 1rem; padding: 1.6rem; border-radius: 24px; border: 1px solid rgba(140,170,255,0.18);
+    background: linear-gradient(160deg, rgba(30,58,138,0.3), rgba(6,14,40,0.7));
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.8);
+  }
+  .studio-note { margin: 0 0 0.8rem; color: #9fb0d8; font-size: 0.92rem; }
+  .studio .side-prompt { min-height: 9.5rem; }
+  .studio-go { display: flex; align-items: center; gap: 0.9rem; margin-top: 0.85rem; flex-wrap: wrap; }
+  .studio-go .kbd-hint { margin: 0; }
+  .studio .guide { grid-template-columns: 1fr; }
+  .home-foot { padding: 1.4rem 0 0.6rem; text-align: center; color: #7183ad; font-size: 0.82rem; }
+  .shell.enter .home-hero > *, .shell.enter .journey, .shell.enter .studio { animation: card-in 640ms cubic-bezier(.2,.8,.2,1) both; }
+  .shell.enter .home-hero > *:nth-child(2) { animation-delay: 140ms; }
+  .shell.enter .journey { animation-delay: 220ms; }
+
+  @media (max-width: 900px) {
+    :root { --nav-h: 3.6rem; }
+    .shell, .shell.home, .shell.solo { grid-template-columns: minmax(0, 1fr); }
+    .topnav { padding: 0.5rem 0.8rem; gap: 0.5rem; }
+    .topnav .brand { min-width: 0; }
+    .brand .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .nav-tabs { flex: none; }
+    .nav-tabs button { white-space: nowrap; }
+    .sidebar { position: relative; top: 0; height: auto; backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(6,14,40,0.92); border-bottom: 1px solid rgba(140,170,255,0.14); }
+    .sheet, .card { background: rgba(11,24,60,0.94); }
+    .shell.home .workspace { padding: 0 0.95rem 1rem; }
+    .home-hero { grid-template-columns: 1fr; min-height: 0; gap: 0.8rem; padding: 1.6rem 0 0.5rem; }
+    .hero-atom { max-width: 360px; }
+    .journey-grid, .studio { grid-template-columns: 1fr; }
+    .studio { padding: 1.1rem; margin-top: 2rem; }
+    .btn.hero-go, .btn.hero-alt { flex: 1 1 auto; }
+  }
+  @media (max-width: 480px) {
+    .mark { width: 34px; height: 34px; }
+    .mark svg { width: 22px; height: 22px; }
+    .brand .name { font-size: 0.9rem; }
+    .topnav .brand { gap: 0.45rem; }
+    .nav-tabs button { padding: 0.35rem 0.6rem; font-size: 0.8rem; min-height: 2.1rem; }
+    .hero-tag { letter-spacing: 0.18em; }
+  }
+  @media print {
+    body { background: white; }
+    .topnav { display: none !important; }
+    .sheet, .card { background: white; color: black; }
+  }
 </style>
 </head>
 <body>
@@ -1452,7 +1885,7 @@ var problems = [
 
 var STEP_LABELS = ['กรอกโจทย์', 'หัวข้อ', 'ตัวแปรและสูตร', 'จัดรูปและคำตอบ'];
 var STEP_HELP = [
-  'พิมพ์โจทย์ทางซ้าย ระบบอ่านข้อความแล้วชี้บทให้ทันที',
+  'พิมพ์โจทย์ในกล่องด้านล่าง ระบบอ่านข้อความแล้วชี้บทให้ทันที',
   'ตรวจบทที่ระบบวิเคราะห์จากโจทย์ เปลี่ยนได้ถ้าไม่ตรง',
   'ใส่ค่าเอง แล้วคลิกสูตร ถ้าโจทย์ยากระบบอาจแนะนำหลายสูตรทีละขั้น',
   'ย้ายข้างหรือแทนค่า จากนั้นระบบวิเคราะห์คำตอบ ถ้ายังไม่จบจะพาไปสูตรถัดไป'
@@ -3080,7 +3513,8 @@ var state = {
   topicTries: 0, formulaTries: 0, hintOn: false, result: null,
   solved: [], confirmWipe: false, confidence: 0, ranked: [], clears: 0,
   goalUnknown: null, plan: [], planIndex: 0, chainLog: [],
-  view: 'tutor', simId: null, simWide: false
+  view: 'home', simId: null, simWide: false,
+  libQ: '', libCh: 'all', log: []
 };
 var SIMS = [
   { id: 'nature', title: 'ธรรมชาติและพฤติกรรมทางฟิสิกส์', grade: 'ม.4', topicNo: 1, color: '#2a6f97',
@@ -3130,7 +3564,7 @@ function simForTopic(topicId) {
   if (!t) return null;
   return SIMS.filter(function (s) { return s.topicNo === t.no; })[0] || null;
 }
-var memory = { v: 4, solved: [], session: null, clears: 0 };
+var memory = { v: 4, solved: [], session: null, clears: 0, log: [] };
 var dragPayload = null;
 var suppressClick = false;
 
@@ -3212,6 +3646,7 @@ function persist() {
   memory.v = 4;
   memory.solved = state.solved.slice();
   memory.clears = state.clears || 0;
+  memory.log = (state.log || []).slice(-300);
   memory.session = snapshot();
   memory.view = state.view;
   memory.simId = state.simId;
@@ -3226,7 +3661,8 @@ function loadStore() {
     if (!data || data.v < 2 || data.v > 4) return;
     state.solved = Array.isArray(data.solved) ? data.solved.filter(function (id) { return problems.some(function (p) { return p.id === id; }); }) : [];
     state.clears = data.clears || 0;
-    state.view = data.view === 'sims' ? 'sims' : 'tutor';
+    state.log = Array.isArray(data.log) ? data.log.filter(function (e) { return e && formulaById(e.f) && topicById(e.t) && isFinite(e.at); }) : [];
+    state.view = data.view === 'sims' ? 'sims' : 'home';
     state.simId = simById(data.simId) ? data.simId : null;
     state.simWide = !!data.simWide;
     var draft = sanitize(data.session);
@@ -3310,7 +3746,7 @@ function render() {
   if (!app) return;
   try {
     ensureConsistent();
-    var pageKey = state.view === 'sims' ? 'sims:' + (state.simId || '') : 'tutor:' + state.step;
+    var pageKey = state.view === 'sims' ? 'sims:' + (state.simId || '') : (state.view === 'tutor' ? 'tutor:' + state.step : state.view);
     var jump = render.page !== pageKey;
     var side = document.querySelector('.sidebar');
     var work = document.getElementById('workspace');
@@ -3320,8 +3756,8 @@ function render() {
     var active = document.activeElement;
     if (active && active.dataset && active.dataset.field === 'value') focusKey = active.dataset.key;
     var simOpen = state.view === 'sims' && simById(state.simId);
-    var shellCls = 'shell' + (simOpen ? ' sim-mode' + (state.simWide ? ' wide' : '') : '') + (jump ? ' enter' : '') + (fx.flash ? ' flash' : '');
-    app.innerHTML = '<div class="' + shellCls + '">' + renderSidebar() + '<div class="workspace" id="workspace">' + renderMain() + '</div></div>';
+    var shellCls = 'shell' + (isHome() ? ' home' : (noSidebar() ? ' solo' : '')) + (simOpen ? ' sim-mode' + (state.simWide ? ' wide' : '') : '') + (jump ? ' enter' : '') + (fx.flash ? ' flash' : '');
+    app.innerHTML = '<div class="' + shellCls + '">' + renderTopNav() + renderSidebar() + '<div class="workspace" id="workspace">' + renderMain() + '</div></div>';
     fx.flash = false;
     if (fx.celebrate) { fx.celebrate = false; fxConfetti(); }
     var side2 = document.querySelector('.sidebar');
@@ -3334,7 +3770,10 @@ function render() {
           try { anchor.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
           catch (err) { window.scrollTo(0, anchor.offsetTop || 0); }
         } else window.scrollTo(0, 0);
-      } else if (work2) work2.scrollTop = 0;
+      } else {
+        if (work2) work2.scrollTop = 0;
+        if (render.page) window.scrollTo(0, 0);
+      }
     } else if (work2) work2.scrollTop = ws;
     if (fx.focusKey) { focusKey = fx.focusKey; fx.focusKey = null; }
     if (focusKey) {
@@ -3345,6 +3784,7 @@ function render() {
     if (simOpen) setTimeout(function () { var w = document.getElementById('sim-wrap'); if (w && w.classList) w.classList.add('ready'); }, 8000);
     persist();
     paintTopicLive();
+    if (state.view === 'library') filterLibrary();
   } catch (err) {
     app.innerHTML = '<div class="workspace" style="padding:2rem"><div class="msg bad">หน้าจอมีปัญหาชั่วคราว กดโจทย์ใหม่แล้วลองอีกครั้ง</div><button type="button" class="btn" data-act="fresh">โจทย์ใหม่</button></div>';
   }
@@ -3365,6 +3805,180 @@ function canDragBoard() {
   if (window.matchMedia && window.matchMedia('(pointer: fine)').matches) return true;
   return !('ontouchstart' in window);
 }
+function isHome() { return state.view === 'home'; }
+function isPage() { return state.view === 'library' || state.view === 'progress'; }
+function noSidebar() { return isHome() || isPage() || (state.view === 'tutor' && state.step === 1); }
+function renderTopNav() {
+  return '<header class="topnav"><button type="button" class="brand" data-act="go-home" aria-label="Physics Learning กลับหน้าแรก"><span class="mark" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="4.2" fill="currentColor"></circle>' +
+    '<ellipse cx="24" cy="24" rx="18" ry="7" fill="none" stroke="currentColor" stroke-width="2"></ellipse>' +
+    '<ellipse cx="24" cy="24" rx="18" ry="7" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(60 24 24)"></ellipse>' +
+    '<ellipse cx="24" cy="24" rx="18" ry="7" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(-60 24 24)"></ellipse></svg></span>' +
+    '<span class="name">Physics Learning</span></button></header>';
+}
+function renderHome() {
+  var solved = state.clears || 0;
+  var atom = '<svg class="hero-atom" viewBox="0 0 420 340" aria-hidden="true"><defs>' +
+    '<radialGradient id="nuc" cx="38%" cy="35%" r="70%"><stop offset="0" stop-color="#e6f0ff"/><stop offset="0.45" stop-color="#6aa5ff"/><stop offset="1" stop-color="#1d3fa8"/></radialGradient>' +
+    '<radialGradient id="halo" r="50%"><stop offset="0" stop-color="#4f8cff" stop-opacity="0.55"/><stop offset="1" stop-color="#4f8cff" stop-opacity="0"/></radialGradient>' +
+    '<linearGradient id="waveg" x1="0" x2="1"><stop offset="0" stop-color="#7dd3fc" stop-opacity="0"/><stop offset="0.5" stop-color="#7dd3fc"/><stop offset="1" stop-color="#a5b4fc" stop-opacity="0"/></linearGradient></defs>' +
+    '<circle cx="250" cy="160" r="120" fill="url(#halo)"/>' +
+    [[0, '#dbeafe', 5.5, 6, '0s'], [60, '#bfdbfe', 5, 8, '-2s'], [-60, '#93c5fd', 5, 7, '-4.5s']].map(function (o) {
+      return '<g transform="rotate(' + o[0] + ' 250 160)"><ellipse cx="250" cy="160" rx="135" ry="52" fill="none" stroke="rgba(170,200,255,0.42)" stroke-width="1.4"/>' +
+        '<circle r="' + o[2] + '" fill="' + o[1] + '" class="electron"><animateMotion dur="' + o[3] + 's" begin="' + o[4] + '" repeatCount="indefinite" path="M115 160 a135 52 0 1 0 270 0 a135 52 0 1 0 -270 0"/></circle></g>';
+    }).join('') +
+    '<circle cx="250" cy="160" r="26" fill="url(#nuc)" class="nucleus"/>' +
+    '<g class="pendulum"><line x1="70" y1="150" x2="70" y2="240" stroke="rgba(200,220,255,0.7)" stroke-width="1.6"/><circle cx="70" cy="248" r="11" fill="#3b6fe0" stroke="#bcd3ff" stroke-width="1.5"/></g>' +
+    '<line x1="48" y1="150" x2="92" y2="150" stroke="rgba(200,220,255,0.6)" stroke-width="2" stroke-linecap="round"/>' +
+    '<path class="wave" d="M300 300 q15 -22 30 0 t30 0 t30 0 t30 0" fill="none" stroke="url(#waveg)" stroke-width="2.4" stroke-linecap="round"/>' +
+    '<text x="352" y="282" class="glyph">λ</text><text x="40" y="118" class="glyph">T = 2π√(ℓ/g)</text></svg>';
+  var card = function (icon, title, text, act, link) {
+    return '<button type="button" class="journey-card" data-act="' + act + '"><span class="j-icon" aria-hidden="true">' + icon + '</span>' +
+      '<strong>' + title + '</strong><p>' + text + '</p><span class="go">' + link + ' →</span></button>';
+  };
+  return '<section class="home-hero"><div class="hero-copy">' +
+    '<p class="hero-pill"><i></i>Interactive Physics · Learn by Solving</p>' +
+    '<h1 class="hero-title">Physics<br><span>Learning</span></h1>' +
+    '<blockquote class="hero-quote">“ฟิสิกส์ไม่ใช่การท่องสูตร แต่คือการเข้าใจว่าธรรมชาติทำงานอย่างไร”</blockquote>' +
+    '<div class="hero-actions"><button type="button" class="btn hero-go" data-act="go-journey">เริ่มเรียน <span aria-hidden="true">↓</span></button></div>' +
+    '<dl class="hero-stats"><div><dt>' + formulas.length + '</dt><dd>สูตรในระบบ</dd></div><div><dt>' + topics.length + '</dt><dd>บท ม.4–ม.6</dd></div><div><dt>' + SIMS.length + '</dt><dd>สื่อจำลอง</dd></div></dl></div>' +
+    '<div class="hero-art"><p class="hero-tag">EXPLORE · UNDERSTAND · SOLVE</p>' + atom + '</div></section>' +
+    '<section class="journey" id="journey"><p class="j-kicker">YOUR PHYSICS JOURNEY</p><h2>เริ่มต้นการเดินทางในจักรวาลของฟิสิกส์</h2>' +
+    '<p class="j-sub">พิมพ์โจทย์ของตัวเอง แล้วให้ระบบช่วยคิดทีละขั้น หรือเปิดสื่อจำลองเพื่อทดลองดูผลจริง</p>' +
+    '<div class="journey-grid">' +
+    card('✎', 'เริ่มทำโจทย์', 'พิมพ์โจทย์เอง ระบบชี้บท ตัวแปร และสูตร แล้วนักเรียนจัดรูปสมการและคำนวณเอง', 'view-tutor', state.step > 1 ? 'ทำโจทย์ที่ค้างไว้ต่อ' : 'ไปพิมพ์โจทย์') +
+    card('◎', 'สื่อจำลองฟิสิกส์', 'ทดลองปรับค่าตัวแปรแล้วดูผลทันที ครบ ' + SIMS.length + ' บท ตั้งแต่การเคลื่อนที่ถึงฟิสิกส์นิวเคลียร์', 'view-sims', 'สำรวจสื่อจำลอง') +
+    card('∑', 'คลังสูตร', 'รวม ' + formulas.length + ' สูตรทุกบท พร้อมเงื่อนไขการใช้และความหมายของตัวแปร ค้นหาได้ทันที', 'view-library', 'เปิดคลังสูตร') +
+    card('↗', 'ความก้าวหน้า', 'แก้โจทย์สำเร็จแล้ว ' + solved + ' ข้อ ดูแผนที่การฝึกทั้ง 20 บท สูตรที่ใช้บ่อย และวันฝึกต่อเนื่อง', 'view-progress', 'ดูความก้าวหน้า') +
+    '</div></section>' +
+    '<footer class="home-foot">Physics Learning · ระบบฝึกคิดโจทย์ฟิสิกส์ตามหลักสูตร สสวท. เล่ม 1–6</footer>';
+}
+function renderStudio() {
+  return '<section class="studio" id="studio"><div class="studio-input"><p class="j-kicker">PROBLEM STUDIO</p><h2>พิมพ์โจทย์ที่ต้องการแก้</h2>' +
+    '<p class="studio-note">ใส่ตัวเลขพร้อมหน่วย (km/h, cm, g, mA, °C ได้หมด) แล้วลงท้ายด้วย จงหา ถามหลายค่าได้ เช่น จงหาความเร่งและระยะทาง</p>' +
+    '<textarea id="prompt" class="side-prompt" data-field="prompt" placeholder="เช่น ยิงลูกบอลด้วยความเร็ว 72 km/h ทำมุม 30 องศากับแนวราบ จงหาความสูงสูงสุดและระยะทางแนวราบ" enterkeyhint="done">' + esc(state.prompt) + '</textarea>' +
+    '<div id="topic-live"></div><div class="studio-go"><button type="button" class="btn hero-go" data-act="analyze">วิเคราะห์โจทย์</button><span class="kbd-hint">ทางลัด Ctrl+Enter</span></div></div>' +
+    '<ol class="guide"><li><strong><span class="n">1</span>กรอกโจทย์</strong>พิมพ์โจทย์ด้วยคำของตัวเอง</li>' +
+    '<li><strong><span class="n">2</span>หัวข้อ</strong>ระบบเลือกบทให้อัตโนมัติ</li>' +
+    '<li><strong><span class="n">3</span>ตัวแปรและสูตร</strong>ใส่ค่าเอง แล้วคลิกสูตร</li>' +
+    '<li><strong><span class="n">4</span>จัดรูปและคำตอบ</strong>ย้ายข้าง แทนค่า แล้ววิเคราะห์ผล</li></ol></section>';
+}
+function pageHead(kicker, title, sub) {
+  return '<button type="button" class="back-home" data-act="go-home">← กลับหน้าแรก</button>' +
+    '<header class="page-head"><p class="j-kicker">' + kicker + '</p><h2>' + title + '</h2>' + (sub ? '<p class="j-sub">' + sub + '</p>' : '') + '</header>';
+}
+function varChip(key) {
+  var info = SYM[key];
+  if (!info) return '';
+  return '<span class="vchip" title="' + esc(info.name + (info.unitTh ? ' · ' + info.unitTh : '')) + '"><b>' + esc(info.sym) + '</b>' + esc(info.name) + (info.unit ? ' <i>' + esc(info.unit) + '</i>' : '') + '</span>';
+}
+function libText(f, t) {
+  return [f.name, f.classic, f.when || '', 'บทที่ ' + t.no, t.name].concat(f.vars.map(function (k) { return SYM[k] ? SYM[k].sym + ' ' + SYM[k].name : k; })).join(' ').toLowerCase();
+}
+function renderLibrary() {
+  var used = {};
+  (state.log || []).forEach(function (e) { used[e.f] = (used[e.f] || 0) + 1; });
+  var chips = '<button type="button" class="lib-chip' + (state.libCh === 'all' ? ' on' : '') + '" data-act="lib-ch" data-ch="all">ทุกบท</button>' +
+    topics.map(function (t) {
+      return '<button type="button" class="lib-chip' + (state.libCh === t.id ? ' on' : '') + '" data-act="lib-ch" data-ch="' + t.id + '" style="--c:' + t.stripe + '">' + t.no + '</button>';
+    }).join('');
+  var groups = topics.filter(function (t) { return state.libCh === 'all' || state.libCh === t.id; }).map(function (t) {
+    var list = formulas.filter(function (f) { return f.topic === t.id; });
+    if (!list.length) return '';
+    var sim = simForTopic(t.id);
+    var cards = list.map(function (f) {
+      return '<article class="fcard" data-s="' + esc(libText(f, t)) + '">' +
+        '<div class="fcard-top"><strong>' + esc(f.name) + '</strong>' + (used[f.id] ? '<span class="used">ใช้แล้ว ' + used[f.id] + ' ครั้ง</span>' : '') + '</div>' +
+        '<div class="fcard-eq">' + esc(f.classic) + '</div>' +
+        (f.when ? '<p class="fcard-when">' + esc(f.when) + '</p>' : '') +
+        '<div class="fcard-vars">' + f.vars.map(varChip).join('') + '</div></article>';
+    }).join('');
+    return '<section class="lib-group" style="--c:' + t.stripe + '"><div class="lib-ghead"><span class="lib-no">' + t.no + '</span><div><h3>' + esc(t.name) + '</h3><p>' + esc(t.grade + ' · ' + t.vol + ' · ' + list.length + ' สูตร') + '</p></div>' +
+      '<div class="lib-gact">' + (sim ? '<button type="button" class="linkish" data-act="open-sim" data-id="' + sim.id + '">เปิดสื่อจำลอง</button>' : '') +
+      '<button type="button" class="linkish" data-act="view-tutor">ฝึกโจทย์</button></div></div><div class="lib-grid">' + cards + '</div></section>';
+  }).join('');
+  return pageHead('FORMULA LIBRARY', 'คลังสูตรฟิสิกส์', 'รวม ' + formulas.length + ' สูตรจาก ' + topics.length + ' บท พร้อมเงื่อนไขการใช้และความหมายของตัวแปร ค้นหาด้วยชื่อสูตร ปริมาณ หรือสัญลักษณ์ก็ได้') +
+    '<div class="lib-tools"><label class="lib-search"><span aria-hidden="true">⌕</span><input type="search" data-field="libq" placeholder="ค้นหา เช่น ความเร่ง, พลังงาน, λ, โมเมนตัม" value="' + esc(state.libQ) + '" aria-label="ค้นหาสูตร"></label>' +
+    '<span class="lib-count" id="lib-count"></span></div><div class="lib-chips" role="group" aria-label="เลือกบท">' + chips + '</div>' +
+    '<div id="lib-body">' + groups + '</div><p class="lib-empty" id="lib-empty" hidden>ไม่พบสูตรที่ตรงกับคำค้น ลองใช้คำที่สั้นลง หรือเลือกทุกบท</p>';
+}
+function filterLibrary() {
+  var body = document.getElementById('lib-body');
+  if (!body || !body.querySelectorAll) return;
+  var q = String(state.libQ || '').trim().toLowerCase();
+  var words = q ? q.split(/\s+/) : [];
+  var shown = 0;
+  Array.prototype.forEach.call(body.querySelectorAll('.lib-group'), function (g) {
+    var any = 0;
+    Array.prototype.forEach.call(g.querySelectorAll('.fcard'), function (c) {
+      var s = c.getAttribute('data-s') || '';
+      var hit = words.every(function (w) { return s.indexOf(w) !== -1; });
+      c.hidden = !hit;
+      if (hit) any += 1;
+    });
+    g.hidden = !any;
+    shown += any;
+  });
+  var count = document.getElementById('lib-count');
+  if (count) count.textContent = 'แสดง ' + shown + ' สูตร';
+  var empty = document.getElementById('lib-empty');
+  if (empty) empty.hidden = shown > 0;
+}
+function dayKey(ms) { var d = new Date(ms); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+function streakDays(log) {
+  var days = {};
+  log.forEach(function (e) { days[dayKey(e.at)] = true; });
+  var d = new Date();
+  if (!days[dayKey(d.getTime())]) d.setDate(d.getDate() - 1);
+  var n = 0;
+  while (days[dayKey(d.getTime())]) { n += 1; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function agoText(ms) {
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  var then = new Date(ms); then.setHours(0, 0, 0, 0);
+  var diff = Math.round((today - then) / 86400000);
+  if (diff <= 0) return 'วันนี้';
+  if (diff === 1) return 'เมื่อวาน';
+  if (diff < 30) return diff + ' วันก่อน';
+  return then.getDate() + '/' + (then.getMonth() + 1) + '/' + (then.getFullYear() + 543);
+}
+function renderProgress() {
+  var log = state.log || [];
+  var perTopic = {}, perFormula = {};
+  log.forEach(function (e) { perTopic[e.t] = (perTopic[e.t] || 0) + 1; perFormula[e.f] = (perFormula[e.f] || 0) + 1; });
+  var touched = topics.filter(function (t) { return perTopic[t.id]; }).length;
+  var max = Math.max.apply(null, [1].concat(topics.map(function (t) { return perTopic[t.id] || 0; })));
+  var streak = streakDays(log);
+  var stat = function (num, label) { return '<div class="pstat"><strong>' + num + '</strong><span>' + label + '</span></div>'; };
+  var stats = '<div class="pstats">' + stat(state.clears || 0, 'ข้อที่แก้สำเร็จ') + stat(touched + '<small>/' + topics.length + '</small>', 'บทที่เคยฝึก') +
+    stat(Object.keys(perFormula).length, 'สูตรที่เคยใช้') + stat(streak, 'วันติดต่อกัน') + '</div>';
+  var heat = topics.map(function (t) {
+    var n = perTopic[t.id] || 0;
+    var lv = n ? Math.min(4, 1 + Math.floor(3 * n / max)) : 0;
+    return '<button type="button" class="heat lv' + lv + '" data-act="lib-open" data-ch="' + t.id + '" title="' + esc('บทที่ ' + t.no + ' ' + t.name + ' · ' + n + ' ข้อ') + '"><b>' + t.no + '</b><span>' + esc(t.name) + '</span><em>' + (n ? n + ' ข้อ' : 'ยังไม่ฝึก') + '</em></button>';
+  }).join('');
+  var top = Object.keys(perFormula).sort(function (a, b) { return perFormula[b] - perFormula[a]; }).slice(0, 5).map(function (id) {
+    var f = formulaById(id);
+    return '<li><span class="eqmini">' + esc(f.classic) + '</span><span>' + esc(f.name) + '</span><b>' + perFormula[id] + '×</b></li>';
+  }).join('');
+  var recent = log.slice(-8).reverse().map(function (e) {
+    var f = formulaById(e.f), t = topicById(e.t), info = SYM[e.k];
+    return '<li><span class="rdot" style="--c:' + t.stripe + '"></span><div><strong>' + esc(f.name) + '</strong><p>บทที่ ' + t.no + ' · ' +
+      (info && e.v ? esc(info.sym + ' = ' + e.v + (info.unit ? ' ' + info.unit : '')) : esc(f.classic)) + '</p></div><time>' + agoText(e.at) + '</time></li>';
+  }).join('');
+  var untouched = topics.filter(function (t) { return !perTopic[t.id]; });
+  var suggest = untouched.length ? untouched[0] : null;
+  var old = (state.clears || 0) - log.length;
+  return pageHead('YOUR PROGRESS', 'ความก้าวหน้าของฉัน', 'ข้อมูลเก็บในเครื่องนี้เท่านั้น ยิ่งฝึกหลายบท ยิ่งเห็นว่าสูตรต่าง ๆ เชื่อมโยงกันอย่างไร') + stats +
+    '<div class="pgrid"><section class="pcard pwide"><div class="pcard-head"><h3>แผนที่การฝึกทั้ง 20 บท</h3><span class="heat-legend"><i class="lv0"></i><i class="lv1"></i><i class="lv2"></i><i class="lv3"></i><i class="lv4"></i></span></div>' +
+    '<div class="heatmap">' + heat + '</div><p class="pnote">กดที่บทเพื่อดูสูตรของบทนั้นในคลังสูตร</p></section>' +
+    '<section class="pcard"><h3>ทำล่าสุด</h3>' + (recent ? '<ul class="recent">' + recent + '</ul>' : '<p class="pempty">ยังไม่มีประวัติ แก้โจทย์ข้อแรกให้ถึงคำตอบสุดท้าย แล้วรายการจะขึ้นที่นี่</p>') +
+    (old > 0 ? '<p class="pnote">มีอีก ' + old + ' ข้อที่ทำไว้ก่อนเริ่มเก็บรายละเอียด</p>' : '') + '</section>' +
+    '<section class="pcard"><h3>สูตรที่ใช้บ่อย</h3>' + (top ? '<ol class="topf">' + top + '</ol>' : '<p class="pempty">ยังไม่มีข้อมูล</p>') +
+    (suggest ? '<div class="psuggest"><span>บทที่ยังไม่เคยฝึก</span><strong>บทที่ ' + suggest.no + ' ' + esc(suggest.name) + '</strong><p>' + esc(suggest.blurb) + '</p>' +
+      '<div class="psuggest-act"><button type="button" class="btn hero-go" data-act="view-tutor">ลองทำโจทย์</button><button type="button" class="linkish" data-act="lib-open" data-ch="' + suggest.id + '">ดูสูตรบทนี้</button></div></div>' : '<div class="psuggest"><strong>ฝึกครบทุกบทแล้ว</strong><p>ลองโจทย์ที่ใช้หลายสูตรต่อกัน เพื่อเชื่อมความรู้ข้ามบท</p></div>') +
+    '</section></div>';
+}
 function renderNavTabs() {
   return '<nav class="nav-tabs" aria-label="เมนูหลัก">' +
     '<button type="button" data-act="view-tutor" class="' + (state.view === 'tutor' ? 'on' : '') + '"' + (state.view === 'tutor' ? ' aria-current="page"' : '') + '>ฝึกแก้โจทย์</button>' +
@@ -3378,7 +3992,7 @@ function renderSimSidebar(brand) {
     return '<button type="button" data-act="open-sim" data-id="' + s.id + '" class="' + (state.simId === s.id ? 'on' : '') + '">' + chapBadge(s) +
       '<span><strong>' + esc(s.title) + '</strong><em>' + esc(s.grade) + ' · บทที่ ' + s.topicNo + '</em></span></button>';
   }).join('');
-  return '<aside class="sidebar' + (isMobileUi() ? ' compact' : '') + '">' + brand + renderNavTabs() +
+  return '<aside class="sidebar' + (isMobileUi() ? ' compact' : '') + '">' +
     '<p class="side-note">เลือกสื่อจำลองเพื่อทดลองปรับค่าและดูผลทันที</p><div class="side-sims">' + list + '</div>' +
     '<div class="side-foot"><span>สื่อจำลอง ' + SIMS.length + ' เรื่อง</span>' +
     (state.simId ? '<button type="button" class="linkish" data-act="sim-list">ดูทั้งหมด</button>' : '') + '</div></aside>';
@@ -3392,12 +4006,12 @@ function renderSims() {
         '<span class="head">' + chapBadge(s) + '<span><strong>' + esc(s.title) + '</strong><p>' + esc(s.grade) + (t ? ' · บทที่ ' + t.no + ' ' + esc(t.name) : '') + '</p></span></span>' +
         '<p>' + esc(s.blurb) + '</p><span class="go">เปิดสื่อจำลอง →</span></button>';
     }).join('');
-    return '<header class="sim-head"><div><p class="eyebrow">เมนูสื่อจำลอง</p><h2>ทดลองฟิสิกส์แบบโต้ตอบ</h2></div></header>' +
+    return '<button type="button" class="back-home" data-act="go-home">← กลับหน้าแรก</button><header class="sim-head"><div><p class="eyebrow">เมนูสื่อจำลอง</p><h2>ทดลองฟิสิกส์แบบโต้ตอบ</h2></div></header>' +
       '<p class="help">เลือกเรื่องที่ต้องการ ปรับค่าตัวแปรในสื่อจำลองแล้วสังเกตผล ใช้คู่กับการฝึกแก้โจทย์ในบทเดียวกันได้</p>' +
       '<div class="sim-grid">' + cards + '</div>';
   }
   return '<header class="sim-head"><div><p class="eyebrow">' + esc(sim.grade) + ' · บทที่ ' + sim.topicNo + ' · ถ้าไม่แสดง กดเปิดในแท็บใหม่</p><h2>' + esc(sim.title) + '</h2></div>' +
-    '<div class="sim-tools"><button type="button" class="btn secondary" data-act="sim-list">← ทั้งหมด</button>' +
+    '<div class="sim-tools"><button type="button" class="btn secondary" data-act="go-home">หน้าแรก</button><button type="button" class="btn secondary" data-act="sim-list">← ทั้งหมด</button>' +
     '<button type="button" class="btn secondary sim-wide-btn" data-act="sim-wide">' + (state.simWide ? 'แสดงเมนูข้าง' : 'ขยายเต็มกว้าง') + '</button>' +
     '<button type="button" class="btn secondary" data-act="sim-reload">โหลดใหม่</button>' +
     '<button type="button" class="btn secondary" data-act="sim-full">เต็มจอ</button>' +
@@ -3406,8 +4020,8 @@ function renderSims() {
     '<iframe id="sim-frame" src="' + esc(sim.url) + '" title="' + esc(sim.title) + '" allow="fullscreen; clipboard-write" allowfullscreen referrerpolicy="no-referrer-when-downgrade" onload="this.parentNode.classList.add(\'ready\')"></iframe></div>';
 }
 function renderSidebar() {
-  var brand = '<div class="brand"><div class="mark" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="14" cy="26" r="5" fill="currentColor"></circle><path d="M22 26h16M32 18l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div><p class="name">ฟิสิกส์ทีละขั้น</p><p class="sub">วิเคราะห์ · คิด · จัดรูป · ตรวจคำตอบ</p></div></div>';
-  if (state.view === 'sims') return renderSimSidebar(brand);
+  if (state.view === 'sims') return renderSimSidebar();
+  if (noSidebar()) return '';
   var compact = isMobileUi() && state.step > 1;
   var meter = '<div class="side-meter"><div class="row"><span>ความพร้อมของขั้นตอน</span><span>' + (state.step * 25) + '%</span></div><div class="meter"><span style="width:' + (state.step * 25) + '%"></span></div></div>';
   var box = state.step === 1
@@ -3419,12 +4033,15 @@ function renderSidebar() {
     : '<p class="side-note">โจทย์ที่นักเรียนกรอก</p><p class="side-story">' + esc(state.prompt) + '</p>' +
       (state.confidence ? '<div class="topic-live hit"><p class="eyebrow">ความมั่นใจ ' + state.confidence + '%</p><p class="meta">ขั้นที่ ' + state.step + '/4</p></div>' : '') +
       '<button type="button" class="btn secondary side-go" data-act="edit-prompt">แก้โจทย์</button>';
-  return '<aside class="sidebar' + (compact ? ' compact' : '') + '">' + brand + renderNavTabs() +
+  return '<aside class="sidebar' + (compact ? ' compact' : '') + '">' +
     (compact ? '' : meter) + box +
     '<div class="side-foot"><button type="button" class="linkish" data-act="fresh">โจทย์ใหม่</button><button type="button" class="linkish" data-act="wipe">' + (state.confirmWipe ? 'ยืนยันล้างทั้งหมด' : 'ล้างที่กรอกไว้') + '</button></div></aside>';
 }
 function renderMain() {
   if (state.view === 'sims') return renderSims();
+  if (isHome()) return renderHome();
+  if (state.view === 'library') return renderLibrary();
+  if (state.view === 'progress') return renderProgress();
   var p = current();
   return renderTop(p) + '<p class="help">' + esc(STEP_HELP[state.step - 1]) + '</p>' +
     msgHtml() + renderStep(p);
@@ -3439,25 +4056,11 @@ function renderTop(p) {
       ? '<button type="button" class="' + cls + '" data-act="jump-step" data-step="' + n + '">' + inner + '</button>'
       : '<span class="' + cls + '">' + inner + '</span>';
   }).join('');
-  var title = p ? (topicById(state.topicId) ? 'บทที่ ' + topicById(state.topicId).no + ' · ' + p.title : p.title) : 'โจทย์ที่ต้องการแก้';
-  return '<div class="topbar"><div><p class="kicker">สสวท. ฟิสิกส์ เล่ม 1–6 · ม.4–ม.6</p><h1 class="page">' + esc(title) + '</h1></div><div class="stepper">' + steps + '</div></div>';
-}
-function renderPrompt() {
-  return '<div class="welcome-hero"><div class="panel"><p class="kicker">ห้องทดลองคิดโจทย์</p><h2>พิมพ์โจทย์ แล้วให้ระบบวิเคราะห์บทให้เอง</h2><p class="lead">ระบบอ่านปริมาณ เงื่อนไข และสิ่งที่ถาม แล้วชี้บท สูตร และตัวแปร นักเรียนใส่ค่าเอง จัดรูปเอง และตรวจคำตอบจากสมการที่จัดไว้</p></div><div class="mini-board">' +
-    '<svg class="arc" viewBox="0 0 240 120" aria-hidden="true"><defs><linearGradient id="trail" x1="0" x2="1"><stop offset="0" stop-color="#9fd9cf" stop-opacity="0"/><stop offset="1" stop-color="#e7c98a"/></linearGradient></defs>' +
-    '<line x1="8" y1="108" x2="232" y2="108" stroke="rgba(255,255,255,0.18)"/>' +
-    '<path id="fly" d="M14 106 Q120 -34 226 106" fill="none" stroke="url(#trail)" stroke-width="2" stroke-dasharray="4 6"/>' +
-    '<circle r="6" fill="#e7c98a"><animateMotion dur="2.8s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.3 0 0.7 1"><mpath href="#fly"/></animateMotion></circle>' +
-    '<circle r="12" fill="rgba(231,201,138,0.18)"><animateMotion dur="2.8s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.3 0 0.7 1"><mpath href="#fly"/></animateMotion></circle></svg>' +
-    '<div class="eq">s = ut + ½a<span>t</span>²</div></div></div>' +
-    '<section class="card"><div class="headrow"><h2>สี่ขั้นของการคิด</h2></div>' +
-    '<ol class="guide"><li><strong><span class="n">1</span>กรอกโจทย์</strong>พิมพ์โจทย์ในช่องทางซ้าย</li>' +
-    '<li><strong><span class="n">2</span>หัวข้อ</strong>ระบบเลือกบทให้อัตโนมัติ</li>' +
-    '<li><strong><span class="n">3</span>ตัวแปรและสูตร</strong>ใส่ค่าเอง แล้วคลิกสูตร</li>' +
-    '<li><strong><span class="n">4</span>จัดรูปและคำตอบ</strong>ย้ายข้าง แทนค่า แล้ววิเคราะห์ผล</li></ol></section>';
+  var title = p ? (topicById(state.topicId) ? 'บทที่ ' + topicById(state.topicId).no + ' · ' + p.title : p.title) : 'ฝึกทำโจทย์';
+  return '<div class="topbar"><div><button type="button" class="back-home" data-act="go-home">← กลับหน้าแรก</button><p class="kicker">สสวท. ฟิสิกส์ เล่ม 1–6 · ม.4–ม.6</p><h1 class="page">' + esc(title) + '</h1></div><div class="stepper">' + steps + '</div></div>';
 }
 function renderStep(p) {
-  if (state.step === 1) return renderPrompt();
+  if (state.step === 1) return renderStudio();
   if (state.step === 2) return renderBrief(p) + renderTopicStep();
   if (state.step === 3) return renderBrief(p) + renderVariables(p) + renderFormulas();
   if (state.result) return renderResult(p);
@@ -4136,6 +4739,7 @@ function commitResult(p, target, value, rows, middle) {
   if (!moreSteps) {
     if (state.exampleId) markSolved(state.exampleId);
     state.clears = (state.clears || 0) + 1;
+    state.log = (state.log || []).concat([{ f: state.formulaId, t: formulaById(state.formulaId).topic, v: value != null ? formatNum(value) : '', k: target, at: Date.now() }]).slice(-300);
   }
   if (!moreSteps) fx.celebrate = true;
   setMessage(moreSteps ? 'info' : null, moreSteps ? 'ได้ค่ากลางแล้ว พร้อมไปสูตรถัดไป' : null);
@@ -4428,8 +5032,26 @@ function handle(ds) {
   }
   state.confirmWipe = false;
   try {
+    if (act === 'go-home') { state.view = 'home'; render(); return; }
+    if (act === 'go-journey') {
+      var jr = document.getElementById('journey');
+      if (jr) { try { jr.scrollIntoView({ behavior: fxCalm() ? 'auto' : 'smooth', block: 'start' }); } catch (err) { jr.scrollIntoView(); } }
+      return;
+    }
+    if (act === 'go-prompt') {
+      var box = document.getElementById('prompt');
+      if (box) {
+        try { box.scrollIntoView({ behavior: fxCalm() ? 'auto' : 'smooth', block: 'center' }); } catch (err) { /* ignore */ }
+        try { box.focus({ preventScroll: true }); } catch (err2) { box.focus(); }
+      }
+      return;
+    }
     if (act === 'view-tutor') { state.view = 'tutor'; render(); return; }
     if (act === 'view-sims') { state.view = 'sims'; render(); return; }
+    if (act === 'view-library') { state.view = 'library'; render(); return; }
+    if (act === 'view-progress') { state.view = 'progress'; render(); return; }
+    if (act === 'lib-ch') { state.libCh = ds.ch || 'all'; render(); return; }
+    if (act === 'lib-open') { state.view = 'library'; state.libCh = topicById(ds.ch) ? ds.ch : 'all'; state.libQ = ''; render(); return; }
     if (act === 'open-sim') { if (simById(ds.id)) { state.view = 'sims'; state.simId = ds.id; } render(); return; }
     if (act === 'sim-list') { state.simId = null; render(); return; }
     if (act === 'sim-wide') {
@@ -4476,7 +5098,7 @@ function handle(ds) {
       state.formulaId = null;
       state.eq = null;
       state.result = null;
-      setMessage(state.recommendId ? 'good' : 'info', state.reasons[3] || 'ใส่ค่าตัวแปร แล้วคลิกสูตร');
+      setMessage(null);
       render(); return;
     }
     if (act === 'add-given') return addGiven();
@@ -4605,45 +5227,73 @@ function fxInit() {
 function fxField(canvas) {
   if (!canvas || !canvas.getContext) return;
   var ctx = canvas.getContext('2d');
-  var dots = [], W = 0, H = 0, dpr = Math.min(2, window.devicePixelRatio || 1), running = true;
-  var glyphs = ['F', 'v', 'a', 'λ', 'Ω', 'E', 'ω', 'Δ', 'π', 'μ', 'θ', 'g'];
+  var stars = [], nodes = [], meteor = null, W = 0, H = 0, dpr = Math.min(2, window.devicePixelRatio || 1), running = true, t = 0;
+  var glyphs = ['F = ma', 'E = mc²', 'λ', 'Ω', 'ω', 'Δv', 'π', 'μ', 'θ', 'v = fλ', 'ħ', 'Φ'];
   function size() {
     W = window.innerWidth; H = window.innerHeight;
     canvas.width = W * dpr; canvas.height = H * dpr;
     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var n = Math.round(Math.min(56, W * H / 26000));
-    dots = [];
+    var n = Math.round(Math.min(170, W * H / 8000));
+    stars = [];
     for (var i = 0; i < n; i++) {
-      dots.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25,
-        r: 1 + Math.random() * 1.8, g: i % 4 === 0 ? glyphs[i % glyphs.length] : null, hue: i % 3 });
+      stars.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() < 0.08 ? 1.4 + Math.random() : 0.4 + Math.random() * 0.9,
+        ph: Math.random() * Math.PI * 2, sp: 0.01 + Math.random() * 0.03, vy: 0.02 + Math.random() * 0.06, blue: Math.random() < 0.35 });
+    }
+    var m = Math.round(Math.min(26, W * H / 50000));
+    nodes = [];
+    for (var k = 0; k < m; k++) {
+      nodes.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - 0.5) * 0.18, vy: (Math.random() - 0.5) * 0.18,
+        g: k % 3 === 0 ? glyphs[k % glyphs.length] : null, s: 12 + Math.random() * 8 });
     }
   }
   function tick() {
     if (!running) return;
+    t++;
     ctx.clearRect(0, 0, W, H);
-    for (var i = 0; i < dots.length; i++) {
-      var p = dots[i];
+    for (var i = 0; i < stars.length; i++) {
+      var s = stars[i];
+      s.y -= s.vy; if (s.y < -4) { s.y = H + 4; s.x = Math.random() * W; }
+      var a = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(s.ph + t * s.sp));
+      ctx.fillStyle = s.blue ? 'rgba(160,195,255,' + (a * 0.9).toFixed(3) + ')' : 'rgba(255,255,255,' + (a * 0.8).toFixed(3) + ')';
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+      if (s.r > 1.4 && a > 0.85) {
+        ctx.fillStyle = 'rgba(160,195,255,0.12)';
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r * 4, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    for (var j = 0; j < nodes.length; j++) {
+      var p = nodes[j];
       p.x += p.vx; p.y += p.vy;
-      if (p.x < -20) p.x = W + 20; if (p.x > W + 20) p.x = -20;
-      if (p.y < -20) p.y = H + 20; if (p.y > H + 20) p.y = -20;
-      for (var j = i + 1; j < dots.length; j++) {
-        var q = dots[j], dx = p.x - q.x, dy = p.y - q.y, d2 = dx * dx + dy * dy;
-        if (d2 < 15000) {
-          ctx.strokeStyle = 'rgba(13,107,98,' + (0.12 * (1 - d2 / 15000)).toFixed(3) + ')';
+      if (p.x < -40) p.x = W + 40; if (p.x > W + 40) p.x = -40;
+      if (p.y < -40) p.y = H + 40; if (p.y > H + 40) p.y = -40;
+      for (var q = j + 1; q < nodes.length; q++) {
+        var o = nodes[q], dx = p.x - o.x, dy = p.y - o.y, d2 = dx * dx + dy * dy;
+        if (d2 < 26000) {
+          ctx.strokeStyle = 'rgba(110,160,255,' + (0.14 * (1 - d2 / 26000)).toFixed(3) + ')';
           ctx.lineWidth = 1;
-          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(o.x, o.y); ctx.stroke();
         }
       }
-      var col = p.hue === 0 ? '13,107,98' : (p.hue === 1 ? '201,164,92' : '63,79,160');
       if (p.g) {
-        ctx.fillStyle = 'rgba(' + col + ',0.22)';
-        ctx.font = '600 ' + (14 + p.r * 4) + 'px Cambria, Georgia, serif';
+        ctx.fillStyle = 'rgba(150,185,255,0.16)';
+        ctx.font = 'italic 600 ' + p.s + 'px Cambria, Georgia, serif';
         ctx.fillText(p.g, p.x, p.y);
       } else {
-        ctx.fillStyle = 'rgba(' + col + ',0.35)';
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = 'rgba(125,180,255,0.5)';
+        ctx.beginPath(); ctx.arc(p.x, p.y, 1.6, 0, Math.PI * 2); ctx.fill();
       }
+    }
+    if (!meteor && Math.random() < 0.004) meteor = { x: Math.random() * W * 0.8 + W * 0.2, y: Math.random() * H * 0.4, life: 0 };
+    if (meteor) {
+      meteor.life++;
+      var mx = meteor.x - meteor.life * 9, my = meteor.y + meteor.life * 4.5;
+      var grad = ctx.createLinearGradient(mx, my, mx + 90, my - 45);
+      grad.addColorStop(0, 'rgba(200,225,255,0.85)');
+      grad.addColorStop(1, 'rgba(200,225,255,0)');
+      ctx.strokeStyle = grad; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.moveTo(mx, my); ctx.lineTo(mx + 90, my - 45); ctx.stroke();
+      if (meteor.life > 45) meteor = null;
     }
     requestAnimationFrame(tick);
   }
@@ -4666,7 +5316,7 @@ function fxConfetti() {
   var ctx = c.getContext && c.getContext('2d');
   if (!ctx) { document.body.removeChild(c); return; }
   var W = c.width = window.innerWidth, H = c.height = window.innerHeight;
-  var colors = ['#0d6b62', '#c9a45c', '#efe0b4', '#3f4fa0', '#e8735a', '#7fd1b9'];
+  var colors = ['#3b74ff', '#7dd3fc', '#dbeafe', '#6366f1', '#a5b4fc', '#ffffff'];
   var hero = document.querySelector('.answer-num');
   var box = hero ? hero.getBoundingClientRect() : { left: W / 2, top: H / 3, width: 0, height: 0 };
   var ox = box.left + box.width / 2, oy = box.top + box.height / 2;
@@ -4713,6 +5363,7 @@ function boot() {
   app.addEventListener('input', function (e) {
     var el = e.target;
     if (!el || !el.dataset) return;
+    if (el.dataset.field === 'libq') { state.libQ = el.value; filterLibrary(); }
     if (el.dataset.field === 'prompt') {
       state.prompt = el.value;
       clearTimeout(topicTimer);
@@ -4861,7 +5512,8 @@ if (globalThis.RUN_PHYSICS_TEST) {
     canSolve: canSolve, knownOf: knownOf, other: other, nextHint: nextHint, approxEqual: approxEqual, analyzePrompt: analyzePrompt,
     findPlan: findPlan, handle: handle, blankWork: blankWork, solveTarget: solveTarget,
     parseQuantity: parseQuantity, normalizeUnits: normalizeUnits, evalExpression: evalExpression,
-    setGivenValue: setGivenValue, addSlot: addSlot, renderFormulas: renderFormulas, refreshAdvice: refreshAdvice, fx: fx
+    setGivenValue: setGivenValue, addSlot: addSlot, renderFormulas: renderFormulas, refreshAdvice: refreshAdvice, fx: fx,
+    render: render, commitResult: commitResult, loadStore: loadStore
   };
 }
 </script>
