@@ -1,0 +1,9 @@
+{
+  "name": "physics-learning",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Physics Learning — สสวท. ม.4–ม.6",
+  "engines": {
+    "node": ">=18"
+  }
+}

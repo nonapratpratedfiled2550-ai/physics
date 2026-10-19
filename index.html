@@ -10,6 +10,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Physics Learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sarabun:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
     --paper: #ebe4d8;
@@ -43,9 +46,9 @@
   html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   body {
     color: var(--ink);
-    font-family: "Leelawadee UI", Tahoma, "Segoe UI", sans-serif;
+    font-family: "Sarabun", "Leelawadee UI", Tahoma, sans-serif;
     font-size: 17px;
-    line-height: 1.55;
+    line-height: 1.7;
     background:
       radial-gradient(1100px 520px at 8% -10%, rgba(13,107,98,0.10), transparent 60%),
       radial-gradient(900px 420px at 100% 0%, rgba(201,164,92,0.14), transparent 55%),
@@ -1297,7 +1300,232 @@
   .j-kicker { margin: 0; color: #7da7ff; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.28em; }
   .journey h2, .studio h2 { margin: 0.5rem 0 0.4rem; color: #fff; font-size: clamp(1.6rem, 3.4vw, 2.4rem); line-height: 1.25; }
   .j-sub { margin: 0 auto; max-width: 40rem; color: #9fb0d8; font-size: 0.95rem; }
-  .journey-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.1rem; margin-top: 1.9rem; text-align: left; }
+  .journey-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 1.1rem; margin-top: 1.9rem; text-align: left; }
+  .lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 0.9rem; margin-top: 0.8rem; }
+  .lesson-card { display: flex; flex-direction: column; gap: 0.45rem; text-align: left; color: var(--ink); padding: 1.15rem 1.2rem; border-radius: 18px; border: 1px solid rgba(140,170,255,0.18); border-top: 3px solid var(--c); background: linear-gradient(180deg, rgba(30,58,138,0.28), rgba(9,20,52,0.62)); transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; }
+  .lesson-card:hover { transform: translateY(-4px); border-color: rgba(125,170,255,0.45); box-shadow: 0 18px 36px -22px rgba(47,107,255,0.75); }
+  .lesson-badge { align-self: flex-start; padding: 0.2rem 0.55rem; border-radius: 999px; background: var(--c); color: #fff; font-size: 0.75rem; font-weight: 800; }
+  .lesson-card strong { color: #fff; font-size: 1.02rem; }
+  .lesson-meta, .lesson-prereq { margin: 0; color: #8798c2; font-size: 0.8rem; }
+  .lesson-card p { margin: 0; color: #9fb0d8; font-size: 0.88rem; flex: 1; }
+  .lesson-prog { height: 6px; border-radius: 99px; background: rgba(255,255,255,0.08); overflow: hidden; }
+  .lesson-prog span { display: block; height: 100%; background: linear-gradient(90deg, #3b74ff, #22b8f0); }
+  .lesson-card .go { color: #cfe0ff; font-weight: 700; font-size: 0.9rem; }
+  .lesson-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0 0 1rem; }
+  .lesson-panel { margin: 0 0 1rem; padding: 1.15rem 1.25rem; border-radius: 18px; border: 1px solid rgba(140,170,255,0.16); background: linear-gradient(180deg, rgba(20,40,100,0.28), rgba(6,14,40,0.7)); }
+  .lesson-panel h3 { margin: 0 0 0.7rem; color: #fff; font-size: 1.05rem; }
+  .lesson-block { margin: 0 0 0.85rem; padding: 0.8rem 0.9rem; border-radius: 12px; background: rgba(255,255,255,0.03); }
+  .lesson-block h3 { margin: 0 0 0.35rem; font-size: 0.98rem; color: #dbeafe; }
+  .lesson-block p, .lesson-everyday, .lesson-panel p { margin: 0; color: #9fb0d8; font-size: 0.92rem; line-height: 1.55; }
+  .lesson-list { margin: 0; padding-left: 1.2rem; color: #c3d0ee; }
+  .lesson-list li { margin: 0.35rem 0; }
+  .lesson-list.mistakes li { margin: 0.7rem 0; }
+  .lesson-quiz { margin: 0 0 1rem; padding: 0.9rem; border-radius: 14px; background: rgba(2,6,23,0.35); }
+  .lesson-quiz .q { margin: 0 0 0.7rem; color: #fff; font-weight: 650; }
+  .lesson-choices { display: grid; gap: 0.45rem; }
+  .lesson-choice { text-align: left; padding: 0.65rem 0.85rem; border-radius: 12px; border: 1px solid rgba(140,170,255,0.22); background: rgba(255,255,255,0.03); color: #dbe6ff; font: inherit; cursor: pointer; }
+  .lesson-choice:hover:not(:disabled) { border-color: #7dd3fc; }
+  .lesson-choice.correct { border-color: #4ade80; background: rgba(74,222,128,0.12); }
+  .lesson-choice.wrong { border-color: #f87171; background: rgba(248,113,113,0.1); }
+  .lesson-feedback { margin: 0.7rem 0 0; font-size: 0.9rem; }
+  .lesson-feedback.ok { color: #86efac; }
+  .lesson-feedback.bad { color: #fca5a5; }
+  .muted { color: #7183ad; font-weight: 500; }
+  .hint-levels { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0 0.2rem; }
+  .hint-levels .btn { font-size: 0.82rem; padding: 0.4rem 0.7rem; }
+  .hint-levels .btn.on { border-color: #7dd3fc; background: rgba(125,211,252,0.12); color: #e0f2fe; }
+  .hintbox .hlvl { display: inline-block; margin-right: 0.4rem; padding: 0.1rem 0.45rem; border-radius: 999px; background: rgba(59,116,255,0.25); color: #cfe0ff; font-size: 0.75rem; font-weight: 700; }
+  .solution-box { margin: 1rem 0; padding: 1rem 1.1rem; border-radius: 16px; border: 1px solid rgba(125,211,252,0.22); background: rgba(8,25,70,0.55); }
+  .solution-box h3 { margin: 0 0 0.65rem; color: #fff; font-size: 1rem; }
+  .solution-box ol { margin: 0; padding-left: 1.2rem; color: #c3d0ee; }
+  .solution-box li { margin: 0.45rem 0; }
+  .solution-box code { display: block; margin-top: 0.2rem; color: #e2e8f0; font-size: 0.88rem; }
+  .weak-list { list-style: none; margin: 0; padding: 0; }
+  .weak-list li { display: grid; grid-template-columns: 1fr auto; gap: 0.35rem 0.8rem; padding: 0.65rem 0; border-bottom: 1px solid rgba(140,170,255,0.1); }
+  .weak-list li:last-child { border-bottom: 0; }
+  .weak-bar { grid-column: 1 / -1; height: 6px; border-radius: 99px; background: rgba(255,255,255,0.08); overflow: hidden; }
+  .weak-bar span { display: block; height: 100%; background: linear-gradient(90deg, #f59e0b, #ef4444); }
+  .mission-list, .path-list, .sr-list, .mistake-list { list-style: none; margin: 0; padding: 0; }
+  .mission-list li, .path-list li, .sr-list li, .mistake-list li { display: flex; gap: 0.7rem; align-items: flex-start; padding: 0.7rem 0; border-bottom: 1px solid rgba(140,170,255,0.1); }
+  .mission-list li:last-child, .path-list li:last-child, .sr-list li:last-child, .mistake-list li:last-child { border-bottom: 0; }
+  .mission-list .done, .path-list .done { opacity: 0.7; }
+  .mission-list .badge, .path-list .badge, .sr-list .badge { flex: none; width: 1.7rem; height: 1.7rem; display: grid; place-items: center; border-radius: 999px; background: rgba(59,116,255,0.2); color: #cfe0ff; font-size: 0.75rem; font-weight: 800; }
+  .mission-list .done .badge, .path-list .done .badge { background: rgba(74,222,128,0.2); color: #86efac; }
+  .profile-bar { display: flex; flex-wrap: wrap; gap: 0.55rem; align-items: center; margin: 0 0 1rem; padding: 0.75rem 0.9rem; border-radius: 14px; border: 1px solid rgba(140,170,255,0.16); background: rgba(8,20,55,0.5); }
+  .profile-bar select, .profile-bar input { font: inherit; color: #e2e8f0; background: rgba(2,6,23,0.45); border: 1px solid rgba(140,170,255,0.25); border-radius: 10px; padding: 0.4rem 0.65rem; min-height: 2.4rem; }
+  .score-pill { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.6rem; border-radius: 999px; background: rgba(59,116,255,0.18); color: #cfe0ff; font-size: 0.82rem; font-weight: 700; }
+  .ai-panel { margin: 1rem 0; padding: 1rem 1.1rem; border-radius: 16px; border: 1px solid rgba(125,211,252,0.22); background: linear-gradient(180deg, rgba(20,48,110,0.4), rgba(6,14,40,0.75)); }
+  .ai-panel h3 { margin: 0 0 0.45rem; color: #fff; font-size: 1rem; }
+  .ai-panel .ai-status { margin: 0 0 0.7rem; color: #8798c2; font-size: 0.82rem; }
+  .ai-panel textarea { width: 100%; min-height: 4.5rem; resize: vertical; font: inherit; color: #e2e8f0; background: rgba(2,6,23,0.45); border: 1px solid rgba(140,170,255,0.25); border-radius: 12px; padding: 0.7rem 0.85rem; }
+  .ai-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.65rem; }
+  .ai-reply { margin: 0.75rem 0 0; padding: 0.75rem 0.85rem; border-radius: 12px; background: rgba(2,6,23,0.4); color: #dbeafe; white-space: pre-wrap; line-height: 1.5; }
+  .ai-reply.bad { color: #fecaca; border: 1px solid rgba(248,113,113,0.35); }
+  .ocr-box { margin: 0.8rem 0 0; padding: 0.85rem; border-radius: 14px; border: 1px dashed rgba(125,211,252,0.35); background: rgba(8,20,55,0.45); }
+  .ocr-box .confirm-note { margin: 0.5rem 0; color: #fde68a; font-size: 0.88rem; }
+  .ocr-preview { max-width: 100%; max-height: 160px; border-radius: 10px; margin-top: 0.5rem; display: block; }
+  .ai-badge { display: inline-block; margin-left: 0.4rem; padding: 0.1rem 0.45rem; border-radius: 999px; background: rgba(34,197,94,0.18); color: #86efac; font-size: 0.72rem; font-weight: 700; }
+  .ai-badge.off { background: rgba(148,163,184,0.15); color: #94a3b8; }
+  .lab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    gap: 1rem;
+    margin-top: 0.4rem;
+  }
+  .lab-card {
+    position: relative; overflow: hidden; isolation: isolate;
+    display: flex; flex-direction: column; gap: 0.55rem; width: 100%; text-align: left;
+    padding: 1.25rem 1.2rem 1.15rem; min-height: 15.5rem;
+    border-radius: 22px; border: 1px solid rgba(140,170,255,0.18);
+    border-top: 3px solid var(--c, #3b82f6);
+    color: #e8eeff; cursor: pointer;
+    background:
+      radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, var(--c, #3b82f6) 22%, transparent), transparent 55%),
+      linear-gradient(165deg, rgba(22,40,96,0.72), rgba(7,16,42,0.88));
+    box-shadow: 0 18px 40px -28px rgba(0,0,0,0.9);
+    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+  }
+  .lab-card:hover {
+    transform: translateY(-6px);
+    border-color: color-mix(in srgb, var(--c, #3b82f6) 55%, rgba(140,170,255,0.35));
+    box-shadow: 0 28px 48px -24px color-mix(in srgb, var(--c, #3b82f6) 55%, transparent);
+  }
+  .lab-card-glow {
+    position: absolute; inset: auto -20% -40% 30%; height: 70%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--c, #3b82f6) 28%, transparent), transparent 70%);
+    pointer-events: none; z-index: -1;
+  }
+  .lab-card-top { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .lab-card-icon {
+    width: 3rem; height: 3rem; display: grid; place-items: center;
+    border-radius: 16px; font-size: 1.35rem;
+    background: color-mix(in srgb, var(--c, #3b82f6) 22%, rgba(8,18,48,0.8));
+    border: 1px solid color-mix(in srgb, var(--c, #3b82f6) 45%, transparent);
+    box-shadow: 0 0 24px -6px color-mix(in srgb, var(--c, #3b82f6) 70%, transparent);
+  }
+  .lab-card-tag {
+    padding: 0.22rem 0.65rem; border-radius: 999px; font-size: 0.7rem; font-weight: 800;
+    letter-spacing: 0.08em; color: #fff;
+    background: color-mix(in srgb, var(--c, #3b82f6) 85%, #0b1636);
+  }
+  .lab-card strong {
+    font-family: "Prompt", "Sarabun", sans-serif;
+    font-size: 1.12rem; font-weight: 700; color: #fff; line-height: 1.3;
+  }
+  .lab-card-hint { margin: 0; color: color-mix(in srgb, var(--c, #7dd3fc) 70%, #cfe0ff); font-size: 0.82rem; font-weight: 600; }
+  .lab-card-blurb { margin: 0; color: #a9bbe0; font-size: 0.9rem; line-height: 1.55; flex: 1; }
+  .lab-eqrow { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .lab-eqchip {
+    font-family: Cambria, "Cambria Math", Georgia, serif;
+    padding: 0.22rem 0.55rem; border-radius: 999px; font-size: 0.78rem;
+    color: #dbeafe; background: rgba(2,8,28,0.45);
+    border: 1px solid rgba(140,170,255,0.2);
+  }
+  .lab-card-foot {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+    margin-top: 0.35rem; padding-top: 0.55rem;
+    border-top: 1px solid rgba(140,170,255,0.12);
+  }
+  .lab-card-ok { color: #86efac; font-size: 0.78rem; font-weight: 600; }
+  .lab-card .go {
+    color: #9fdfff; font-weight: 700; font-size: 0.92rem;
+    transition: letter-spacing 180ms ease, transform 180ms ease;
+  }
+  .lab-card:hover .go { letter-spacing: 0.02em; transform: translateX(2px); }
+
+  .lab-layout { display: grid; grid-template-columns: minmax(240px, 0.85fr) minmax(0, 1.45fr); gap: 1.1rem; margin: 1rem 0; }
+  .lab-controls, .lab-stage {
+    padding: 1.15rem 1.2rem 1.25rem; border-radius: 20px;
+    border: 1px solid rgba(140,170,255,0.16);
+    background:
+      linear-gradient(165deg, rgba(24,44,104,0.45), rgba(8,18,48,0.72));
+  }
+  .lab-panel-title {
+    margin: 0 0 0.25rem; font-family: "Prompt", "Sarabun", sans-serif;
+    font-size: 1rem; font-weight: 700; color: #fff;
+  }
+  .lab-panel-note { margin: 0 0 1rem; color: #9fb0d8; font-size: 0.88rem; line-height: 1.55; }
+  .lab-slider {
+    display: grid; grid-template-columns: 1fr auto; gap: 0.4rem 0.75rem; align-items: center;
+    margin: 0 0 1rem; padding: 0.75rem 0.85rem; border-radius: 14px;
+    background: rgba(2,8,28,0.35); border: 1px solid rgba(140,170,255,0.12);
+    color: #c3d0ee; font-size: 0.9rem;
+  }
+  .lab-slider-label { grid-column: 1 / -1; font-weight: 600; color: #e2e8f0; }
+  .lab-slider-label i { color: #8798c2; font-style: normal; font-weight: 500; }
+  .lab-slider input[type="range"] {
+    width: 100%; height: 0.45rem; border-radius: 999px; cursor: pointer;
+    accent-color: #5b8cff; background: rgba(140,170,255,0.18);
+  }
+  .lab-slider-val {
+    min-width: 4.5rem; text-align: right; color: #fff; font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .lab-slider input[type="text"], .exam-setup input, .exam-setup select { font: inherit; color: #e2e8f0; background: rgba(2,6,23,0.45); border: 1px solid rgba(140,170,255,0.25); border-radius: 10px; padding: 0.45rem 0.65rem; min-height: 2.4rem; width: 100%; }
+  .lab-outs { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 0.7rem; margin-top: 0.9rem; }
+  .lab-out {
+    padding: 0.85rem 0.9rem; border-radius: 14px;
+    background: rgba(2,8,28,0.42); border: 1px solid rgba(140,170,255,0.14); color: #dbeafe;
+  }
+  .lab-out .eqmini { display: block; color: #8eb6ff; font-size: 0.78rem; margin-bottom: 0.3rem; }
+  .lab-out strong { display: block; color: #a9bbe0; font-size: 0.84rem; font-weight: 600; }
+  .lab-out b { display: block; margin-top: 0.4rem; color: #fff; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+  .lab-out b i { color: #9fb0d8; font-style: normal; font-size: 0.85rem; font-weight: 500; }
+  #lab-canvas {
+    width: 100%; height: auto; border-radius: 16px;
+    background:
+      radial-gradient(600px 220px at 50% 0%, rgba(59,116,255,0.18), transparent 60%),
+      #071433;
+    border: 1px solid rgba(140,170,255,0.12);
+  }
+  .lab-detail-head h2 { display: flex; align-items: center; gap: 0.65rem; }
+  .lab-title-icon {
+    display: inline-grid; place-items: center; width: 2.4rem; height: 2.4rem;
+    border-radius: 12px; font-size: 1.15rem; flex: none;
+    background: color-mix(in srgb, var(--c, #3b82f6) 25%, rgba(8,18,48,0.9));
+    border: 1px solid color-mix(in srgb, var(--c, #3b82f6) 45%, transparent);
+  }
+  .lab-check { margin-top: 0.4rem; }
+  .lab-refs { margin: 0.5rem 0 0; padding-left: 1.1rem; color: #c3d0ee; line-height: 1.7; }
+  .lab-refs .ok { color: #86efac; }
+  .lab-refs .bad { color: #fca5a5; }
+  @media (max-width: 640px) {
+    .lab-grid { grid-template-columns: 1fr; }
+    .lab-card { min-height: 0; }
+  }
+  .exam-setup { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.8rem; margin: 0.6rem 0 0.9rem; }
+  .exam-setup label { display: grid; gap: 0.35rem; color: #c3d0ee; font-size: 0.88rem; }
+  .exam-timer { color: #fde68a; }
+  .exam-q .work { font-size: 1.05rem; line-height: 1.55; color: #e2e8f0; }
+  .lib-chip.done { border-color: rgba(74,222,128,0.45); }
+  .classroom-note { color: #fde68a; font-size: 0.85rem; }
+  @media (max-width: 900px) {
+    .lab-layout { grid-template-columns: 1fr; }
+    .lab-slider { font-size: 0.92rem; }
+    .exam-setup { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 1200px) {
+    .journey-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  }
+  @media (max-width: 900px) {
+    .journey-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .lesson-actions { gap: 0.5rem; }
+    .lesson-actions .btn { flex: 1 1 calc(50% - 0.3rem); min-height: 2.6rem; }
+    .lesson-choices { gap: 0.55rem; }
+    .lesson-choice { min-height: 2.75rem; padding: 0.75rem 0.9rem; }
+    .hero-stats { flex-wrap: wrap; justify-content: flex-start; gap: 1.2rem 1.8rem; }
+    .hero-stats div + div::before { display: none; }
+    .lib-chips { flex-wrap: wrap; }
+  }
+  @media (max-width: 560px) {
+    .journey-grid { grid-template-columns: minmax(0, 1fr) !important; }
+    .lesson-card { padding: 1rem; }
+    .lesson-actions .btn { flex: 1 1 100%; }
+    .lesson-panel { padding: 1rem; }
+    .topbar { gap: 0.75rem; }
+    .stepper { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 0.2rem; }
+  }
+
   .journey-card {
     display: flex; flex-direction: column; gap: 0.55rem; width: 100%; text-align: left; color: var(--ink);
     padding: 1.4rem 1.35rem; border-radius: 20px; border: 1px solid rgba(140,170,255,0.18);
@@ -1339,8 +1567,7 @@
     .shell.home .workspace { padding: 0 0.95rem 1rem; }
     .home-hero { grid-template-columns: 1fr; min-height: 0; gap: 0.8rem; padding: 1.6rem 0 0.5rem; }
     .hero-atom { max-width: 360px; }
-    .journey-grid, .studio { grid-template-columns: 1fr; }
-    .studio { padding: 1.1rem; margin-top: 2rem; }
+    .studio { grid-template-columns: 1fr; padding: 1.1rem; margin-top: 2rem; }
     .btn.hero-go, .btn.hero-alt { flex: 1 1 auto; }
   }
   @media (max-width: 480px) {
@@ -1355,6 +1582,226 @@
     body { background: white; }
     .topnav { display: none !important; }
     .sheet, .card { background: white; color: black; }
+  }
+
+  /* ===== Readability & polish ===== */
+  body, button, input, textarea, select {
+    font-family: "Sarabun", "Leelawadee UI", Tahoma, sans-serif;
+    letter-spacing: 0.01em;
+  }
+  .brand .name, .hero-title, .journey h2, .studio h2, .page-head h2, h1.page, .answer-num {
+    font-family: "Prompt", "Sarabun", sans-serif;
+  }
+  .hero-title {
+    font-size: clamp(2.8rem, 7vw, 5.6rem);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .hero-pill {
+    font-size: 0.88rem;
+    letter-spacing: 0.04em;
+    color: #d7e6ff;
+    background: rgba(59,116,255,0.14);
+  }
+  .hero-quote {
+    margin: 1.35rem 0 1.8rem;
+    max-width: 34rem;
+    color: #e8efff;
+    font-size: clamp(1.05rem, 2.2vw, 1.28rem);
+    line-height: 1.75;
+    font-weight: 500;
+  }
+  .hero-lead, .j-sub, .studio-note, .help, .coach, .page-head .j-sub, .side-note, .pnote {
+    color: #b8c7e6 !important;
+    line-height: 1.75;
+    font-size: 1rem;
+  }
+  .help { margin: 0.35rem 0 1rem; max-width: 52rem; }
+  .journey { padding: 3rem 0 1rem; }
+  .journey h2 {
+    max-width: 22ch;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 700;
+  }
+  .j-kicker {
+    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    color: #8eb6ff;
+  }
+  .journey-grid {
+    gap: 1rem;
+    margin-top: 1.6rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  }
+  .journey-card {
+    padding: 1.25rem 1.2rem 1.15rem;
+    border-radius: 18px;
+    background:
+      linear-gradient(165deg, rgba(40,72,150,0.38), rgba(8,18,48,0.72));
+    border: 1px solid rgba(160,190,255,0.2);
+    min-height: 11.5rem;
+  }
+  .journey-card:hover {
+    border-color: rgba(125,211,252,0.55);
+    box-shadow: 0 18px 40px -24px rgba(56,189,248,0.55);
+  }
+  .journey-card .j-step {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.55rem; height: 1.55rem; margin-bottom: 0.35rem;
+    border-radius: 999px; font-size: 0.75rem; font-weight: 800;
+    background: rgba(125,211,252,0.16); color: #9fdfff;
+  }
+  .j-icon {
+    width: 40px; height: 40px; border-radius: 12px; font-size: 1.05rem;
+    background: rgba(59,116,255,0.2); border-color: rgba(125,170,255,0.35);
+  }
+  .journey-card strong {
+    font-family: "Prompt", "Sarabun", sans-serif;
+    font-size: 1.05rem; font-weight: 700; color: #fff;
+  }
+  .journey-card p {
+    color: #a9bbe0; font-size: 0.9rem; line-height: 1.6;
+  }
+  .journey-card .go {
+    margin-top: auto; color: #9fdfff; font-size: 0.88rem; font-weight: 700;
+  }
+  .journey-split {
+    margin: 2.2rem 0 0.6rem;
+    color: #8fa3cc; font-size: 0.82rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .sheet, .card, .lesson-panel, .pcard, .ai-panel, .lab-controls, .lab-stage {
+    border-radius: 20px;
+  }
+  .sheet, .card {
+    padding: 1.25rem 1.3rem;
+  }
+  .page-head h2 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .page-head .j-sub { max-width: 40rem; }
+  .btn {
+    border-radius: 14px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    min-height: 2.7rem;
+  }
+  .btn.hero-go, .hero-actions .btn.hero-go {
+    font-family: "Prompt", "Sarabun", sans-serif;
+  }
+  .msg {
+    border-radius: 14px;
+    line-height: 1.65;
+    font-size: 0.98rem;
+  }
+  .board .legend, .mobile-tip, .kbd-hint, .muted {
+    line-height: 1.6;
+  }
+  .eqline, .fcard-eq, .formula-face {
+    font-family: Cambria, "Cambria Math", Georgia, "Times New Roman", serif;
+  }
+  .var-card .meta strong, .lesson-card strong, .fcard-top strong {
+    font-family: "Prompt", "Sarabun", sans-serif;
+    font-weight: 600;
+  }
+  .lesson-block p, .lesson-everyday, .lesson-list, .lesson-quiz .q {
+    line-height: 1.7;
+  }
+  .lesson-choice, .lab-out, .pstat {
+    border-radius: 14px;
+  }
+  .home-foot {
+    margin-top: 2rem;
+    padding: 1.6rem 0 1.2rem;
+    color: #7f91b8;
+    font-size: 0.86rem;
+  }
+  .studio {
+    border-radius: 24px;
+    gap: 1.6rem;
+  }
+  .studio h2 { font-weight: 700; }
+  .guide li {
+    border-radius: 16px;
+    line-height: 1.55;
+  }
+  .topnav .brand .name {
+    font-family: "Prompt", "Sarabun", sans-serif;
+    font-weight: 700;
+  }
+  @media (max-width: 900px) {
+    .hero-title { font-size: clamp(2.4rem, 11vw, 3.4rem); }
+    .hero-quote { font-size: 1.05rem; margin: 1.1rem 0 1.4rem; }
+    .journey-card { min-height: 0; }
+  }
+  .journey-split {
+    text-transform: none;
+    letter-spacing: 0.04em;
+    text-align: left;
+    max-width: 72rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .journey-split:first-of-type { margin-top: 1.6rem; }
+  .journey-split + .journey-grid { margin-top: 0.75rem; }
+  .journey-card { position: relative; }
+  .journey-card .j-step { align-self: flex-start; }
+  .shell.enter .journey-card {
+    animation: card-in 520ms cubic-bezier(.2,.8,.2,1) both;
+  }
+  .shell.enter .journey-grid:first-of-type .journey-card:nth-child(1) { animation-delay: 260ms; }
+  .shell.enter .journey-grid:first-of-type .journey-card:nth-child(2) { animation-delay: 320ms; }
+  .shell.enter .journey-grid:first-of-type .journey-card:nth-child(3) { animation-delay: 380ms; }
+  .shell.enter .journey-grid:first-of-type .journey-card:nth-child(4) { animation-delay: 440ms; }
+  .topnav {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  }
+  .topnav .nav-tabs {
+    display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: flex-end;
+    margin-left: auto;
+  }
+  .back-home {
+    font-family: "Sarabun", sans-serif;
+    font-weight: 600;
+    margin-bottom: 0.85rem;
+  }
+  .fcard-when, .fcard-top, .pcard h3, .lesson-panel h3 {
+    line-height: 1.45;
+  }
+  .fcard-when, .lesson-block p, .pempty, .muted {
+    color: #a8bae0 !important;
+  }
+  .side-prompt, textarea, input[type="search"], input[type="text"], input[type="number"] {
+    border-radius: 14px;
+    line-height: 1.55;
+  }
+  .side-prompt {
+    padding: 1rem 1.1rem;
+    min-height: 8.5rem;
+  }
+  h1.page {
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    line-height: 1.3;
+  }
+  .stepper button, .stepper span {
+    font-size: 0.88rem;
+  }
+  .guide li strong {
+    font-family: "Prompt", "Sarabun", sans-serif;
+    display: flex; align-items: center; gap: 0.45rem;
+    margin-bottom: 0.25rem;
+  }
+  @media (max-width: 900px) {
+    .topnav .nav-tabs {
+      width: 100%;
+      justify-content: flex-start;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.15rem;
+    }
   }
 </style>
 </head>
@@ -2030,12 +2477,12 @@ var problems = [
     hints: ['มีกัมมันตภาพกับค่าคงตัวการสลาย และถามจำนวนนิวเคลียส', 'ไม่ได้ให้ครึ่งชีวิตหรือเวลาที่ผ่านไป', 'บทที่ตรงคือบทที่ 20 ฟิสิกส์นิวเคลียร์และฟิสิกส์อนุภาค (ม.6 เล่ม 6)'] }
 ];
 
-var STEP_LABELS = ['กรอกโจทย์', 'หัวข้อ', 'ตัวแปรและสูตร', 'จัดรูปและคำตอบ'];
+var STEP_LABELS = ['พิมพ์โจทย์', 'เลือกบท', 'ใส่ค่า+สูตร', 'จัดรูปสมการ'];
 var STEP_HELP = [
-  'พิมพ์โจทย์ในกล่องด้านล่าง ระบบอ่านข้อความแล้วชี้บทให้ทันที',
-  'ตรวจบทที่ระบบวิเคราะห์จากโจทย์ เปลี่ยนได้ถ้าไม่ตรง',
-  'ใส่ค่าเอง แล้วคลิกสูตร ถ้าโจทย์ยากระบบอาจแนะนำหลายสูตรทีละขั้น',
-  'ย้ายข้างหรือแทนค่า จากนั้นระบบวิเคราะห์คำตอบ ถ้ายังไม่จบจะพาไปสูตรถัดไป'
+  'พิมพ์โจทย์ให้ครบ แล้วกดวิเคราะห์ — ระบบจะชี้บทให้อัตโนมัติ',
+  'ตรวจว่าบทที่ระบบเลือกตรงกับโจทย์ไหม ถ้าไม่ตรงเปลี่ยนได้',
+  'ใส่ค่าตัวแปรที่รู้ แล้วเลือกสูตรที่เกี่ยวข้อง',
+  'จัดรูปสมการ ย้ายข้าง แทนค่า แล้วดูคำตอบ'
 ];
 var SAVE_KEY = 'phys-lab-v6';
 
@@ -2067,7 +2514,8 @@ function formatSci(n) {
   return m + '×10' + String(exp).split('').map(function (c) { return sup[c] || c; }).join('');
 }
 function formatNum(n) {
-  if (!isFinite(n)) return '—';
+  if (n == null || n === '' || typeof n === 'boolean' || !isFinite(Number(n))) return '—';
+  n = Number(n);
   if (n !== 0 && (Math.abs(n) < 1e-3 || Math.abs(n) >= 1e7)) return formatSci(n);
   var r = Math.round(n * 1e6) / 1e6;
   if (Math.abs(r) < 1e-9) return '0';
@@ -2738,7 +3186,8 @@ var EXTRACT_RULES = [
   { key: 'BE', src: 'พลังงานยึดเหนี่ยว\\s*NUM\\s*(?:MeV|เมกะอิเล็กตรอนโวลต์)' },
   { key: 'g', src: 'ความเร่งโน้มถ่วง(?:เท่ากับ)?\\s*NUM\\s*เมตรต่อวินาทีกำลังสอง' },
   { key: 'a', name: 'ความเร่งสู่ศูนย์กลาง', src: 'ความเร่งสู่ศูนย์กลาง\\s*NUM\\s*เมตรต่อวินาทีกำลังสอง' },
-  { key: 'a', src: 'ความเร่ง(?:คงที่)?\\s*NUM\\s*เมตรต่อวินาทีกำลังสอง' },
+  { key: 'a', src: 'ความเร่ง(?:คงที่|คงตัว)?\\s*NUM\\s*(?:เมตรต่อวินาทีกำลังสอง|m/s²|m/s\\^2|m/s2)' },
+  { key: 'a', src: 'เร่ง(?:ด้วยความเร่ง)?\\s*NUM\\s*(?:เมตรต่อวินาทีกำลังสอง|m/s²|m/s\\^2|m/s2)' },
   { key: 'u', src: 'ความเร็วต้น\\s*NUM\\s*เมตรต่อวินาที' },
   { key: 'u', src: '(?:ความเร็วเริ่มต้น|อัตราเร็วเริ่มต้น|(?:เริ่มต้น|ตอนแรก|ตอนเริ่ม|แรกเริ่ม|ขณะเริ่ม)\\s*(?:ด้วย|มี)?\\s*(?:ความเร็ว|อัตราเร็ว))\\s*NUM\\s*เมตรต่อวินาที' },
   { key: 'c', src: '(?:สุญญากาศมีอัตราเร็ว|อัตราเร็วแสง)\\s*NUM\\s*เมตรต่อวินาที' },
@@ -2747,7 +3196,7 @@ var EXTRACT_RULES = [
   { key: 'v', src: '(?:ความเร็ว|อัตราเร็ว)(?:คงตัว|คงที่|ปลาย|สม่ำเสมอ)?\\s*NUM\\s*เมตรต่อวินาที' },
   { key: 'EF', src: 'สนามไฟฟ้า(?:ขนาด|สม่ำเสมอ)?\\s*NUM' },
   { key: 'Tper', src: 'คาบ\\s*NUM\\s*วินาที' },
-  { key: 't', src: '(?:เป็นเวลา|ภายในเวลา|ในเวลา)\\s*NUM\\s*วินาที' },
+  { key: 't', src: '(?:เป็นเวลา|ภายในเวลา|ในเวลา)\\s*NUM\\s*(?:วินาที|s\\b)' },
   { key: 'freq', src: 'ความถี่\\s*NUM\\s*เฮิรตซ์' },
   { key: 'lam', src: 'ความยาวคลื่น\\s*NUM\\s*เมตร' },
   { key: 'slit', src: 'สลิตคู่ที่ห่างกัน\\s*NUM\\s*เมตร' },
@@ -3280,6 +3729,7 @@ var UNIT_TABLE = [
 ].map(function (row) { return { re: row[0], f: row[1], to: row[2], si: row[3], label: row[4] }; });
 var NUM_SIGNED = '-?' + NUM_SRC;
 function toNumText(v) {
+  if (!isFinite(v)) return '—';
   if (v === 0) return '0';
   var a = Math.abs(v);
   if (a >= 1e-3 && a < 1e7) return String(Number(v.toPrecision(6)));
@@ -3716,7 +4166,16 @@ var state = {
   solved: [], confirmWipe: false, confidence: 0, ranked: [], clears: 0,
   goalUnknown: null, plan: [], planIndex: 0, chainLog: [],
   view: 'home', simId: null, simWide: false,
-  libQ: '', libCh: 'all', log: []
+  libQ: '', libCh: 'all', log: [],
+  lessonId: null, lessonGrade: 'all', lessonTrack: 'all', lessonQuiz: {}, lessonDone: {},
+  hintLevel: 0, showSolution: false, mistakes: [], scores: { total: 0, byTopic: {}, byFormula: {} },
+  sr: {}, missionsDone: [], missionIdx: 0, profileId: 'default', profileName: 'ผู้เรียนหลัก',
+  aiEnabled: null, aiBusy: false, aiTutorQ: '', aiTutorReply: '', aiTutorErr: '',
+  ocrDraft: '', ocrPreview: '', ocrConfirmed: false, ocrErr: '', ocrBusy: false,
+  labId: null, labParams: {}, exam: null, examCount: 8, examMinutes: 15, examTopic: 'all',
+  role: 'student', classroomId: null, sessionToken: null, sessionExp: 0, sessionErr: '',
+  classNameDraft: 'ห้องสาธิต', classCodeDraft: 'LAB8DEMO', reportNote: '', reportPid: 'car-accel',
+  reportList: [], rosterMembers: []
 };
 var SIMS = [
   { id: 'nature', title: 'ธรรมชาติและพัฒนาการทางฟิสิกส์', grade: 'ม.4', topicNo: 1, color: '#2a6f97',
@@ -3766,7 +4225,7 @@ function simForTopic(topicId) {
   if (!t) return null;
   return SIMS.filter(function (s) { return s.topicNo === t.no; })[0] || null;
 }
-var memory = { v: 4, solved: [], session: null, clears: 0, log: [] };
+var memory = { v: 5, activeProfile: 'default', profiles: {} };
 var dragPayload = null;
 var suppressClick = false;
 
@@ -3845,30 +4304,39 @@ function applyDraft(draft) {
   state.confirmWipe = false;
 }
 function persist() {
-  memory.v = 4;
-  memory.solved = state.solved.slice();
-  memory.clears = state.clears || 0;
-  memory.log = (state.log || []).slice(-300);
-  memory.session = snapshot();
-  memory.view = state.view;
-  memory.simId = state.simId;
-  memory.simWide = !!state.simWide;
+  if (!memory.profiles) memory.profiles = {};
+  if (!memory.activeProfile) memory.activeProfile = state.profileId || 'default';
+  memory.v = 5;
+  pushStateToProfile();
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(memory)); } catch (err) { /* ที่เก็บเต็มหรือถูกปิด */ }
 }
 function loadStore() {
   try {
     var raw = localStorage.getItem(SAVE_KEY) || localStorage.getItem('phys-lab-v5') || localStorage.getItem('phys-lab-v4');
-    if (!raw) return;
+    if (!raw) {
+      migrateLegacyStore(null);
+      pullProfileToState();
+      return;
+    }
     var data = JSON.parse(raw);
-    if (!data || data.v < 2 || data.v > 4) return;
-    state.solved = Array.isArray(data.solved) ? data.solved.filter(function (id) { return problems.some(function (p) { return p.id === id; }); }) : [];
-    state.clears = data.clears || 0;
-    state.log = Array.isArray(data.log) ? data.log.filter(function (e) { return e && formulaById(e.f) && topicById(e.t) && isFinite(e.at); }) : [];
-    state.view = data.view === 'sims' ? 'sims' : 'home';
-    state.simId = simById(data.simId) ? data.simId : null;
-    state.simWide = !!data.simWide;
-    var draft = sanitize(data.session);
+    if (!data || data.v < 2 || data.v > 5) return;
+    if (data.v >= 5 && data.profiles) {
+      memory = { v: 5, activeProfile: data.activeProfile || 'default', profiles: data.profiles };
+      if (!memory.profiles[memory.activeProfile]) memory.activeProfile = Object.keys(memory.profiles)[0] || 'default';
+      if (!memory.profiles[memory.activeProfile]) memory.profiles.default = emptyProfile('ผู้เรียนหลัก');
+    } else {
+      migrateLegacyStore(data);
+    }
+    pullProfileToState();
+    state.solved = state.solved.filter(function (id) { return problems.some(function (p) { return p.id === id; }); });
+    state.log = state.log.filter(function (e) { return e && formulaById(e.f) && topicById(e.t) && isFinite(e.at); });
+    var prof = activeProfileData();
+    state.view = prof.view === 'sims' ? 'sims' : 'home';
+    state.simId = simById(prof.simId) ? prof.simId : null;
+    state.simWide = !!prof.simWide;
+    var draft = sanitize(prof.session);
     if (draft) applyDraft(draft);
+    syncMissions();
   } catch (err) { blankWork(); }
 }
 function applyAnalysis(res) {
@@ -3907,7 +4375,7 @@ function refreshAdvice() {
   var goal = goalTarget();
   var goalText = goal && SYM[goal] ? SYM[goal].name + ' (' + SYM[goal].sym + ')' : 'ยังไม่ได้เลือก';
   state.reasons = [
-    p.given.length ? 'ตัวแปรที่กรอก ' + p.given.map(function (g) { return (SYM[g.key] ? SYM[g.key].sym : g.key) + ' = ' + (g.show || formatNum(g.value)); }).join(', ') : 'ยังไม่ได้กรอกตัวแปร',
+    p.given.length ? 'ตัวแปรที่กรอก ' + p.given.map(function (g) { var label = SYM[g.key] ? SYM[g.key].sym : g.key; if (g.value != null && isFinite(Number(g.value))) return label + ' = ' + (g.show || formatNum(g.value)); if (g.found != null && isFinite(Number(g.found))) return label + ' ≈ ' + (g.foundShow || formatNum(g.found)) + ' (พบในโจทย์ ยังไม่กดใช้ค่า)'; return label + ' (ยังไม่ใส่ค่า)'; }).join(', ') : 'ยังไม่ได้กรอกตัวแปร',
     'เป้าหมายสุดท้าย: ' + goalText,
     topic ? 'บทที่ ' + topic.no + ' ' + topic.name + ' (' + topic.grade + ' ' + topic.vol + ')' : 'ยังไม่ได้เลือกบท',
     plan.length > 1
@@ -3916,6 +4384,1050 @@ function refreshAdvice() {
   ];
 }
 function markSolved(id) { if (state.solved.indexOf(id) === -1) state.solved.push(id); }
+async function aiHealth() {
+  try {
+    var r = await fetch('/api/ai/health', { method: 'GET' });
+    var data = await r.json();
+    state.aiEnabled = !!(data && data.ok && data.aiEnabled);
+    return data;
+  } catch (err) {
+    state.aiEnabled = false;
+    return { ok: false, aiEnabled: false };
+  }
+}
+async function callAiTutor() {
+  if (state.aiBusy) return;
+  state.aiBusy = true; state.aiTutorErr = ''; state.aiTutorReply = '';
+  render();
+  try {
+    await ensureSession(false);
+    var r = await apiFetch('/api/ai/tutor', {
+      method: 'POST',
+      body: JSON.stringify({
+        question: state.aiTutorQ,
+        problem: state.prompt || (state.problem && state.problem.text) || '',
+        topic: state.topicId || '',
+        level: Math.max(1, Math.min(3, state.hintLevel || 1))
+      })
+    });
+    var data = await r.json();
+    if (!data.ok) {
+      state.aiTutorErr = data.message || data.error || 'เรียก AI ไม่สำเร็จ';
+    } else {
+      state.aiTutorReply = data.reply || '';
+    }
+  } catch (err) {
+    state.aiTutorErr = 'เชื่อมต่อเซิร์ฟเวอร์ AI ไม่ได้ — ใช้คำใบ้ในเครื่องได้ตามปกติ';
+  }
+  state.aiBusy = false;
+  render();
+}
+async function callAiOcr(dataUrl) {
+  if (state.ocrBusy) return;
+  state.ocrBusy = true; state.ocrErr = ''; state.ocrDraft = ''; state.ocrConfirmed = false;
+  state.ocrPreview = dataUrl;
+  render();
+  try {
+    await ensureSession(false);
+    var r = await apiFetch('/api/ai/ocr', {
+      method: 'POST',
+      body: JSON.stringify({ image: dataUrl })
+    });
+    var data = await r.json();
+    if (!data.ok) {
+      state.ocrErr = data.message || data.error || 'อ่านภาพไม่สำเร็จ';
+    } else {
+      state.ocrDraft = data.draftText || '';
+      state.ocrConfirmed = false;
+    }
+  } catch (err) {
+    state.ocrErr = 'เชื่อมต่อเซิร์ฟเวอร์อ่านภาพไม่ได้';
+  }
+  state.ocrBusy = false;
+  render();
+}
+function confirmOcrText() {
+  var text = String(state.ocrDraft || '').trim();
+  if (text.length < 8) {
+    state.ocrErr = 'ข้อความสั้นเกินไป ตรวจและแก้ไขก่อนยืนยัน';
+    render();
+    return;
+  }
+  state.prompt = text;
+  state.ocrConfirmed = true;
+  state.ocrErr = '';
+  setMessage('info', 'ยืนยันข้อความจากภาพแล้ว — กด “วิเคราะห์โจทย์” เมื่อพร้อม (ยังไม่คำนวณอัตโนมัติ)');
+  render();
+}
+function renderAiTutorPanel() {
+  var badge = state.aiEnabled ? '<span class="ai-badge">AI พร้อม</span>' : '<span class="ai-badge off">โหมดในเครื่อง</span>';
+  return '<section class="ai-panel" id="ai-tutor"><h3>AI Physics Tutor ' + badge + '</h3>' +
+    '<p class="ai-status">ถามแนวคิด สูตร หรือขั้นถัดไป — ระบบไม่เฉลยตัวเลขสุดท้าย · คีย์อยู่ฝั่งเซิร์ฟเวอร์</p>' +
+    '<textarea data-field="ai-tutor-q" placeholder="เช่น ทำไมต้องแยกแนวราบกับแนวดิ่งก่อน?" enterkeyhint="send">' + esc(state.aiTutorQ || '') + '</textarea>' +
+    '<div class="ai-actions"><button type="button" class="btn secondary" data-act="ai-tutor-ask"' + (state.aiBusy ? ' disabled' : '') + '>' +
+    (state.aiBusy ? 'กำลังคิด…' : 'ถามติวเตอร์') + '</button>' +
+    '<button type="button" class="btn ghost" data-act="ai-health">ตรวจสถานะ AI</button></div>' +
+    (state.aiTutorErr ? '<div class="ai-reply bad">' + esc(state.aiTutorErr) + '</div>' : '') +
+    (state.aiTutorReply ? '<div class="ai-reply">' + esc(state.aiTutorReply) + '</div>' : '') +
+    '</section>';
+}
+function renderOcrPanel() {
+  return '<div class="ocr-box"><strong>อ่านโจทย์จากภาพ</strong>' +
+    '<p class="muted">อัปโหลดภาพ → ได้ข้อความร่าง → แก้และยืนยันก่อนวิเคราะห์/คำนวณ</p>' +
+    '<div class="ai-actions"><label class="btn secondary" style="cursor:pointer">เลือกภาพ<input type="file" accept="image/png,image/jpeg,image/webp" data-field="ocr-file" hidden></label>' +
+    (state.ocrBusy ? '<span class="muted">กำลังอ่านภาพ…</span>' : '') + '</div>' +
+    (state.ocrPreview ? '<img class="ocr-preview" alt="ตัวอย่างภาพโจทย์" src="' + esc(state.ocrPreview) + '">' : '') +
+    (state.ocrErr ? '<div class="ai-reply bad">' + esc(state.ocrErr) + '</div>' : '') +
+    (state.ocrDraft || state.ocrConfirmed ? (
+      '<p class="confirm-note">⚠ ตรวจข้อความให้ถูกต้องก่อนยืนยัน — จะยังไม่คำนวณจนกว่าคุณจะกดยืนยันและกดวิเคราะห์เอง</p>' +
+      '<textarea data-field="ocr-draft" enterkeyhint="done">' + esc(state.ocrDraft || '') + '</textarea>' +
+      '<div class="ai-actions"><button type="button" class="btn hero-go" data-act="ocr-confirm"' + (state.ocrBusy ? ' disabled' : '') + '>' +
+      (state.ocrConfirmed ? 'ยืนยันอีกครั้ง (อัปเดตโจทย์)' : 'ยืนยันข้อความจากภาพ') + '</button></div>'
+    ) : '') +
+    '</div>';
+}
+
+
+/* ==== Phase 6–7: Interactive Labs + Mock Exam ==== */
+function approxRef(a, b, tol) {
+  tol = tol == null ? 1e-6 : tol;
+  if (!isFinite(a) || !isFinite(b)) return false;
+  return Math.abs(a - b) <= tol * Math.max(1, Math.abs(b));
+}
+var LAB_ROOMS = [
+  {
+    id: 'motion',
+    name: 'การเคลื่อนที่และแรง',
+    blurb: 'ปรับความเร็วต้น ความเร่ง เวลา และมวล แล้วดูความเร็ว การกระจัด และแรง',
+    hint: 'ความเร่งคงตัว',
+    icon: '↗',
+    formulas: ['v = u + at', 's = ut + ½at²', 'F = ma'],
+    topics: ['ch2', 'ch3'],
+    color: '#3b82f6',
+    params: [
+      { key: 'u', label: 'ความเร็วต้น u', unit: 'm/s', min: 0, max: 30, step: 0.5, value: 0 },
+      { key: 'a', label: 'ความเร่ง a', unit: 'm/s²', min: -8, max: 12, step: 0.5, value: 2 },
+      { key: 't', label: 'เวลา t', unit: 's', min: 0.5, max: 12, step: 0.5, value: 5 },
+      { key: 'm', label: 'มวล m', unit: 'kg', min: 0.5, max: 20, step: 0.5, value: 3 }
+    ],
+    compute: function (p) {
+      var v = p.u + p.a * p.t;
+      var s = p.u * p.t + 0.5 * p.a * p.t * p.t;
+      var F = p.m * p.a;
+      return {
+        outputs: [
+          { key: 'v', label: 'ความเร็วปลาย', value: v, unit: 'm/s', eq: 'v = u + at' },
+          { key: 's', label: 'การกระจัด', value: s, unit: 'm', eq: 's = ut + ½at²' },
+          { key: 'F', label: 'แรงลัพธ์', value: F, unit: 'N', eq: 'F = ma' }
+        ]
+      };
+    },
+    refs: [
+      { name: 'ออกตัวจากหยุด', params: { u: 0, a: 2, t: 5, m: 3 }, expect: { v: 10, s: 25, F: 6 } },
+      { name: 'ชะลอความเร็ว', params: { u: 20, a: -4, t: 3, m: 5 }, expect: { v: 8, s: 42, F: -20 } }
+    ]
+  },
+  {
+    id: 'circuit',
+    name: 'วงจรไฟฟ้า',
+    blurb: 'ต่อ R₁ กับ R₂ แบบอนุกรมหรือขนาน แล้วดูความต้านทานรวม กระแส และกำลัง',
+    hint: 'อนุกรม · ขนาน',
+    icon: '⚡',
+    formulas: ['Req', 'I = V/Req', 'P = VI'],
+    topics: ['ch14'],
+    color: '#f59e0b',
+    params: [
+      { key: 'V', label: 'ความต่างศักย์ V', unit: 'V', min: 1, max: 24, step: 0.5, value: 12 },
+      { key: 'R1', label: 'R₁', unit: 'Ω', min: 1, max: 100, step: 1, value: 6 },
+      { key: 'R2', label: 'R₂', unit: 'Ω', min: 1, max: 100, step: 1, value: 3 },
+      { key: 'mode', label: 'การต่อ (0=อนุกรม 1=ขนาน)', unit: '', min: 0, max: 1, step: 1, value: 0 }
+    ],
+    compute: function (p) {
+      var series = p.mode < 0.5;
+      var Req = series ? (p.R1 + p.R2) : (p.R1 * p.R2) / (p.R1 + p.R2);
+      var I = p.V / Req;
+      var P = p.V * I;
+      var I1 = series ? I : p.V / p.R1;
+      var I2 = series ? I : p.V / p.R2;
+      return {
+        outputs: [
+          { key: 'Req', label: 'ความต้านทานรวม', value: Req, unit: 'Ω', eq: series ? 'Req = R₁ + R₂' : '1/Req = 1/R₁ + 1/R₂' },
+          { key: 'I', label: series ? 'กระแสในวงจร' : 'กระแสจากแหล่ง', value: I, unit: 'A', eq: 'I = V / Req' },
+          { key: 'I1', label: 'กระแสผ่าน R₁', value: I1, unit: 'A', eq: series ? 'I₁ = I' : 'I₁ = V / R₁' },
+          { key: 'I2', label: 'กระแสผ่าน R₂', value: I2, unit: 'A', eq: series ? 'I₂ = I' : 'I₂ = V / R₂' },
+          { key: 'P', label: 'กำลังรวม', value: P, unit: 'W', eq: 'P = VI' }
+        ]
+      };
+    },
+    refs: [
+      { name: 'อนุกรม 12V', params: { V: 12, R1: 6, R2: 3, mode: 0 }, expect: { Req: 9, I: 12 / 9, I1: 12 / 9, I2: 12 / 9, P: 12 * (12 / 9) } },
+      { name: 'ขนาน 12V', params: { V: 12, R1: 6, R2: 3, mode: 1 }, expect: { Req: 2, I: 6, I1: 2, I2: 4, P: 72 } }
+    ]
+  },
+  {
+    id: 'wave',
+    name: 'คลื่นและเสียง',
+    blurb: 'ปรับความถี่และความยาวคลื่น แล้วดูอัตราเร็วคลื่นกับความถี่มูลฐานของท่อ',
+    hint: 'ท่อเปิด · ท่อปิด',
+    icon: '〰',
+    formulas: ['v = fλ', 'λ = 2L / 4L'],
+    topics: ['ch9', 'ch12'],
+    color: '#14b8a6',
+    params: [
+      { key: 'freq', label: 'ความถี่ f', unit: 'Hz', min: 50, max: 1000, step: 10, value: 170 },
+      { key: 'lam', label: 'ความยาวคลื่น λ', unit: 'm', min: 0.1, max: 4, step: 0.05, value: 2 },
+      { key: 'L', label: 'ความยาวท่อ L', unit: 'm', min: 0.1, max: 2, step: 0.05, value: 0.5 },
+      { key: 'closed', label: 'ท่อ (0=เปิด 1=ปิด)', unit: '', min: 0, max: 1, step: 1, value: 1 }
+    ],
+    compute: function (p) {
+      var v = p.freq * p.lam;
+      var closed = p.closed >= 0.5;
+      var f1 = closed ? v / (4 * p.L) : v / (2 * p.L);
+      var lam1 = closed ? 4 * p.L : 2 * p.L;
+      return {
+        outputs: [
+          { key: 'v', label: 'อัตราเร็วคลื่น', value: v, unit: 'm/s', eq: 'v = fλ' },
+          { key: 'lam1', label: 'λ มูลฐานของท่อ', value: lam1, unit: 'm', eq: closed ? 'λ = 4L' : 'λ = 2L' },
+          { key: 'f1', label: 'ความถี่มูลฐานท่อ', value: f1, unit: 'Hz', eq: closed ? 'f = v/(4L)' : 'f = v/(2L)' }
+        ]
+      };
+    },
+    refs: [
+      { name: 'คลื่นบนเชือก', params: { freq: 170, lam: 2, L: 0.5, closed: 1 }, expect: { v: 340, lam1: 2, f1: 170 } },
+      { name: 'ท่อเปิด', params: { freq: 340, lam: 1, L: 0.5, closed: 0 }, expect: { v: 340, lam1: 1, f1: 340 } }
+    ]
+  },
+  {
+    id: 'optics',
+    name: 'แสงและเลนส์',
+    blurb: 'ปรับระยะโฟกัสและระยะวัตถุ แล้วดูระยะภาพ กำลังขยาย และมุมวิกฤต',
+    hint: 'เลนส์บาง · สสวท.',
+    icon: '◎',
+    formulas: ['1/f = 1/s + 1/s′', 'm = −s′/s'],
+    topics: ['ch11'],
+    color: '#8b5cf6',
+    params: [
+      { key: 'f', label: 'ความยาวโฟกัส f', unit: 'm', min: 0.05, max: 1, step: 0.05, value: 0.2 },
+      { key: 'so', label: 'ระยะวัตถุ s', unit: 'm', min: 0.1, max: 2, step: 0.05, value: 0.5 },
+      { key: 'n1', label: 'ดัชนีหักเห n₁', unit: '', min: 1, max: 2, step: 0.05, value: 1 },
+      { key: 'n2', label: 'ดัชนีหักเห n₂', unit: '', min: 1, max: 2, step: 0.05, value: 1.5 }
+    ],
+    compute: function (p) {
+      var inv = 1 / p.f - 1 / p.so;
+      var si = inv !== 0 ? 1 / inv : Infinity;
+      var m = isFinite(si) ? -si / p.so : NaN;
+      var vc = 3e8;
+      var v2 = vc / p.n2;
+      var thetaC = p.n1 > p.n2 ? (Math.asin(p.n2 / p.n1) * 180 / Math.PI) : NaN;
+      return {
+        outputs: [
+          { key: 'si', label: 'ระยะภาพ s′', value: si, unit: 'm', eq: '1/f = 1/s + 1/s′' },
+          { key: 'm', label: 'กำลังขยาย m', value: m, unit: '', eq: 'm = −s′/s' },
+          { key: 'v2', label: 'อัตราเร็วในตัวกลาง n₂', value: v2, unit: 'm/s', eq: 'v = c/n' },
+          { key: 'thetaC', label: 'มุมวิกฤต (ถ้า n₁>n₂)', value: thetaC, unit: '°', eq: 'sinθc = n₂/n₁' }
+        ]
+      };
+    },
+    refs: [
+      { name: 'เลนส์นูน s=0.5 f=0.2', params: { f: 0.2, so: 0.5, n1: 1, n2: 1.5 }, expect: { si: 1 / (1 / 0.2 - 1 / 0.5), m: -(1 / (1 / 0.2 - 1 / 0.5)) / 0.5, v2: 2e8 } },
+      { name: 'มุมวิกฤตน้ำ→อากาศ', params: { f: 0.2, so: 0.5, n1: 1.33, n2: 1 }, expect: { thetaC: Math.asin(1 / 1.33) * 180 / Math.PI, v2: 3e8 } }
+    ]
+  }
+];
+function labById(id) { return LAB_ROOMS.filter(function (L) { return L.id === id; })[0] || null; }
+function labParamsMap(lab) {
+  var src = state.labParams && state.labParams[lab.id] ? state.labParams[lab.id] : null;
+  var map = {};
+  lab.params.forEach(function (p) {
+    map[p.key] = src && isFinite(Number(src[p.key])) ? Number(src[p.key]) : p.value;
+  });
+  return map;
+}
+function setLabParam(labId, key, value) {
+  state.labParams = state.labParams || {};
+  state.labParams[labId] = state.labParams[labId] || {};
+  state.labParams[labId][key] = Number(value);
+}
+function runLabRefs(lab) {
+  var results = [];
+  (lab.refs || []).forEach(function (ref) {
+    var out = lab.compute(ref.params);
+    var map = {};
+    out.outputs.forEach(function (o) { map[o.key] = o.value; });
+    var ok = Object.keys(ref.expect).every(function (k) {
+      if (!isFinite(ref.expect[k])) return !isFinite(map[k]);
+      return approxRef(map[k], ref.expect[k], 1e-6);
+    });
+    results.push({ name: ref.name, ok: ok, got: map, expect: ref.expect });
+  });
+  return results;
+}
+function verifyAllLabs() {
+  return LAB_ROOMS.map(function (lab) {
+    var refs = runLabRefs(lab);
+    return { id: lab.id, name: lab.name, pass: refs.every(function (r) { return r.ok; }), refs: refs };
+  });
+}
+function drawLabCanvas(lab, params, outputs) {
+  var canvas = document.getElementById('lab-canvas');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#071433';
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(140,170,255,0.25)';
+  ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
+  if (lab.id === 'motion') {
+    var t = params.t, s = outputs.filter(function (o) { return o.key === 's'; })[0].value;
+    var maxS = Math.max(20, Math.abs(s) * 1.2);
+    var x0 = 40, y0 = H - 40, x1 = W - 40;
+    ctx.strokeStyle = '#64748b'; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y0); ctx.stroke();
+    var x = x0 + (Math.abs(s) / maxS) * (x1 - x0);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x - 18, y0 - 28, 36, 22);
+    ctx.fillStyle = '#e2e8f0'; ctx.font = '12px sans-serif';
+    ctx.fillText('s ≈ ' + formatNum(s) + ' m', x0, 28);
+    ctx.fillText('t = ' + formatNum(t) + ' s', x0, 46);
+  } else if (lab.id === 'circuit') {
+    var series = params.mode < 0.5;
+    ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2;
+    ctx.strokeRect(60, 70, W - 120, H - 120);
+    ctx.fillStyle = '#fde68a'; ctx.font = '13px sans-serif';
+    ctx.fillText(series ? 'อนุกรม R₁–R₂' : 'ขนาน R₁ // R₂', 70, 50);
+    ctx.fillText('V = ' + formatNum(params.V) + ' V', 70, H - 30);
+  } else if (lab.id === 'wave') {
+    var amp = 40, mid = H / 2, lamPx = Math.max(40, (params.lam / 4) * (W - 80));
+    ctx.strokeStyle = '#2dd4bf'; ctx.beginPath();
+    for (var i = 0; i < W - 40; i++) {
+      var y = mid + amp * Math.sin((i / lamPx) * Math.PI * 2);
+      if (i === 0) ctx.moveTo(20 + i, y); else ctx.lineTo(20 + i, y);
+    }
+    ctx.stroke();
+    ctx.fillStyle = '#99f6e4'; ctx.font = '12px sans-serif';
+    ctx.fillText('v = fλ', 24, 28);
+  } else if (lab.id === 'optics') {
+    var cx = W * 0.55, cy = H / 2;
+    ctx.strokeStyle = '#a5b4fc'; ctx.beginPath();
+    ctx.moveTo(cx, 30); ctx.quadraticCurveTo(cx + 30, cy, cx, H - 30);
+    ctx.moveTo(cx, 30); ctx.quadraticCurveTo(cx - 30, cy, cx, H - 30);
+    ctx.stroke();
+    ctx.strokeStyle = '#f472b6';
+    ctx.beginPath(); ctx.moveTo(40, cy); ctx.lineTo(W - 40, cy); ctx.stroke();
+    var so = params.so, siOut = outputs.filter(function (o) { return o.key === 'si'; })[0];
+    var si = siOut ? siOut.value : 0;
+    var ox = cx - Math.min(180, so * 200);
+    var ix = cx + (isFinite(si) ? Math.min(200, Math.abs(si) * 120) * (si >= 0 ? 1 : -1) : 80);
+    ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.arc(ox, cy - 30, 8, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#f472b6'; ctx.beginPath(); ctx.arc(ix, cy + 30, 8, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#e2e8f0'; ctx.font = '12px sans-serif';
+    ctx.fillText('วัตถุ', ox - 10, cy - 40);
+    ctx.fillText('ภาพ', ix - 8, cy + 50);
+  }
+}
+
+function examBank() {
+  var bank = problems.map(function (p) {
+    var info = SYM[p.unknown] || {};
+    return {
+      id: p.id,
+      source: 'problems',
+      topic: p.topic,
+      title: p.title,
+      text: p.text,
+      unknown: p.unknown,
+      answer: p.answer,
+      unit: info.unit || '',
+      unitTh: info.unitTh || '',
+      sym: info.sym || p.unknown,
+      given: p.given
+    };
+  });
+  var extra = [
+    { id: 'xb-series', source: 'extra', topic: 'ch14', title: 'R อนุกรม', text: 'ตัวต้านทาน 4 โอห์ม ต่ออนุกรมกับ 6 โอห์ม คร่อม 10 โวลต์ จงหากระแส', unknown: 'I', answer: 1, unit: 'A', unitTh: 'แอมแปร์', sym: 'I', given: [{ key: 'V', value: 10 }, { key: 'R', value: 10 }] },
+    { id: 'xb-wave', source: 'extra', topic: 'ch9', title: 'ความยาวคลื่น', text: 'คลื่นความถี่ 50 เฮิรตซ์ อัตราเร็ว 10 เมตรต่อวินาที จงหาความยาวคลื่น', unknown: 'lam', answer: 0.2, unit: 'm', unitTh: 'เมตร', sym: 'λ', given: [{ key: 'freq', value: 50 }, { key: 'v', value: 10 }] },
+    { id: 'xb-lens', source: 'extra', topic: 'ch11', title: 'กำลังเลนส์', text: 'เลนส์มีความยาวโฟกัส 0.5 เมตร จงหากำลังของเลนส์', unknown: 'P', answer: 2, unit: 'D', unitTh: 'ไดออปเตอร์', sym: 'P', given: [{ key: 'fLen', value: 0.5 }] },
+    { id: 'xb-sound', source: 'extra', topic: 'ch12', title: 'ท่อปิด', text: 'ท่อปลายปิดยาว 0.85 เมตร อัตราเร็วเสียง 340 เมตรต่อวินาที จงหาความถี่มูลฐาน', unknown: 'freq', answer: 100, unit: 'Hz', unitTh: 'เฮิรตซ์', sym: 'f', given: [{ key: 'ell', value: 0.85 }, { key: 'vs', value: 340 }] },
+    { id: 'xb-force', source: 'extra', topic: 'ch3', title: 'F=ma', text: 'มวล 5 กิโลกรัม ความเร่ง 3 เมตรต่อวินาทีกำลังสอง จงหาแรงลัพธ์', unknown: 'F', answer: 15, unit: 'N', unitTh: 'นิวตัน', sym: 'F', given: [{ key: 'm', value: 5 }, { key: 'a', value: 3 }] }
+  ];
+  return bank.concat(extra);
+}
+function mulberry32(a) {
+  return function () {
+    var t = a += 0x6D2B79F5;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function shuffleSeeded(list, seed) {
+  var rng = mulberry32(seed >>> 0);
+  var arr = list.slice();
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(rng() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+function startMockExam(opts) {
+  opts = opts || {};
+  var count = Math.max(3, Math.min(20, Number(opts.count) || 8));
+  var minutes = Math.max(3, Math.min(60, Number(opts.minutes) || 15));
+  var seed = (opts.seed != null ? Number(opts.seed) : Date.now()) >>> 0;
+  var bank = examBank();
+  if (opts.topic && opts.topic !== 'all') bank = bank.filter(function (q) { return q.topic === opts.topic; });
+  if (bank.length < count) count = bank.length;
+  var items = shuffleSeeded(bank, seed).slice(0, count).map(function (q, i) {
+    return { i: i, id: q.id, topic: q.topic, title: q.title, text: q.text, unknown: q.unknown, answer: q.answer, unit: q.unit, unitTh: q.unitTh, sym: q.sym, given: q.given, source: q.source };
+  });
+  state.exam = {
+    active: true, seed: seed, items: items, index: 0,
+    answers: {}, startedAt: Date.now(), durationMs: minutes * 60000,
+    submitted: false, result: null, topicFilter: opts.topic || 'all'
+  };
+  state.view = 'exam';
+}
+function examRemainingMs() {
+  if (!state.exam || !state.exam.active) return 0;
+  return Math.max(0, state.exam.startedAt + state.exam.durationMs - Date.now());
+}
+function gradeExamAnswer(item, raw) {
+  var text = String(raw == null ? '' : raw).trim().replace(',', '.');
+  if (!text) return { ok: false, reason: 'empty', score: 0 };
+  var num = Number(text.replace(/[^\d.eE+-]/g, ''));
+  if (!isFinite(num)) return { ok: false, reason: 'nan', score: 0 };
+  var unitOk = true;
+  if (item.unit && /[a-zA-Zμ°Ω]/.test(text)) {
+    var u = text.toLowerCase();
+    var expect = String(item.unit).toLowerCase();
+    unitOk = u.indexOf(expect.replace('²', '2').replace('Ω', 'ohm')) !== -1 || u.indexOf(expect) !== -1 ||
+      (expect === 'ω' && (u.indexOf('ohm') !== -1 || u.indexOf('โอห์ม') !== -1)) ||
+      (expect === 'a' && (u.indexOf('amp') !== -1 || u.indexOf('แอม') !== -1)) ||
+      (expect === 'm/s' && (u.indexOf('m/s') !== -1 || u.indexOf('เมตรต่อวินาที') !== -1)) ||
+      (expect === 'n' && (u.indexOf('n') !== -1 || u.indexOf('นิว') !== -1));
+    if (!unitOk && text.replace(/[^\d.eE+-]/g, '') === text) unitOk = true;
+  }
+  var valueOk = approxRef(num, item.answer, 1e-3) || approxEqual(num, item.answer);
+  var score = valueOk ? (unitOk ? 1 : 0.75) : 0;
+  return { ok: valueOk, unitOk: unitOk, score: score, value: num };
+}
+function submitMockExam() {
+  if (!state.exam || state.exam.submitted) return;
+  var total = 0, max = state.exam.items.length;
+  var details = state.exam.items.map(function (item) {
+    var raw = state.exam.answers[item.id];
+    var g = gradeExamAnswer(item, raw);
+    total += g.score;
+    return { id: item.id, title: item.title, expect: item.answer, unit: item.unit, got: raw, grade: g };
+  });
+  state.exam.submitted = true;
+  state.exam.active = false;
+  state.exam.result = {
+    score: total, max: max, percent: Math.round(100 * total / max),
+    elapsedMs: Date.now() - state.exam.startedAt, details: details
+  };
+  if (!state.scores) state.scores = { total: 0, byTopic: {}, byFormula: {} };
+  state.scores.total = (state.scores.total || 0) + Math.round(total * 5);
+  persist();
+}
+function renderLabs() {
+  if (!state.labId) {
+    var cards = LAB_ROOMS.map(function (L) {
+      var refs = runLabRefs(L);
+      var pass = refs.filter(function (r) { return r.ok; }).length;
+      var chips = (L.formulas || []).map(function (eq) {
+        return '<span class="lab-eqchip">' + esc(eq) + '</span>';
+      }).join('');
+      return '<button type="button" class="lab-card" style="--c:' + L.color + '" data-act="open-lab" data-id="' + L.id + '">' +
+        '<span class="lab-card-glow" aria-hidden="true"></span>' +
+        '<span class="lab-card-top"><span class="lab-card-icon" aria-hidden="true">' + (L.icon || '⚗') + '</span>' +
+        '<span class="lab-card-tag">LAB</span></span>' +
+        '<strong>' + esc(L.name) + '</strong>' +
+        '<p class="lab-card-hint">' + esc(L.hint || '') + '</p>' +
+        '<p class="lab-card-blurb">' + esc(L.blurb) + '</p>' +
+        '<div class="lab-eqrow">' + chips + '</div>' +
+        '<span class="lab-card-foot"><span class="lab-card-ok">' + (pass === refs.length ? '✓ พร้อมใช้' : 'อ้างอิง ' + pass + '/' + refs.length) + '</span>' +
+        '<span class="go">เข้าทดลอง →</span></span></button>';
+    }).join('');
+    return pageHead('ห้องทดลอง', 'เลือกห้อง แล้วเลื่อนสไลด์ดูผล', 'เหมือนสื่อจำลอง แต่คำนวณจากสมการในระบบ — กดการ์ดเพื่อเริ่ม') +
+      '<div class="lab-grid">' + cards + '</div>';
+  }
+  var lab = labById(state.labId);
+  if (!lab) return pageHead('LAB', 'ไม่พบห้องทดลอง', '') + '<button type="button" class="btn secondary" data-act="lab-list">← รายการ</button>';
+  var params = labParamsMap(lab);
+  var computed = lab.compute(params);
+  var refs = runLabRefs(lab);
+  var sliders = lab.params.map(function (p) {
+    var val = params[p.key];
+    var isToggle = p.step === 1 && p.min === 0 && p.max === 1;
+    var show = isToggle
+      ? (p.key === 'mode' ? (val < 0.5 ? 'อนุกรม' : 'ขนาน') : (p.key === 'closed' ? (val < 0.5 ? 'ท่อเปิด' : 'ท่อปิด') : formatNum(val)))
+      : formatNum(val) + (p.unit ? ' ' + p.unit : '');
+    return '<label class="lab-slider"><span class="lab-slider-label">' + esc(p.label.replace(/\s*\([^)]*\)\s*$/, '')) +
+      (p.unit && !isToggle ? ' <i>' + esc(p.unit) + '</i>' : '') + '</span>' +
+      '<input type="range" data-field="lab-param" data-lab="' + lab.id + '" data-key="' + p.key + '" min="' + p.min + '" max="' + p.max + '" step="' + p.step + '" value="' + val + '">' +
+      '<strong class="lab-slider-val">' + esc(show) + '</strong></label>';
+  }).join('');
+  var outs = computed.outputs.map(function (o) {
+    return '<div class="lab-out"><span class="eqmini">' + esc(o.eq) + '</span><strong>' + esc(o.label) + '</strong>' +
+      '<b>' + (isFinite(o.value) ? formatNum(o.value) : '—') + (o.unit ? ' <i>' + esc(o.unit) + '</i>' : '') + '</b></div>';
+  }).join('');
+  var refHtml = refs.map(function (r) {
+    return '<li class="' + (r.ok ? 'ok' : 'bad') + '">' + (r.ok ? '✓' : '✗') + ' ' + esc(r.name) + '</li>';
+  }).join('');
+  setTimeout(function () { drawLabCanvas(lab, params, computed.outputs); }, 0);
+  return '<button type="button" class="back-home" data-act="lab-list">← ห้องทดลองทั้งหมด</button>' +
+    '<header class="page-head lab-detail-head"><p class="j-kicker">ห้องทดลอง · ' + esc(lab.hint || 'LAB') + '</p>' +
+    '<h2><span class="lab-title-icon" style="--c:' + lab.color + '" aria-hidden="true">' + (lab.icon || '⚗') + '</span>' + esc(lab.name) + '</h2>' +
+    '<p class="j-sub">' + esc(lab.blurb) + '</p></header>' +
+    '<div class="lab-layout"><section class="lab-controls"><h3 class="lab-panel-title">1. ปรับค่า</h3>' +
+    '<p class="lab-panel-note">เลื่อนสไลด์ แล้วดูผลทางขวาทันที</p>' + sliders + '</section>' +
+    '<section class="lab-stage"><h3 class="lab-panel-title">2. ภาพและผลลัพธ์</h3>' +
+    '<canvas id="lab-canvas" width="640" height="320" aria-label="ภาพจำลอง"></canvas>' +
+    '<div class="lab-outs">' + outs + '</div></section></div>' +
+    '<section class="ai-panel lab-check"><h3>ตรวจค่าอ้างอิง</h3>' +
+    '<p class="muted">ระบบตรวจสมการด้วยเคสตัวอย่างอัตโนมัติ</p>' +
+    '<ul class="lab-refs">' + refHtml + '</ul>' +
+    '<div class="ai-actions"><button type="button" class="btn secondary" data-act="view-tutor">ฝึกโจทย์บทนี้</button>' +
+    '<button type="button" class="btn secondary" data-act="open-lesson" data-id="' + lab.topics[0] + '">เปิดบทเรียน</button></div></section>';
+}
+
+function renderExam() {
+  if (!state.exam) {
+    return pageHead('สอบจำลอง', 'ฝึกสอบแบบจับเวลา', 'สุ่มข้อจากคลังในระบบ ให้คะแนนและตรวจหน่วยหลังส่ง') +
+      '<section class="ai-panel"><h3>ตั้งค่าการสอบ</h3>' +
+      '<div class="exam-setup">' +
+      '<label>จำนวนข้อ <input type="number" data-field="exam-count" min="3" max="20" value="8"></label>' +
+      '<label>เวลา (นาที) <input type="number" data-field="exam-minutes" min="3" max="60" value="15"></label>' +
+      '<label>บท <select data-field="exam-topic"><option value="all">ทุกบทในคลัง</option>' +
+      topics.map(function (t) { return '<option value="' + t.id + '">บท ' + t.no + ' ' + esc(t.name) + '</option>'; }).join('') +
+      '</select></label></div>' +
+      '<div class="ai-actions"><button type="button" class="btn hero-go" data-act="exam-start">เริ่มสอบ (สุ่มข้อ)</button>' +
+      '<span class="muted">คลังมี ' + examBank().length + ' ข้อ · เชื่อม problems[] + extra</span></div></section>';
+  }
+  if (state.exam.submitted && state.exam.result) {
+    var r = state.exam.result;
+    var rows = r.details.map(function (d, i) {
+      return '<li><strong>' + (i + 1) + '. ' + esc(d.title) + '</strong><p class="muted">ได้ ' + esc(String(d.got == null ? '—' : d.got)) +
+        ' · เฉลย ' + formatNum(d.expect) + (d.unit ? ' ' + esc(d.unit) : '') +
+        ' · คะแนน ' + d.grade.score + '</p></li>';
+    }).join('');
+    return pageHead('RESULT', 'ผลสอบจำลอง', 'สุ่มด้วย seed ' + state.exam.seed) +
+      '<div class="pstats"><div class="pstat"><strong>' + formatNum(r.score) + '/' + r.max + '</strong><span>คะแนน</span></div>' +
+      '<div class="pstat"><strong>' + r.percent + '%</strong><span>ร้อยละ</span></div>' +
+      '<div class="pstat"><strong>' + Math.round(r.elapsedMs / 1000) + 's</strong><span>เวลาที่ใช้</span></div></div>' +
+      '<ul class="mistake-list">' + rows + '</ul>' +
+      '<div class="row-actions"><button type="button" class="btn" data-act="exam-reset">สอบใหม่</button>' +
+      '<button type="button" class="btn secondary" data-act="view-tutor">ไปฝึกโจทย์</button></div>';
+  }
+  var ex = state.exam;
+  var item = ex.items[ex.index];
+  var remain = examRemainingMs();
+  if (ex.active && remain <= 0) { submitMockExam(); return renderExam(); }
+  var mm = Math.floor(remain / 60000), ss = Math.floor((remain % 60000) / 1000);
+  var ans = ex.answers[item.id] == null ? '' : ex.answers[item.id];
+  var nav = ex.items.map(function (_, i) {
+    return '<button type="button" class="lib-chip' + (i === ex.index ? ' on' : '') + (ex.answers[ex.items[i].id] != null ? ' done' : '') + '" data-act="exam-goto" data-index="' + i + '">' + (i + 1) + '</button>';
+  }).join('');
+  return '<header class="page-head"><p class="j-kicker">MOCK EXAM · seed ' + ex.seed + '</p>' +
+    '<h2>ข้อที่ ' + (ex.index + 1) + ' / ' + ex.items.length + '</h2>' +
+    '<p class="j-sub">เหลือเวลา <strong class="exam-timer">' + mm + ':' + (ss < 10 ? '0' : '') + ss + '</strong> · ใส่คำตอบเป็นตัวเลข (หน่วยมีก็ได้)</p></header>' +
+    '<div class="lib-chips">' + nav + '</div>' +
+    '<section class="card exam-q"><p class="note">บท ' + topicById(item.topic).no + ' · ' + esc(item.title) + ' · หา ' + esc(item.sym) + (item.unit ? ' (' + esc(item.unit) + ')' : '') + '</p>' +
+    '<p class="work">' + esc(item.text) + '</p>' +
+    '<label class="lab-slider"><span>คำตอบ</span>' +
+    '<input type="text" data-field="exam-answer" inputmode="decimal" placeholder="เช่น ' + formatNum(item.answer) + (item.unit ? ' ' + item.unit : '') + '" value="' + esc(ans) + '">' +
+    '</label>' +
+    '<div class="row-actions">' +
+    '<button type="button" class="btn secondary" data-act="exam-prev"' + (ex.index === 0 ? ' disabled' : '') + '>ก่อนหน้า</button>' +
+    '<button type="button" class="btn secondary" data-act="exam-next"' + (ex.index >= ex.items.length - 1 ? ' disabled' : '') + '>ถัดไป</button>' +
+    '<button type="button" class="btn hero-go" data-act="exam-submit">ส่งคำตอบทั้งหมด</button>' +
+    '<button type="button" class="btn ghost" data-act="exam-to-tutor" data-id="' + item.id + '">เปิดฝึกในโหมดติวเตอร์</button>' +
+    '</div></section>';
+}
+
+
+/* ==== Phase 8: Teacher / Classroom / Reports / Backup ==== */
+var ROLLBACK_STACK_KEY = 'phys-lab-rollback-stack';
+function authHeaders() {
+  var h = { 'Content-Type': 'application/json' };
+  if (state.sessionToken) h.Authorization = 'Bearer ' + state.sessionToken;
+  return h;
+}
+async function ensureSession(force) {
+  if (!force && state.sessionToken && state.sessionExp && state.sessionExp > Date.now() + 60000) return state.sessionToken;
+  var userId = state.profileId || 'user-local';
+  if (/@/.test(userId)) userId = 'profile-' + String(userId).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 24);
+  try {
+    var r = await fetch('/api/auth/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: userId,
+        role: state.role === 'teacher' ? 'teacher' : 'student',
+        classroomId: state.classroomId || null
+      })
+    });
+    var data = await r.json();
+    if (data && data.ok && data.token) {
+      state.sessionToken = data.token;
+      state.sessionExp = Date.now() + 11 * 3600 * 1000;
+      persist();
+      return data.token;
+    }
+    state.sessionErr = (data && data.message) || 'ขอเซสชันไม่สำเร็จ';
+  } catch (err) {
+    state.sessionErr = 'เชื่อมต่อ /api/auth/session ไม่ได้';
+  }
+  return null;
+}
+async function apiFetch(url, opts) {
+  await ensureSession(false);
+  opts = opts || {};
+  opts.headers = Object.assign({}, authHeaders(), opts.headers || {});
+  var r = await fetch(url, opts);
+  if (r.status === 401) {
+    await ensureSession(true);
+    opts.headers = Object.assign({}, authHeaders(), opts.headers || {});
+    r = await fetch(url, opts);
+  }
+  return r;
+}
+function pushRollbackPoint(label) {
+  try {
+    var stack = [];
+    try { stack = JSON.parse(localStorage.getItem(ROLLBACK_STACK_KEY) || '[]'); } catch (e) { stack = []; }
+    pushStateToProfile();
+    stack.push({
+      label: label || 'checkpoint',
+      at: Date.now(),
+      snapshot: JSON.parse(JSON.stringify(memory))
+    });
+    if (stack.length > 8) stack = stack.slice(-8);
+    localStorage.setItem(ROLLBACK_STACK_KEY, JSON.stringify(stack));
+    return true;
+  } catch (err) { return false; }
+}
+function listRollbackPoints() {
+  try { return JSON.parse(localStorage.getItem(ROLLBACK_STACK_KEY) || '[]'); }
+  catch (err) { return []; }
+}
+function rollbackTo(index) {
+  var stack = listRollbackPoints();
+  var point = stack[index];
+  if (!point || !point.snapshot) return false;
+  memory = point.snapshot;
+  if (!memory.activeProfile) memory.activeProfile = 'default';
+  pullProfileToState();
+  persist();
+  return true;
+}
+function exportBackup() {
+  pushStateToProfile();
+  return {
+    v: 5,
+    kind: 'physics-learning-backup',
+    exportedAt: Date.now(),
+    activeProfile: memory.activeProfile,
+    profiles: JSON.parse(JSON.stringify(memory.profiles || {})),
+    meta: { note: 'synthetic/local only — do not mix real PII without approval plan' }
+  };
+}
+function restoreBackup(raw, mode) {
+  var data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+  if (!data || data.kind !== 'physics-learning-backup' || !data.profiles) {
+    throw new Error('รูปแบบไฟล์สำรองไม่ถูกต้อง');
+  }
+  pushRollbackPoint('before-restore');
+  if (mode === 'merge') {
+    Object.keys(data.profiles).forEach(function (id) {
+      memory.profiles[id] = data.profiles[id];
+    });
+  } else {
+    memory = { v: 5, activeProfile: data.activeProfile || 'default', profiles: data.profiles };
+  }
+  if (!memory.profiles[memory.activeProfile]) {
+    memory.activeProfile = Object.keys(memory.profiles)[0] || 'default';
+  }
+  pullProfileToState();
+  persist();
+  return true;
+}
+async function createClassroomClient(name, code) {
+  state.role = 'teacher';
+  await ensureSession(true);
+  var r = await apiFetch('/api/class/create', {
+    method: 'POST',
+    body: JSON.stringify({ name: name, code: code })
+  });
+  var data = await r.json();
+  if (data && data.ok) {
+    state.classroomId = data.classroom.code;
+    await ensureSession(true);
+  }
+  return data;
+}
+async function joinClassroomClient(code) {
+  await ensureSession(true);
+  var r = await apiFetch('/api/class/join', {
+    method: 'POST',
+    body: JSON.stringify({ code: code, name: state.profileName || state.profileId })
+  });
+  var data = await r.json();
+  if (data && data.ok) {
+    state.classroomId = data.classroom.code;
+    await ensureSession(true);
+  }
+  return data;
+}
+async function submitProblemReport(problemId, note) {
+  await ensureSession(true);
+  var r = await apiFetch('/api/report/create', {
+    method: 'POST',
+    body: JSON.stringify({ problemId: problemId || '', note: note || '', classroomId: state.classroomId || null })
+  });
+  return r.json();
+}
+async function loadMyReports() {
+  await ensureSession(true);
+  var r = await apiFetch('/api/report/list');
+  return r.json();
+}
+async function loadRoster() {
+  await ensureSession(true);
+  var r = await apiFetch('/api/class/roster');
+  return r.json();
+}
+function renderClassroom() {
+  var role = state.role === 'teacher' ? 'teacher' : 'student';
+  var reports = (state.reportList || []).map(function (r) {
+    return '<li><strong>' + esc(r.problemId || '—') + '</strong><p class="muted">' + esc(r.note || '') +
+      (r.ownerId ? ' · โดย ' + esc(r.ownerId) : '') + '</p><time>' + agoText(r.at || Date.now()) + '</time></li>';
+  }).join('');
+  var members = (state.rosterMembers || []).map(function (m) {
+    return '<li><span class="badge">·</span><div><strong>' + esc(m.name) + '</strong><p class="muted">' + esc(m.userId) + '</p></div></li>';
+  }).join('');
+  var rb = listRollbackPoints().map(function (p, i) {
+    return '<li><span class="badge">' + (i + 1) + '</span><div><strong>' + esc(p.label) + '</strong><p class="muted">' + agoText(p.at) + '</p></div>' +
+      '<button type="button" class="linkish" data-act="rollback" data-index="' + i + '">Rollback</button></li>';
+  }).join('');
+  return pageHead('ห้องเรียน', 'ครูและนักเรียนใช้ร่วมกัน', 'สร้าง/เข้าร่วมห้อง รายงานโจทย์ผิด และสำรองข้อมูลในเครื่อง') +
+    '<div class="profile-bar">' +
+    '<label>บทบาท <select data-field="role-select"><option value="student"' + (role === 'student' ? ' selected' : '') + '>นักเรียน</option>' +
+    '<option value="teacher"' + (role === 'teacher' ? ' selected' : '') + '>ครู</option></select></label>' +
+    '<span class="score-pill">โปรไฟล์ ' + esc(state.profileId) + (state.classroomId ? ' · ห้อง ' + esc(state.classroomId) : '') + '</span>' +
+    '<button type="button" class="btn secondary" data-act="session-refresh">ขอ/ต่ออายุเซสชัน</button></div>' +
+    (state.sessionErr ? '<div class="ai-reply bad">' + esc(state.sessionErr) + '</div>' : '') +
+    '<div class="pgrid">' +
+    '<section class="pcard"><h3>ห้องเรียน</h3>' +
+    (role === 'teacher'
+      ? '<div class="exam-setup"><label>ชื่อห้อง <input data-field="class-name" value="' + esc(state.classNameDraft || 'ห้องสาธิต') + '"></label>' +
+        '<label>รหัสห้อง <input data-field="class-code" value="' + esc(state.classCodeDraft || 'LAB8DEMO') + '" maxlength="8"></label></div>' +
+        '<div class="ai-actions"><button type="button" class="btn hero-go" data-act="class-create">สร้างห้อง (ครู)</button>' +
+        '<button type="button" class="btn secondary" data-act="class-roster">โหลดรายชื่อ</button></div>'
+      : '<div class="exam-setup"><label>รหัสห้อง <input data-field="class-code" value="' + esc(state.classCodeDraft || 'DEMO01') + '" maxlength="8"></label></div>' +
+        '<div class="ai-actions"><button type="button" class="btn hero-go" data-act="class-join">เข้าร่วมห้อง</button></div>') +
+    '<ul class="mission-list">' + (members || '<li class="muted">ยังไม่มีรายชื่อ (หรือยังไม่โหลด)</li>') + '</ul></section>' +
+    '<section class="pcard"><h3>รายงานโจทย์ผิด</h3>' +
+    '<textarea data-field="report-note" placeholder="อธิบายจุดที่ผิด (ข้อความสังเคราะห์เท่านั้น)">' + esc(state.reportNote || '') + '</textarea>' +
+    '<div class="exam-setup"><label>รหัสโจทย์ <input data-field="report-pid" value="' + esc(state.reportPid || 'car-accel') + '"></label></div>' +
+    '<div class="ai-actions"><button type="button" class="btn secondary" data-act="report-send">ส่งรายงาน</button>' +
+    '<button type="button" class="btn ghost" data-act="report-load">โหลดรายการของฉัน/ห้อง</button></div>' +
+    '<ul class="mistake-list">' + (reports || '<li class="muted">ยังไม่มีรายงาน</li>') + '</ul></section>' +
+    '<section class="pcard"><h3>Backup / Restore / Rollback</h3>' +
+    '<p class="muted">สำรองเฉพาะข้อมูลในเครื่องนี้ · จุด Rollback สูงสุด 8 จุด</p>' +
+    '<div class="ai-actions">' +
+    '<button type="button" class="btn secondary" data-act="backup-export">ส่งออก Backup</button>' +
+    '<label class="btn secondary" style="cursor:pointer">นำเข้า Backup<input type="file" accept="application/json,.json" data-field="backup-file" hidden></label>' +
+    '<button type="button" class="btn ghost" data-act="backup-checkpoint">สร้างจุด Rollback</button></div>' +
+    '<ul class="path-list">' + (rb || '<li class="muted">ยังไม่มีจุด Rollback</li>') + '</ul></section></div>';
+}
+
+function emptyScores() { return { total: 0, byTopic: {}, byFormula: {} }; }
+function emptyProfile(name) {
+  return {
+    name: name || 'ผู้เรียน',
+    solved: [], clears: 0, log: [], lessonDone: {}, lessonQuiz: {},
+    mistakes: [], scores: emptyScores(), sr: {}, missionsDone: [], missionIdx: 0,
+    session: null, view: 'home', simId: null, simWide: false,
+    role: 'student', classroomId: null
+  };
+}
+function profileIds() {
+  return Object.keys(memory.profiles || {});
+}
+function activeProfileData() {
+  if (!memory.profiles) memory.profiles = {};
+  var id = memory.activeProfile || 'default';
+  if (!memory.profiles[id]) memory.profiles[id] = emptyProfile(id === 'default' ? 'ผู้เรียนหลัก' : id);
+  return memory.profiles[id];
+}
+function pullProfileToState() {
+  var p = activeProfileData();
+  state.profileId = memory.activeProfile || 'default';
+  state.profileName = p.name || state.profileId;
+  state.solved = Array.isArray(p.solved) ? p.solved.slice() : [];
+  state.clears = p.clears || 0;
+  state.log = Array.isArray(p.log) ? p.log.slice() : [];
+  state.lessonDone = p.lessonDone && typeof p.lessonDone === 'object' ? p.lessonDone : {};
+  state.lessonQuiz = p.lessonQuiz && typeof p.lessonQuiz === 'object' ? p.lessonQuiz : {};
+  state.mistakes = Array.isArray(p.mistakes) ? p.mistakes.slice() : [];
+  state.scores = p.scores && typeof p.scores === 'object' ? {
+    total: p.scores.total || 0,
+    byTopic: Object.assign({}, p.scores.byTopic || {}),
+    byFormula: Object.assign({}, p.scores.byFormula || {})
+  } : emptyScores();
+  state.sr = p.sr && typeof p.sr === 'object' ? JSON.parse(JSON.stringify(p.sr)) : {};
+  state.missionsDone = Array.isArray(p.missionsDone) ? p.missionsDone.slice() : [];
+  state.missionIdx = p.missionIdx || 0;
+  state.role = p.role === 'teacher' ? 'teacher' : 'student';
+  state.classroomId = p.classroomId || null;
+}
+function pushStateToProfile() {
+  var p = activeProfileData();
+  p.name = state.profileName || p.name;
+  p.solved = state.solved.slice();
+  p.clears = state.clears || 0;
+  p.log = (state.log || []).slice(-300);
+  p.lessonDone = state.lessonDone || {};
+  p.lessonQuiz = state.lessonQuiz || {};
+  p.mistakes = (state.mistakes || []).slice(-200);
+  p.scores = state.scores || emptyScores();
+  p.sr = state.sr || {};
+  p.missionsDone = state.missionsDone || [];
+  p.missionIdx = state.missionIdx || 0;
+  p.session = snapshot();
+  p.view = state.view;
+  p.simId = state.simId;
+  p.simWide = !!state.simWide;
+  p.role = state.role === 'teacher' ? 'teacher' : 'student';
+  p.classroomId = state.classroomId || null;
+}
+function migrateLegacyStore(data) {
+  memory = { v: 5, activeProfile: 'default', profiles: {} };
+  var prof = emptyProfile('ผู้เรียนหลัก');
+  if (data) {
+    prof.solved = Array.isArray(data.solved) ? data.solved : [];
+    prof.clears = data.clears || 0;
+    prof.log = Array.isArray(data.log) ? data.log : [];
+    prof.lessonDone = data.lessonDone || {};
+    prof.lessonQuiz = data.lessonQuiz || {};
+    prof.mistakes = Array.isArray(data.mistakes) ? data.mistakes : [];
+    prof.scores = data.scores || emptyScores();
+    prof.sr = data.sr || {};
+    prof.missionsDone = data.missionsDone || [];
+    prof.missionIdx = data.missionIdx || 0;
+    prof.session = data.session || null;
+    prof.view = data.view;
+    prof.simId = data.simId;
+    prof.simWide = !!data.simWide;
+  }
+  memory.profiles.default = prof;
+}
+function switchProfile(id) {
+  if (!id || !memory.profiles[id]) return false;
+  pushStateToProfile();
+  memory.activeProfile = id;
+  pullProfileToState();
+  blankWork();
+  var draft = sanitize(activeProfileData().session);
+  if (draft) applyDraft(draft);
+  else {
+    state.view = 'home';
+    state.simId = null;
+  }
+  persist();
+  return true;
+}
+function createProfile(name) {
+  var base = String(name || '').trim() || 'ผู้เรียนใหม่';
+  var id = 'u' + Date.now().toString(36);
+  memory.profiles[id] = emptyProfile(base);
+  return switchProfile(id);
+}
+var MISSIONS = [
+  { id: 'm1', title: 'เริ่มต้นการวัด', topic: 'ch1', need: 1, blurb: 'แก้โจทย์บทที่ 1 ให้สำเร็จอย่างน้อย 1 ข้อ' },
+  { id: 'm2', title: 'เคลื่อนที่แนวตรง', topic: 'ch2', need: 2, blurb: 'ฝึกสมการความเร่งคงตัวอย่างน้อย 2 ข้อ' },
+  { id: 'm3', title: 'แรงและนิวตัน', topic: 'ch3', need: 2, blurb: 'ใช้ F = ma หรือแรงเสียดทานอย่างน้อย 2 ข้อ' },
+  { id: 'm4', title: 'งาน–พลังงาน', topic: 'ch5', need: 2, blurb: 'เชื่อมงานกับพลังงานอย่างน้อย 2 ข้อ' },
+  { id: 'm5', title: 'คลื่นเบื้องต้น', topic: 'ch9', need: 1, blurb: 'ฝึก v = fλ หรือคลื่นนิ่งอย่างน้อย 1 ข้อ' },
+  { id: 'm6', title: 'ไฟฟ้ากระแส', topic: 'ch14', need: 2, blurb: 'ใช้กฎของโอห์ม/วงจรอย่างน้อย 2 ข้อ' },
+  { id: 'm7', title: 'ปิดเส้นทาง ม.4', topic: 'ch7', need: 1, blurb: 'ทำโพรเจกไทล์อย่างน้อย 1 ข้อเพื่อเชื่อมบท ม.4' }
+];
+function topicClearCount(topicId) {
+  return (state.log || []).filter(function (e) { return e.t === topicId; }).length;
+}
+function missionProgress(m) {
+  var n = topicClearCount(m.topic);
+  var done = state.missionsDone.indexOf(m.id) !== -1 || n >= m.need;
+  return { n: n, done: done, pct: Math.min(100, Math.round(100 * n / m.need)) };
+}
+function syncMissions() {
+  MISSIONS.forEach(function (m, i) {
+    var prog = missionProgress(m);
+    if (prog.done && state.missionsDone.indexOf(m.id) === -1) {
+      state.missionsDone.push(m.id);
+      if (state.missionIdx < i + 1) state.missionIdx = i + 1;
+    }
+  });
+}
+function learningPath() {
+  var list = getLessons ? getLessons() : topics.map(function (t) {
+    var meta = (typeof LESSON_META !== 'undefined' && LESSON_META[t.id]) || {};
+    return { id: t.id, no: t.no, name: t.name, prereq: meta.prereq || [], stripe: t.stripe };
+  });
+  return list.map(function (L) {
+    var clears = topicClearCount(L.id);
+    var lessonPct = typeof lessonProgressPct === 'function' ? lessonProgressPct(L.id) : 0;
+    var prereqOk = (L.prereq || []).every(function (pid) { return topicClearCount(pid) > 0 || (typeof lessonProgressPct === 'function' && lessonProgressPct(pid) >= 50); });
+    var status = clears > 0 || lessonPct >= 100 ? 'done' : (prereqOk ? 'ready' : 'locked');
+    return { id: L.id, no: L.no, name: L.name, stripe: L.stripe, status: status, clears: clears, lessonPct: lessonPct, prereq: L.prereq || [] };
+  });
+}
+function recordMistake(kind, detail) {
+  var entry = {
+    kind: kind || 'general',
+    topic: state.topicId || detail && detail.topic || null,
+    formula: state.formulaId || detail && detail.formula || null,
+    note: (detail && detail.note) || '',
+    at: Date.now()
+  };
+  state.mistakes = (state.mistakes || []).concat([entry]).slice(-200);
+  if (entry.topic) bumpSR(entry.topic, false);
+}
+function awardScore(topicId, formulaId, pts) {
+  if (!state.scores) state.scores = emptyScores();
+  var add = pts == null ? 10 : pts;
+  state.scores.total = (state.scores.total || 0) + add;
+  if (topicId) state.scores.byTopic[topicId] = (state.scores.byTopic[topicId] || 0) + add;
+  if (formulaId) state.scores.byFormula[formulaId] = (state.scores.byFormula[formulaId] || 0) + add;
+  return add;
+}
+function bumpSR(topicId, success) {
+  if (!topicId || !topicById(topicId)) return;
+  var card = state.sr[topicId] || { ease: 2.3, intervalDays: 0, dueAt: 0, reps: 0, lastAt: 0 };
+  var now = Date.now();
+  if (success) {
+    card.reps = (card.reps || 0) + 1;
+    card.ease = Math.min(3.0, (card.ease || 2.3) + 0.08);
+    card.intervalDays = card.reps === 1 ? 1 : (card.reps === 2 ? 3 : Math.max(1, Math.round((card.intervalDays || 1) * card.ease)));
+  } else {
+    card.ease = Math.max(1.3, (card.ease || 2.3) - 0.2);
+    card.intervalDays = 1;
+    card.reps = Math.max(0, (card.reps || 0) - 1);
+  }
+  card.lastAt = now;
+  card.dueAt = now + card.intervalDays * 86400000;
+  state.sr[topicId] = card;
+}
+function srDueList() {
+  var now = Date.now();
+  return topics.map(function (t) {
+    var card = state.sr[t.id];
+    if (!card) return null;
+    return { topic: t, card: card, due: !card.dueAt || card.dueAt <= now, overdueMs: card.dueAt ? now - card.dueAt : 0 };
+  }).filter(Boolean).sort(function (a, b) {
+    if (a.due !== b.due) return a.due ? -1 : 1;
+    return a.card.dueAt - b.card.dueAt;
+  });
+}
+function weaknessReport() {
+  var missTopic = {}, missFormula = {};
+  (state.mistakes || []).forEach(function (m) {
+    if (m.topic) missTopic[m.topic] = (missTopic[m.topic] || 0) + 1;
+    if (m.formula) missFormula[m.formula] = (missFormula[m.formula] || 0) + 1;
+  });
+  var quizWrong = {};
+  Object.keys(state.lessonQuiz || {}).forEach(function (qid) {
+    var parts = qid.split(':');
+    var L = lessonById(parts[0]);
+    if (!L || !L.quiz[Number(parts[1])]) return;
+    if (state.lessonQuiz[qid] !== L.quiz[Number(parts[1])].answer) {
+      quizWrong[L.id] = (quizWrong[L.id] || 0) + 1;
+      missTopic[L.id] = (missTopic[L.id] || 0) + 1;
+    }
+  });
+  var rows = Object.keys(missTopic).map(function (id) {
+    var t = topicById(id);
+    return t ? { id: id, name: t.name, no: t.no, stripe: t.stripe, count: missTopic[id], quizWrong: quizWrong[id] || 0 } : null;
+  }).filter(Boolean).sort(function (a, b) { return b.count - a.count; });
+  return { rows: rows, missFormula: missFormula };
+}
+function buildSolutionWalkthrough(startEq, target) {
+  if (!startEq || !target) return [];
+  var steps = [];
+  var eq = clone(startEq);
+  var guard = 0;
+  while (guard++ < 12) {
+    var iso = findIsolated(eq);
+    if (iso && iso.name === target) {
+      steps.push({ note: 'จัดรูปครบ · ' + SYM[target].sym + ' อยู่ลำพัง', text: eqText(eq) });
+      break;
+    }
+    var path = solvePath(eq, target);
+    if (!path || !path.first) {
+      if (quadShape(eq, target)) {
+        steps.push({ note: 'ใช้วิธีแก้สมการหา ' + SYM[target].sym + ' (หลายพจน์)', text: eqText(eq) });
+      }
+      break;
+    }
+    var note = describeMove(eq, path.first);
+    var next = clone(eq);
+    var res;
+    try { res = runMove(next, path.first); } catch (err) { break; }
+    if (!res || !res.ok) break;
+    steps.push({ note: note || res.message, text: eqText(next) });
+    eq = next;
+  }
+  return steps;
+}
+function hintTexts(eq, unknown) {
+  var sym = SYM[unknown] ? SYM[unknown].sym : unknown;
+  var iso = findIsolated(eq);
+  var path = solvePath(eq, unknown);
+  var L1 = iso && iso.name === unknown
+    ? 'เป้าหมายขั้นนี้สำเร็จแล้ว ' + sym + ' อยู่ลำพัง พร้อมแทนค่า'
+    : ('เป้าหมาย: ทำให้ ' + sym + ' อยู่ลำพังด้านหนึ่งของสมการ โดยย้ายสิ่งอื่นออกทีละขั้น');
+  var L2 = nextHint(eq, unknown);
+  var L3 = path && path.first
+    ? ('ขั้นถัดไปที่แนะนำ: ' + describeMove(eq, path.first) + (path.steps > 1 ? ' · หลังจากนี้ยังเหลือประมาณ ' + (path.steps - 1) + ' ขั้น' : ''))
+    : (quadShape(eq, unknown)
+      ? ('รูปนี้จัดย้ายข้างอย่างเดียวไม่พอ ใช้ปุ่มแก้สมการหา ' + sym)
+      : 'จากรูปปัจจุบันไปต่อลำบาก ลองย้อนกลับแล้วเลือกย้ายตัวอื่น');
+  var walk = buildSolutionWalkthrough(eq, unknown);
+  var L4 = walk.length
+    ? ('แนวทางทั้งเส้นทางมี ' + walk.length + ' ขั้น · ขั้นแรก: ' + walk[0].note)
+    : 'ยังสร้างเส้นทางเฉลยอัตโนมัติไม่ได้จากรูปนี้';
+  return [L1, L2, L3, L4];
+}
+function renderHintPanel(eq, targetKey) {
+  var level = Math.max(0, Math.min(4, state.hintLevel || 0));
+  var chips = [1, 2, 3, 4].map(function (lv) {
+    return '<button type="button" class="btn secondary' + (level === lv ? ' on' : '') + '" data-act="hint-level" data-level="' + lv + '">ระดับ ' + lv + '</button>';
+  }).join('');
+  var body = '';
+  if (level > 0) {
+    var texts = hintTexts(eq, targetKey);
+    body = '<div class="hintbox"><span class="hlvl">คำใบ้ Lv.' + level + '</span>' + esc(texts[level - 1] || '') + '</div>';
+  }
+  return '<div class="hint-levels" role="group" aria-label="ระดับคำใบ้">' + chips +
+    '<button type="button" class="btn ghost" data-act="hint-clear"' + (level ? '' : ' disabled') + '>ซ่อนคำใบ้</button></div>' + body;
+}
+function renderSolutionPanel(p) {
+  if (!state.showSolution || !state.formulaId) return '';
+  var f = formulaById(state.formulaId);
+  if (!f) return '';
+  var target = (state.result && state.result.unknown) || solveTarget() || goalTarget();
+  var start = freshEquation(f);
+  var steps = buildSolutionWalkthrough(start, target);
+  if (!steps.length) {
+    return '<div class="solution-box"><h3>เฉลยทีละขั้น</h3><p class="muted">ยังสร้างเส้นทางอัตโนมัติไม่ได้สำหรับรูปนี้ ใช้ประวัติการย้ายข้างของคุณด้านล่างเป็นแนวทาง</p></div>';
+  }
+  return '<div class="solution-box"><h3>เฉลยทีละขั้น (จากสูตรตั้งต้น)</h3><ol>' + steps.map(function (s, i) {
+    return '<li><strong>ขั้น ' + (i + 1) + ':</strong> ' + esc(s.note) + '<code>' + esc(s.text) + '</code></li>';
+  }).join('') + '</ol><p class="pnote">เฉลยนี้เป็นแนวจัดรูปสมการ ไม่ใช่สำเนาแบบเรียน และนักเรียนควรลองเองก่อนเปิดดู</p></div>';
+}
+
 function esc(s) {
   return String(s).replace(/[&<>"']/g, function (c) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -3941,6 +5453,7 @@ function ensureConsistent() {
     state.step = 3;
   }
   if (state.result && !state.result.valueText) state.result = null;
+  if (state.view === 'labs') { state.view = 'sims'; state.labId = null; }
 }
 
 function render() {
@@ -3948,7 +5461,7 @@ function render() {
   if (!app) return;
   try {
     ensureConsistent();
-    var pageKey = state.view === 'sims' ? 'sims:' + (state.simId || '') : (state.view === 'tutor' ? 'tutor:' + state.step : state.view);
+    var pageKey = state.view === 'sims' ? 'sims:' + (state.simId || '') : (state.view === 'tutor' ? 'tutor:' + state.step : (state.view === 'lessons' ? 'lessons:' + (state.lessonId || (state.lessonGrade + ':' + state.lessonTrack)) : (state.view === 'exam' ? 'exam:' + (state.exam && state.exam.index) : state.view)));
     var jump = render.page !== pageKey;
     var side = document.querySelector('.sidebar');
     var work = document.getElementById('workspace');
@@ -4008,14 +5521,14 @@ function canDragBoard() {
   return !('ontouchstart' in window);
 }
 function isHome() { return state.view === 'home'; }
-function isPage() { return state.view === 'library' || state.view === 'progress'; }
+function isPage() { return state.view === 'library' || state.view === 'progress' || state.view === 'lessons' || state.view === 'exam' || state.view === 'classroom'; }
 function noSidebar() { return isHome() || isPage() || (state.view === 'tutor' && state.step === 1); }
 function renderTopNav() {
   return '<header class="topnav"><button type="button" class="brand" data-act="go-home" aria-label="Physics Learning กลับหน้าแรก"><span class="mark" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="4.2" fill="currentColor"></circle>' +
     '<ellipse cx="24" cy="24" rx="18" ry="7" fill="none" stroke="currentColor" stroke-width="2"></ellipse>' +
     '<ellipse cx="24" cy="24" rx="18" ry="7" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(60 24 24)"></ellipse>' +
     '<ellipse cx="24" cy="24" rx="18" ry="7" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(-60 24 24)"></ellipse></svg></span>' +
-    '<span class="name">Physics Learning</span></button></header>';
+    '<span class="name">Physics Learning</span></button>' + renderNavTabs() + '</header>';
 }
 function renderHome() {
   var solved = state.clears || 0;
@@ -4033,37 +5546,192 @@ function renderHome() {
     '<line x1="48" y1="150" x2="92" y2="150" stroke="rgba(200,220,255,0.6)" stroke-width="2" stroke-linecap="round"/>' +
     '<path class="wave" d="M300 300 q15 -22 30 0 t30 0 t30 0 t30 0" fill="none" stroke="url(#waveg)" stroke-width="2.4" stroke-linecap="round"/>' +
     '<text x="352" y="282" class="glyph">λ</text><text x="40" y="118" class="glyph">T = 2π√(ℓ/g)</text></svg>';
-  var card = function (icon, title, text, act, link) {
-    return '<button type="button" class="journey-card" data-act="' + act + '"><span class="j-icon" aria-hidden="true">' + icon + '</span>' +
+  var card = function (step, icon, title, text, act, link) {
+    return '<button type="button" class="journey-card" data-act="' + act + '">' +
+      (step ? '<span class="j-step">' + step + '</span>' : '') +
+      '<span class="j-icon" aria-hidden="true">' + icon + '</span>' +
       '<strong>' + title + '</strong><p>' + text + '</p><span class="go">' + link + ' →</span></button>';
   };
   return '<section class="home-hero"><div class="hero-copy">' +
-    '<p class="hero-pill"><i></i>Interactive Physics · Learn by Solving</p>' +
+    '<p class="hero-pill"><i></i>ฝึกฟิสิกส์ ม.4–ม.6 · ตามหลักสูตร สสวท.</p>' +
     '<h1 class="hero-title">Physics<br><span>Learning</span></h1>' +
-    '<blockquote class="hero-quote">“ฟิสิกส์ไม่ใช่การท่องสูตร แต่คือการเข้าใจว่าธรรมชาติทำงานอย่างไร”</blockquote>' +
-    '<div class="hero-actions"><button type="button" class="btn hero-go" data-act="go-journey">เริ่มเรียน <span aria-hidden="true">↓</span></button></div>' +
-    '<dl class="hero-stats"><div><dt>' + formulas.length + '</dt><dd>สูตรในระบบ</dd></div><div><dt>' + topics.length + '</dt><dd>บท ม.4–ม.6</dd></div><div><dt>' + SIMS.length + '</dt><dd>สื่อจำลอง</dd></div></dl></div>' +
-    '<div class="hero-art"><p class="hero-tag">EXPLORE · UNDERSTAND · SOLVE</p>' + atom + '</div></section>' +
-    '<section class="journey" id="journey"><p class="j-kicker">YOUR PHYSICS JOURNEY</p><h2>เริ่มต้นการเดินทางในจักรวาลของฟิสิกส์</h2>' +
-    '<p class="j-sub">พิมพ์โจทย์ของตัวเอง แล้วให้ระบบช่วยคิดทีละขั้น หรือเปิดสื่อจำลองเพื่อทดลองดูผลจริง</p>' +
+    '<blockquote class="hero-quote">เข้าใจธรรมชาติทีละขั้น — อ่านบท ฝึกโจทย์ ดูสื่อ แล้วทบทวน</blockquote>' +
+    '<div class="hero-actions"><button type="button" class="btn hero-go" data-act="go-journey">เริ่มที่นี่ <span aria-hidden="true">↓</span></button>' +
+    '<button type="button" class="btn hero-alt" data-act="view-tutor">ทำโจทย์เลย</button></div>' +
+    '<dl class="hero-stats"><div><dt>' + formulas.length + '</dt><dd>สูตร</dd></div><div><dt>' + topics.length + '</dt><dd>บทเรียน</dd></div><div><dt>' + SIMS.length + '</dt><dd>สื่อจำลอง</dd></div></dl></div>' +
+    '<div class="hero-art"><p class="hero-tag">อ่าน · เข้าใจ · ฝึกแก้</p>' + atom + '</div></section>' +
+    '<section class="journey" id="journey"><p class="j-kicker">เริ่มต้นอย่างไร</p><h2>เลือกเส้นทางที่ชัดเจน</h2>' +
+    '<p class="j-sub">แนะนำลำดับนี้: อ่านบท → ทำโจทย์ → ดูสื่อจำลอง → ทบทวนสูตร</p>' +
+    '<p class="journey-split">เส้นทางหลัก</p>' +
     '<div class="journey-grid">' +
-    card('✎', 'เริ่มทำโจทย์', 'พิมพ์โจทย์เอง ระบบชี้บท ตัวแปร และสูตร แล้วนักเรียนจัดรูปสมการและคำนวณเอง', 'view-tutor', state.step > 1 ? 'ทำโจทย์ที่ค้างไว้ต่อ' : 'ไปพิมพ์โจทย์') +
-    card('◎', 'สื่อจำลองฟิสิกส์', 'ทดลองปรับค่าตัวแปรแล้วดูผลทันที ครบ ' + SIMS.length + ' บท ตั้งแต่การเคลื่อนที่ถึงฟิสิกส์นิวเคลียร์', 'view-sims', 'สำรวจสื่อจำลอง') +
-    card('∑', 'คลังสูตร', 'รวม ' + formulas.length + ' สูตรทุกบท พร้อมเงื่อนไขการใช้และความหมายของตัวแปร ค้นหาได้ทันที', 'view-library', 'เปิดคลังสูตร') +
-    card('↗', 'ความก้าวหน้า', 'แก้โจทย์สำเร็จแล้ว ' + solved + ' ข้อ ดูแผนที่การฝึกทั้ง 20 บท สูตรที่ใช้บ่อย และวันฝึกต่อเนื่อง', 'view-progress', 'ดูความก้าวหน้า') +
+    card('1', '📘', 'บทเรียน', 'อ่านแนวคิดและสูตรทีละบท ตาม สสวท.', 'view-lessons', 'เปิดบทเรียน') +
+    card('2', '✎', 'ทำโจทย์', 'พิมพ์โจทย์ ระบบชี้บทและสูตร แล้วจัดรูปเอง', 'view-tutor', state.step > 1 ? 'ทำต่อ' : 'เริ่มทำโจทย์') +
+    card('3', '◎', 'สื่อจำลอง', 'ปรับค่า แล้วดูผลทันที ครบ ' + SIMS.length + ' เรื่อง', 'view-sims', 'เปิดสื่อ') +
+    card('4', '∑', 'คลังสูตร', 'ค้นหาสูตรครบ ' + formulas.length + ' สูตร พร้อมเงื่อนไขใช้', 'view-library', 'เปิดคลัง') +
+    '</div>' +
+    '<p class="journey-split">เครื่องมือเพิ่มเติม</p>' +
+    '<div class="journey-grid">' +
+    card('', '✎✓', 'สอบจำลอง', 'สุ่มข้อ จับเวลา ให้คะแนน', 'view-exam', 'เริ่มสอบ') +
+    card('', '↗', 'ความก้าวหน้า', 'คะแนน ' + ((state.scores && state.scores.total) || 0) + ' · จุดอ่อนและภารกิจ', 'view-progress', 'ดูสถิติ') +
+    card('', '🏫', 'ห้องเรียน', 'โหมดครู/นักเรียน และรายงานโจทย์', 'view-classroom', 'เปิดห้อง') +
     '</div></section>' +
-    '<footer class="home-foot">Physics Learning · ระบบฝึกคิดโจทย์ฟิสิกส์ตามหลักสูตร สสวท. เล่ม 1–6</footer>';
+    '<footer class="home-foot">Physics Learning · ฝึกคิดโจทย์ฟิสิกส์ตามหลักสูตร สสวท. เล่ม 1–6</footer>';
 }
 function renderStudio() {
-  return '<section class="studio" id="studio"><div class="studio-input"><p class="j-kicker">PROBLEM STUDIO</p><h2>พิมพ์โจทย์ที่ต้องการแก้</h2>' +
-    '<p class="studio-note">ใส่ตัวเลขพร้อมหน่วย (km/h, cm, g, mA, °C ได้หมด) แล้วลงท้ายด้วย จงหา ถามหลายค่าได้ เช่น จงหาความเร่งและระยะทาง</p>' +
-    '<textarea id="prompt" class="side-prompt" data-field="prompt" placeholder="เช่น ยิงลูกบอลด้วยความเร็ว 72 km/h ทำมุม 30 องศากับแนวราบ จงหาความสูงสูงสุดและระยะทางแนวราบ" enterkeyhint="done">' + esc(state.prompt) + '</textarea>' +
-    '<div id="topic-live"></div><div class="studio-go"><button type="button" class="btn hero-go" data-act="analyze">วิเคราะห์โจทย์</button><span class="kbd-hint">ทางลัด Ctrl+Enter</span></div></div>' +
-    '<ol class="guide"><li><strong><span class="n">1</span>กรอกโจทย์</strong>พิมพ์โจทย์ด้วยคำของตัวเอง</li>' +
-    '<li><strong><span class="n">2</span>หัวข้อ</strong>ระบบเลือกบทให้อัตโนมัติ</li>' +
-    '<li><strong><span class="n">3</span>ตัวแปรและสูตร</strong>ใส่ค่าเอง แล้วคลิกสูตร</li>' +
-    '<li><strong><span class="n">4</span>จัดรูปและคำตอบ</strong>ย้ายข้าง แทนค่า แล้ววิเคราะห์ผล</li></ol></section>';
+  return '<section class="studio" id="studio"><div class="studio-input"><p class="j-kicker">ขั้นที่ 1</p><h2>พิมพ์โจทย์ที่ต้องการแก้</h2>' +
+    '<p class="studio-note">ใส่ตัวเลขพร้อมหน่วยได้ เช่น 72 km/h หรือ 30° แล้วลงท้ายด้วยคำว่า <strong style="color:#e8eeff">จงหา…</strong></p>' +
+    '<textarea id="prompt" class="side-prompt" data-field="prompt" placeholder="ตัวอย่าง: รถออกตัวจากหยุดนิ่งด้วยความเร่ง 2 m/s² เป็นเวลา 5 s จงหาความเร็วปลาย" enterkeyhint="done">' + esc(state.prompt) + '</textarea>' +
+    '<div id="topic-live"></div>' + renderOcrPanel() + '<div class="studio-go"><button type="button" class="btn hero-go" data-act="analyze">วิเคราะห์โจทย์</button><span class="kbd-hint">ทางลัด Ctrl+Enter</span></div></div>' +
+    '<ol class="guide"><li><strong><span class="n">1</span>พิมพ์โจทย์</strong>เขียนด้วยคำของตัวเอง</li>' +
+    '<li><strong><span class="n">2</span>ดูบทที่แนะนำ</strong>ระบบเลือกบทให้อัตโนมัติ</li>' +
+    '<li><strong><span class="n">3</span>ใส่ค่าตัวแปร</strong>แล้วเลือกสูตร</li>' +
+    '<li><strong><span class="n">4</span>จัดรูปสมการ</strong>ย้ายข้าง แทนค่า ได้คำตอบ</li></ol></section>';
 }
+
+var LESSON_TRACKS = {
+  mechanics: { name: 'กลศาสตร์', color: '#2a6f97' },
+  waves: { name: 'คลื่นและเสียง', color: '#0f6e64' },
+  optics: { name: 'แสง', color: '#3f4fa0' },
+  electricity: { name: 'ไฟฟ้าและแม่เหล็ก', color: '#9d342c' },
+  thermo: { name: 'ความร้อน ของแข็ง ของไหล', color: '#b5482f' },
+  modern: { name: 'ฟิสิกส์สมัยใหม่', color: '#3d6b4f' },
+  intro: { name: 'พื้นฐาน', color: '#5c4d7a' }
+};
+var LESSON_META = {
+  ch1: { track: 'intro', diff: 1, prereq: [], goals: ['แยกความแม่นและความเที่ยงได้', 'คำนวณร้อยละความคลาดเคลื่อนได้', 'เลือกหน่วย SI ได้ถูกต้อง'], everyday: 'การชั่งน้ำหนักหรือจับเวลาซ้ำ ๆ แล้วเทียบกับค่ามาตรฐาน', concepts: [{ title: 'ความแม่นและความเที่ยง', body: 'ความแม่นหมายถึงค่าที่วัดใกล้ของจริง ความเที่ยงหมายถึงวัดซ้ำแล้วได้ค่าใกล้กัน ตามแนว สสวท. บทที่ 1' }, { title: 'ความคลาดเคลื่อน', body: 'ร้อยละความคลาดเคลื่อน = (Δx / x) × 100 โดย x คือค่าที่วัดหรือค่าอ้างอิงตามโจทย์' }], mistakes: [{ wrong: 'คิดว่าเที่ยงแล้วต้องแม่นเสมอ', right: 'เที่ยงแต่ไม่แม่นได้ถ้ามีอคติเชิงระบบ' }], quiz: [{ q: 'วัดซ้ำได้ค่าใกล้กันมาก แต่ต่างจากค่าจริงชัดเจน เรียกว่าอย่างไร?', choices: ['แม่นแต่ไม่เที่ยง', 'เที่ยงแต่ไม่แม่น', 'ทั้งแม่นและเที่ยง'], answer: 1, explain: 'ค่าใกล้กัน = เที่ยง แต่ต่างของจริง = ไม่แม่น' }] },
+  ch2: { track: 'mechanics', diff: 1, prereq: ['ch1'], goals: ['แยกการกระจัดกับระยะทาง', 'ใช้สมการความเร่งคงตัวได้', 'อ่านกราฟ x–t และ v–t ได้'], everyday: 'รถออกตัว เบรก หรือปล่อยของตกจากที่สูง', concepts: [{ title: 'ความเร่งคงตัว', body: 'เมื่อความเร่งคงตัว ใช้ชุดสมการ v = u + at, s = ut + ½at², v² = u² + 2as ตาม สสวท. บทที่ 2' }, { title: 'ตกอย่างอิสระ', body: 'ปล่อยจากหยุดนิ่งโดยประมาณ a = g ลงด้านล่าง ไม่คิดแรงต้านอากาศในแบบจำลองพื้นฐาน' }], mistakes: [{ wrong: 'ใช้ระยะทางแทนการกระจัดในสมการเวกเตอร์', right: 'สมการความเร่งคงตัวใช้การกระจัดซึ่งมีทิศ' }], quiz: [{ q: 'รถยนต์ออกจากหยุดนิ่งด้วยความเร่งคงตัว ข้อใดจำเป็นต้องรู้เพิ่มเพื่อหาความเร็วหลังเวลา t?', choices: ['มวลของรถ', 'ค่าความเร่ง a', 'แรงเสียดทานเท่านั้น'], answer: 1, explain: 'จาก v = u + at เมื่อ u = 0 ต้องรู้ a และ t' }] },
+  ch3: { track: 'mechanics', diff: 2, prereq: ['ch2'], goals: ['ใช้ F = ma ได้', 'แยกแรงเสียดทานสถิตและจลน์', 'วิเคราะห์พื้นเอียงเบื้องต้น'], everyday: 'ดึงกล่องบนพื้น ยืนในลิฟต์ หรือวัตถุบนทางลาด', concepts: [{ title: 'กฎข้อที่สองของนิวตัน', body: 'แรงลัพธ์ ΣF = ma ทิศเดียวกับความเร่ง' }, { title: 'แรงเสียดทาน', body: 'สถิตสูงสุด fₛ = μₛN และจลน์ fₖ = μₖN ตามแนว สสวท.' }], mistakes: [{ wrong: 'ใช้ w = mg เป็นแรงลัพธ์เสมอ', right: 'น้ำหนักเป็นแรงโน้มถ่วง แรงลัพธ์ต้องรวมแรงอื่นด้วย' }], quiz: [{ q: 'วัตถุบนพื้นราบไม่เอียง ไม่มีแรงอื่นในแนวดิ่ง N เท่ากับอะไร?', choices: ['ma', 'μmg', 'mg'], answer: 2, explain: 'บนพื้นราบ N = mg เมื่อไม่มีความเร่งแนวดิ่ง' }] },
+  ch4: { track: 'mechanics', diff: 2, prereq: ['ch3'], goals: ['คำนวณทอร์กได้', 'ใช้เงื่อนไขสมดุลต่อการหมุน', 'อ่านคานและจุดหมุนได้'], everyday: 'คานกระดก เปิดประตู หรือถือถาดอาหาร', concepts: [{ title: 'ทอร์ก', body: 'τ = Fd เมื่อแรงตั้งฉากกับแขน หรือ τ = rF sinθ' }, { title: 'สมดุลกล', body: 'สมดุลต่อการเลื่อน ΣF = 0 และต่อการหมุน Στ = 0' }], mistakes: [{ wrong: 'คิดแค่ว่าแรงเป็นศูนย์แล้วหมุนไม่ได้', right: 'แม้แรงลัพธ์เป็นศูนย์ ถ้าโมเมนต์ไม่สมดุลยังหมุนได้' }], quiz: [{ q: 'แรงเท่ากันแต่แขนโมเมนต์ยาวกว่า ทอร์กจะเป็นอย่างไร?', choices: ['น้อยลง', 'เท่าเดิม', 'มากขึ้น'], answer: 2, explain: 'τ = Fd เมื่อ F คงที่ แขนยาวขึ้นทอร์กมากขึ้น' }] },
+  ch5: { track: 'mechanics', diff: 2, prereq: ['ch3'], goals: ['คำนวณงาน W = Fs cosθ', 'แยกพลังงานจลน์และศักย์', 'ใช้การอนุรักษ์พลังงานกลเมื่อเหมาะสม'], everyday: 'ยกของขึ้นชั้น กลิ้งจากที่สูง หรือยืดสปริง', concepts: [{ title: 'งาน', body: 'งานของแรงคงตัว W = Fs cosθ โดย θ เป็นมุมระหว่างแรงกับการกระจัด' }, { title: 'พลังงานกล', body: 'E = Eₖ + Eₚ และในระบบที่ไม่มีแรงไม่อนุรักษ์ พลังงานกลคงตัว' }], mistakes: [{ wrong: 'คิดว่างานเป็นบวกเสมอ', right: 'ถ้าระยะกับแรงสวนทาง cosθ เป็นลบ งานเป็นลบ' }], quiz: [{ q: 'แรงตั้งฉากกับการกระจัด งานของแรงนั้นเป็นเท่าใด?', choices: ['Fs', '0', '½mv²'], answer: 1, explain: 'cos 90° = 0 ดังนั้น W = 0' }] },
+  ch6: { track: 'mechanics', diff: 2, prereq: ['ch3', 'ch5'], goals: ['ใช้ p = mv และการดล', 'แยกการชนยืดหยุ่น ไม่ยืดหยุ่น และติดกันไป', 'ใช้การอนุรักษ์โมเมนตัมในระบบปิด'], everyday: 'ลูกบิลเลียดชนกัน หรือกระสุนฝังเข้าไม้', concepts: [{ title: 'โมเมนตัมและการดล', body: 'p = mv และการดล I = Δp = FΔt' }, { title: 'การชน', body: 'ในระบบปิดโมเมนตัมรวมอนุรักษ์ การชนติดกันไปใช้ m₁u₁ + m₂u₂ = (m₁+m₂)v' }], mistakes: [{ wrong: 'คิดว่าพลังงานจลน์อนุรักษ์ทุกการชน', right: 'การชนไม่ยืดหยุ่นพลังงานจลน์ไม่คงตัว แต่โมเมนตัมยังอนุรักษ์ในระบบปิด' }], quiz: [{ q: 'ปริมาณใดอนุรักษ์ในการชนแบบติดกันไปในระบบปิด?', choices: ['พลังงานจลน์อย่างเดียว', 'โมเมนตัม', 'อุณหภูมิ'], answer: 1, explain: 'โมเมนตัมอนุรักษ์ พลังงานจลน์โดยทั่วไปไม่คงตัว' }] },
+  ch7: { track: 'mechanics', diff: 2, prereq: ['ch2', 'ch3'], goals: ['แยกองค์ประกอบโพรเจกไทล์', 'ใช้ a = v²/r และ F = mv²/r', 'คำนวณพิสัยและความสูงสูงสุดในกรณีพื้นราบ'], everyday: 'ยิงลูกบาส น้ำพุ หรือรถเลี้ยวโค้ง', concepts: [{ title: 'โพรเจกไทล์', body: 'แนวราบไม่มีความเร่ง แนวดิ่งมีความเร่ง g และ uₓ = u cosθ, uᵧ = u sinθ' }, { title: 'วงกลม', body: 'ความเร่งสู่ศูนย์กลาง a = v²/r ชี้เข้าสู่ศูนย์กลาง' }], mistakes: [{ wrong: 'คิดว่าที่จุดสูงสุดความเร็วเป็นศูนย์ทั้งหมด', right: 'ที่จุดสูงสุดความเร็วแนวดิ่งเป็นศูนย์ แต่แนวราบอาจยังไม่เป็นศูนย์' }], quiz: [{ q: 'ที่จุดสูงสุดของโพรเจกไทล์ที่ยิงจากพื้นราบ ข้อใดถูก?', choices: ['v = 0 ทั้งก้อน', 'vᵧ = 0', 'a = 0'], answer: 1, explain: 'ความเร็วแนวดิ่งเป็นศูนย์ ความเร่งยังเป็น g' }] },
+  ch8: { track: 'waves', diff: 2, prereq: ['ch2', 'ch5'], goals: ['ใช้คาบมวล–สปริงและลูกตุ้ม', 'เชื่อม ω, T, f', 'อธิบายพลังงานใน SHM'], everyday: 'ลูกตุ้มนาฬิกา หรือของเล่นสปริง', concepts: [{ title: 'มวล–สปริง', body: 'T = 2π√(m/k) และ ω = √(k/m)' }, { title: 'ลูกตุ้มอย่างง่าย', body: 'มุมเล็ก T = 2π√(ℓ/g) ตาม สสวท. บทที่ 8' }], mistakes: [{ wrong: 'คิดว่าคาบลูกตุ้มขึ้นกับมวล', right: 'ในแบบจำลองมุมเล็ก คาบไม่ขึ้นกับมวล' }], quiz: [{ q: 'เพิ่มมวลบนสปริง คาบการสั่นจะเป็นอย่างไร?', choices: ['สั้นลง', 'ยาวขึ้น', 'ไม่เปลี่ยน'], answer: 1, explain: 'T = 2π√(m/k) มวลเพิ่มคาบยาวขึ้น' }] },
+  ch9: { track: 'waves', diff: 2, prereq: ['ch8'], goals: ['ใช้ v = fλ', 'อธิบายสะท้อน หักเห แทรกสอด เลี้ยวเบนเบื้องต้น', 'ใช้คลื่นนิ่งบนเชือก'], everyday: 'คลื่นในสระ เชือกสะบัด หรือเสียงก้องในห้อง', concepts: [{ title: 'อัตราเร็วคลื่น', body: 'v = fλ = λ/T' }, { title: 'คลื่นนิ่งบนเชือก', body: 'เชือกตรึงสองปลาย λ = 2L/n สำหรับฮาร์มอนิกที่ n' }], mistakes: [{ wrong: 'คิดว่าความถี่เปลี่ยนเมื่อคลื่นเข้าตัวกลางใหม่เสมอ', right: 'โดยทั่วไปความถี่คงที่ อัตราเร็วและความยาวคลื่นเปลี่ยน' }], quiz: [{ q: 'คลื่นความถี่คงที่ ถ้า λ เพิ่มขึ้นสองเท่า v จะเป็นอย่างไร?', choices: ['ลดครึ่ง', 'เพิ่มสองเท่า', 'เท่าเดิม'], answer: 1, explain: 'v = fλ เมื่อ f คงที่ λ สองเท่าทำให้ v สองเท่า' }] },
+  ch10: { track: 'optics', diff: 3, prereq: ['ch9'], goals: ['ใช้เงื่อนไขแถบสว่างสลิตคู่', 'แยกสลิตเดี่ยวกับเกรตติง', 'อ่านผลต่างระยะทาง Δ = nλ'], everyday: 'สีรุ้งบนซีดี หรือการทดลองสลิตคู่ในห้องแล็บ', concepts: [{ title: 'สลิตคู่', body: 'แถบสว่าง y ≈ nλL/d เมื่อฉากไกล' }, { title: 'เกรตติง', body: 'd sinθ = nλ สำหรับแถบสว่าง' }], mistakes: [{ wrong: 'สลับสูตรแถบมืดกับแถบสว่างของสลิตเดี่ยว', right: 'สลิตเดี่ยวแถบมืดใช้ a sinθ = nλ (n = 1,2,3,...)' }], quiz: [{ q: 'เพิ่มระยะระหว่างสลิต d ของสลิตคู่ ระยะห่างแถบบนฉากจะเป็นอย่างไร?', choices: ['กว้างขึ้น', 'แคบลง', 'ไม่เปลี่ยน'], answer: 1, explain: 'y ≈ nλL/d เมื่อ d เพิ่ม y ลดลง แถบถี่ขึ้น' }] },
+  ch11: { track: 'optics', diff: 2, prereq: ['ch9'], goals: ['ใช้กฎของสเนลล์', 'หาภาพจากเลนส์/กระจกด้วย 1/f = 1/s + 1/s′', 'หาค่ากำลังขยาย'], everyday: 'แว่นตา กระจกเงา หรือแก้วน้ำหักเหภาพ', concepts: [{ title: 'สเนลล์และมุมวิกฤต', body: 'n₁ sinθ₁ = n₂ sinθ₂ และ sinθc = n₂/n₁ เมื่อแสงจากแน่นไปน้อย' }, { title: 'เลนส์บาง', body: '1/f = 1/s + 1/s′ และ m = hᵢ/h₀ = −s′/s ตามข้อตกลงเครื่องหมาย สสวท.' }], mistakes: [{ wrong: 'ลืมใส่เครื่องหมายระยะภาพ/โฟกัส', right: 'ต้องใช้ข้อตกลงเครื่องหมายของ สสวท. ก่อนแทนค่า' }], quiz: [{ q: 'เลนส์นูนในอากาศโดยทั่วไปมี f เป็นอย่างไร?', choices: ['ลบ', 'บวก', 'ศูนย์'], answer: 1, explain: 'ตามข้อตกลง สสวท. เลนส์นูนมี f เป็นบวก' }] },
+  ch12: { track: 'waves', diff: 2, prereq: ['ch9'], goals: ['คำนวณอัตราเร็วเสียงกับอุณหภูมิ', 'ใช้ระดับความเข้มเสียง', 'วิเคราะห์ท่อเปิด–ปิดและดอปเพลอร์เบื้องต้น'], everyday: 'เสียงไซเรน เสียงบีตส์จากส้อมเสียงคู่ หรือเป่าขวดน้ำ', concepts: [{ title: 'ความเข้มและระดับเสียง', body: 'I = P/4πr² และ β = 10 log(I/I₀) โดย I₀ = 10⁻¹² W/m²' }, { title: 'ท่อเสียง', body: 'ท่อปลายปิด λ = 4L/n (n คี่) ท่อปลายเปิด λ = 2L/n' }], mistakes: [{ wrong: 'ใช้สูตรท่อเปิดกับท่อปิดสลับกัน', right: 'ตรวจว่าปลายปิดมีบัพและใช้ฮาร์มอนิกคี่' }], quiz: [{ q: 'แหล่งกำเนิดเสียงเข้าหาผู้ฟังที่นิ่ง ความถี่ที่ได้ยินเป็นอย่างไร?', choices: ['ต่ำลง', 'สูงขึ้น', 'เท่าเดิมเสมอ'], answer: 1, explain: 'ปรากฏการณ์ดอปเพลอร์ แหล่งเข้าหาทำให้ f′ สูงขึ้น' }] },
+  ch13: { track: 'electricity', diff: 2, prereq: ['ch3'], goals: ['ใช้กฎของคูลอมบ์', 'เชื่อม E, V, F', 'คำนวณความจุและการต่ออนุกรม–ขนาน'], everyday: 'ไฟฟ้าสถิตจากผมหรือประตูในฤดูหนาว', concepts: [{ title: 'คูลอมบ์และสนาม', body: 'F = kq₁q₂/r² และ E = F/q สำหรับประจุทดสอบ' }, { title: 'ตัวเก็บประจุ', body: 'Q = CV และสำหรับแผ่นขนาน C = ε₀A/d' }], mistakes: [{ wrong: 'คิดว่าศักย์สูงต้องมีสนามสูงเสมอทุกจุด', right: 'สนามสัมพันธ์กับการเปลี่ยนศักย์ตามตำแหน่ง ไม่ใช่ค่าศักย์เพียงอย่างเดียว' }], quiz: [{ q: 'ตัวเก็บประจุสองตัวต่อขนาน ความจุรวมเทียบกับตัวเดี่ยวจะเป็นอย่างไร?', choices: ['น้อยกว่าตัวเล็กสุด', 'มากกว่าตัวใหญ่สุด', 'เท่ากับผลต่าง'], answer: 1, explain: 'ขนาน C = C₁ + C₂ จึงมากกว่าตัวใดตัวหนึ่ง' }] },
+  ch14: { track: 'electricity', diff: 2, prereq: ['ch13'], goals: ['ใช้กฎของโอห์ม', 'คำนวณวงจรอนุกรม–ขนาน', 'ใช้กำลังไฟฟ้าและความร้อนจูล'], everyday: 'หลอดไฟ ปลั๊กพ่วง หรือแบตเตอรี่ในวงจร', concepts: [{ title: 'โอห์มและกำลัง', body: 'V = IR และ P = IV = I²R = V²/R' }, { title: 'แบตเตอรี่', body: 'V = ℰ − Ir เมื่อมีความต้านทานภายใน' }], mistakes: [{ wrong: 'คิดว่ากระแสในสายขนานเท่ากันเสมอ', right: 'ขนานความต่างศักย์เท่ากัน กระแสแบ่งตามความต้านทาน' }], quiz: [{ q: 'ตัวต้านทานสองตัวต่ออนุกรม กระแสผ่านแต่ละตัวเป็นอย่างไร?', choices: ['ต่างกันเสมอ', 'เท่ากัน', 'เป็นศูนย์'], answer: 1, explain: 'อนุกรมมีกระแสเส้นเดียวจึงเท่ากัน' }] },
+  ch15: { track: 'electricity', diff: 3, prereq: ['ch14'], goals: ['คำนวณแรงแม่เหล็กบนประจุและลวด', 'ใช้ฟลักซ์และกฎของฟาราเดย์', 'เข้าใจหม้อแปลงและค่าประสิทธิผลเบื้องต้น'], everyday: 'มอเตอร์ หม้อแปลง หรือการเหนี่ยวนำขณะขยับแม่เหล็กใกล้ขดลวด', concepts: [{ title: 'แรงแม่เหล็ก', body: 'F = qvB และ F = BIℓ เมื่อตั้งฉาก' }, { title: 'เหนี่ยวนำ', body: 'ℰ = NΔΦ/Δt และหม้อแปลงอุดมคติ Vp/Vs = Np/Ns' }], mistakes: [{ wrong: 'คิดว่ามีสนามแม่เหล็กคงที่อย่างเดียวก็เหนี่ยวนำได้เสมอ', right: 'ต้องมีการเปลี่ยนฟลักซ์ผ่านวงรอบ' }], quiz: [{ q: 'หม้อแปลงเพิ่มแรงดัน ขดทุติยภูมิเทียบปฐมภูมิต้องมีจำนวนรอบอย่างไร?', choices: ['น้อยกว่า', 'มากกว่า', 'เท่ากันเสมอ'], answer: 1, explain: 'Vs/Vp = Ns/Np เมื่อเพิ่มแรงดัน Ns > Np' }] },
+  ch16: { track: 'thermo', diff: 2, prereq: ['ch5'], goals: ['ใช้ Q = mcΔT และความร้อนแฝง', 'ใช้กฎของแก๊ส', 'ใช้กฎข้อที่หนึ่ง Q = ΔU + W'], everyday: 'ต้มน้ำ ละลายน้ำแข็ง หรือลูกโป่งในที่ร้อน', concepts: [{ title: 'ความร้อน', body: 'Q = mcΔT เมื่อยังไม่เปลี่ยนสถานะ และ Q = mL เมื่อเปลี่ยนสถานะ' }, { title: 'แก๊สอุดมคติ', body: 'PV = nRT ต้องใช้อุณหภูมิเคลวิน' }], mistakes: [{ wrong: 'ใช้ °C ตรง ๆ ใน PV = nRT', right: 'ต้องแปลงเป็นเคลวินก่อน' }], quiz: [{ q: 'แก๊สปริมาณคงที่ ปริมาตรคงที่ อุณหภูมิเคลวินเพิ่มเป็นสองเท่า ความดันจะเป็นอย่างไร?', choices: ['ลดครึ่ง', 'เพิ่มสองเท่า', 'เท่าเดิม'], answer: 1, explain: 'จาก P/T คงที่เมื่อ V คงที่' }] },
+  ch17: { track: 'thermo', diff: 2, prereq: ['ch3', 'ch5'], goals: ['ใช้ความเค้น–เครียดและมอดุลัสของยัง', 'คำนวณความดันและแรงลอยตัว', 'ใช้ความต่อเนื่องและแบร์นูลลีเบื้องต้น'], everyday: 'เรือลอยน้ำ กดไซริงค์ หรือน้ำในท่อแคบไหลเร็วขึ้น', concepts: [{ title: 'ของแข็งยืดหยุ่น', body: 'σ = F/A, ε = ΔL/L, Y = σ/ε' }, { title: 'ของไหล', body: 'P = ρgh, F_B = ρgV และ A₁v₁ = A₂v₂' }], mistakes: [{ wrong: 'คิดว่าแรงลอยตัวขึ้นกับมวลวัตถุอย่างเดียว', right: 'ขึ้นกับความหนาแน่นของของเหลวและปริมาตรส่วนที่จม' }], quiz: [{ q: 'ท่อแคบลง ของไหลอุดมคติ อัตราเร็วจะเป็นอย่างไร?', choices: ['ช้าลง', 'เร็วขึ้น', 'เป็นศูนย์'], answer: 1, explain: 'จาก A₁v₁ = A₂v₂ เมื่อ A ลด v เพิ่ม' }] },
+  ch18: { track: 'modern', diff: 2, prereq: ['ch9', 'ch15'], goals: ['ใช้ c = fλ', 'เชื่อมสนาม E และ B ในคลื่น', 'ใช้กฎของมาลุส'], everyday: 'วิทยุ ไมโครเวฟ แสง และโพลารอยด์กันแดด', concepts: [{ title: 'คลื่นแม่เหล็กไฟฟ้า', body: 'ในสุญญากาศ c = fλ และ E = cB' }, { title: 'มาลุส', body: 'I = I₀ cos²θ สำหรับแสงโพลาไรซ์ผ่านแผ่นโพลารอยด์' }], mistakes: [{ wrong: 'คิดว่าคลื่นวิทยุช้ากว่าแสงมากในสุญญากาศ', right: 'ทุกย่านในสุญญากาศมีความเร็ว c เท่ากัน' }], quiz: [{ q: 'ในสุญญากาศ ถ้าความถี่เพิ่มสองเท่า ความยาวคลื่นจะเป็นอย่างไร?', choices: ['เพิ่มสองเท่า', 'ลดครึ่ง', 'เท่าเดิม'], answer: 1, explain: 'c คงที่ ดังนั้น λ = c/f' }] },
+  ch19: { track: 'modern', diff: 3, prereq: ['ch18'], goals: ['ใช้ E = hf และสมการโฟโตอิเล็กทริก', 'อธิบายระดับพลังงานโบร์เบื้องต้น', 'ใช้ λ = h/mv'], everyday: 'เซลล์แสงอาทิตย์หรือหลอดปล่อยแสง', concepts: [{ title: 'โฟตอนและโฟโตอิเล็กทริก', body: 'E = hf และ hf = W + Eₖ,max' }, { title: 'โบร์และเดอบรอยล์', body: 'Eₙ = −13.6/n² eV และ λ = h/p' }], mistakes: [{ wrong: 'คิดว่าเพิ่มความเข้มแสงแล้วพลังงานต่ออิเล็กตรอนต้องเพิ่มเสมอ', right: 'ความเข้มสัมพันธ์จำนวนโฟตอน พลังงานต่อโฟตอนขึ้นกับความถี่' }], quiz: [{ q: 'แสงความถี่ต่ำกว่าความถี่ขีดเริ่ม แม้เข้มมาก จะเกิดโฟโตอิเล็กทริกหรือไม่?', choices: ['เกิดเสมอ', 'ไม่เกิด', 'เกิดเฉพาะโลหะทุกชนิด'], answer: 1, explain: 'ต้องมี f มากกว่าความถี่ขีดเริ่ม' }] },
+  ch20: { track: 'modern', diff: 3, prereq: ['ch19'], goals: ['ใช้ครึ่งชีวิตและความสัมพันธ์ N, A', 'คำนวณพลังงานจากมวลพร่อง', 'แยกฟิชชันและฟิวชันได้'], everyday: 'การแพทย์นิวเคลียร์ โรงไฟฟ้าพลังงานนิวเคลียร์ หรืออายุทางธรณีวิทยา', concepts: [{ title: 'กัมมันตภาพและครึ่งชีวิต', body: 'A = λN, T½ = 0.693/λ และหลัง n ครึ่งชีวิตเหลือ (½)ⁿ' }, { title: 'มวลพร่อง', body: 'E = Δmc² หรือ E(MeV) = 931.5 Δm(u)' }], mistakes: [{ wrong: 'คิดว่าครึ่งชีวิตขึ้นกับปริมาณสารเริ่มต้น', right: 'ครึ่งชีวิตเป็นสมบัติของนิวไคลด์ ไม่ขึ้นกับปริมาณเริ่มต้น' }], quiz: [{ q: 'ผ่านไป 2 ครึ่งชีวิต เหลือสารกัมมันตรังสีกี่ส่วนของเดิม?', choices: ['1/2', '1/4', '1/8'], answer: 1, explain: '(½)² = 1/4' }] }
+};
+function lessonById(id) { return getLessons().filter(function (L) { return L.id === id; })[0] || null; }
+function getLessons() {
+  return topics.map(function (t) {
+    var m = LESSON_META[t.id] || { track: 'mechanics', diff: 2, prereq: [], goals: ['เข้าใจแนวคิดหลักของบทนี้'], concepts: [{ title: 'ภาพรวม', body: t.blurb }], everyday: '', mistakes: [], quiz: [] };
+    var flist = formulas.filter(function (f) { return f.topic === t.id; });
+    return {
+      id: t.id, no: t.no, name: t.name, grade: t.grade, vol: t.vol, stripe: t.stripe, blurb: t.blurb,
+      track: m.track, trackName: (LESSON_TRACKS[m.track] || {}).name || m.track, difficulty: m.diff || 2,
+      goals: m.goals || [], prereq: m.prereq || [], concepts: m.concepts || [], everyday: m.everyday || '',
+      mistakes: m.mistakes || [], quiz: m.quiz || [], formulas: flist, sim: simForTopic(t.id)
+    };
+  });
+}
+function lessonProgressPct(id) {
+  var d = state.lessonDone[id] || {};
+  var L = lessonById(id);
+  if (!L) return 0;
+  var total = 2 + (L.quiz.length ? 1 : 0);
+  var done = (d.read ? 1 : 0) + (d.formulas ? 1 : 0) + (d.quiz ? 1 : 0);
+  return Math.round(100 * done / total);
+}
+function renderLessons() {
+  if (state.lessonId) return renderLessonDetail(lessonById(state.lessonId));
+  var list = getLessons().filter(function (L) {
+    if (state.lessonGrade !== 'all' && L.grade !== state.lessonGrade) return false;
+    if (state.lessonTrack !== 'all' && L.track !== state.lessonTrack) return false;
+    return true;
+  });
+  var gradeChips = ['all', 'ม.4', 'ม.5', 'ม.6'].map(function (g) {
+    return '<button type="button" class="lib-chip' + (state.lessonGrade === g ? ' on' : '') + '" data-act="lesson-grade" data-grade="' + g + '">' + (g === 'all' ? 'ทุกระดับ' : g) + '</button>';
+  }).join('');
+  var trackChips = ['all'].concat(Object.keys(LESSON_TRACKS)).map(function (tr) {
+    var name = tr === 'all' ? 'ทุกหมวด' : LESSON_TRACKS[tr].name;
+    return '<button type="button" class="lib-chip' + (state.lessonTrack === tr ? ' on' : '') + '" data-act="lesson-track" data-track="' + tr + '">' + name + '</button>';
+  }).join('');
+  var cards = list.map(function (L) {
+    var pct = lessonProgressPct(L.id);
+    var stars = '★'.repeat(L.difficulty) + '☆'.repeat(3 - L.difficulty);
+    var prereq = L.prereq.length ? ('ควรเรียนก่อน: ' + L.prereq.map(function (id) { var t = topicById(id); return t ? 'บท ' + t.no : id; }).join(', ')) : 'ไม่มีบทบังคับก่อนหน้า';
+    return '<button type="button" class="lesson-card" style="--c:' + L.stripe + '" data-act="open-lesson" data-id="' + L.id + '">' +
+      '<span class="lesson-badge">บท ' + L.no + '</span>' +
+      '<strong>' + esc(L.name) + '</strong>' +
+      '<p class="lesson-meta">' + esc(L.grade + ' · ' + L.vol + ' · ' + L.trackName) + ' · ' + stars + '</p>' +
+      '<p>' + esc(L.blurb) + '</p>' +
+      '<p class="lesson-prereq">' + esc(prereq) + '</p>' +
+      '<div class="lesson-prog"><span style="width:' + pct + '%"></span></div>' +
+      '<span class="go">' + (pct ? 'เรียนต่อ ' + pct + '%' : 'เริ่มบทเรียน') + ' →</span></button>';
+  }).join('');
+  return pageHead('บทเรียน', 'เรียนทีละบท ตามหลักสูตร', 'เลือกชั้นหรือหมวด แล้วเปิดบทที่ต้องการ — อ่านแนวคิด ดูสูตร แล้วฝึกโจทย์') +
+    '<div class="lib-chips" role="group" aria-label="ระดับชั้น">' + gradeChips + '</div>' +
+    '<div class="lib-chips" role="group" aria-label="หมวด">' + trackChips + '</div>' +
+    '<p class="lib-count">แสดง ' + list.length + ' บท</p>' +
+    '<div class="lesson-grid">' + (cards || '<p class="pempty">ไม่พบบทในตัวกรองนี้</p>') + '</div>';
+}
+function renderLessonDetail(L) {
+  if (!L) return pageHead('LESSON', 'ไม่พบบทเรียน', '') + '<button type="button" class="btn secondary" data-act="lesson-list">← รายการบท</button>';
+  var d = state.lessonDone[L.id] || {};
+  var goals = '<ul class="lesson-list">' + L.goals.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ul>';
+  var prereq = L.prereq.length
+    ? L.prereq.map(function (id) {
+        var t = topicById(id); if (!t) return '';
+        return '<button type="button" class="linkish" data-act="open-lesson" data-id="' + id + '">บทที่ ' + t.no + ' ' + esc(t.name) + '</button>';
+      }).join(' · ')
+    : '<span class="muted">ไม่มีบทบังคับก่อนหน้า</span>';
+  var concepts = L.concepts.map(function (c) {
+    return '<article class="lesson-block"><h3>' + esc(c.title) + '</h3><p>' + esc(c.body) + '</p></article>';
+  }).join('');
+  var formulaCards = L.formulas.slice(0, 8).map(function (f) {
+    return '<div class="fcard" style="--c:' + L.stripe + '"><div class="fcard-top"><strong>' + esc(f.name) + '</strong></div>' +
+      '<div class="fcard-eq">' + esc(f.classic) + '</div>' +
+      (f.when ? '<p class="fcard-when">' + esc(f.when) + '</p>' : '') + '</div>';
+  }).join('');
+  var mistakes = L.mistakes.map(function (m) {
+    return '<li><strong>มักเข้าใจผิด:</strong> ' + esc(m.wrong) + '<br><strong>แนวที่ถูก:</strong> ' + esc(m.right) + '</li>';
+  }).join('');
+  var quizHtml = L.quiz.map(function (qz, qi) {
+    var key = L.id + ':' + qi;
+    var picked = state.lessonQuiz[key];
+    var choices = qz.choices.map(function (c, ci) {
+      var cls = 'lesson-choice';
+      if (picked != null) {
+        if (ci === qz.answer) cls += ' correct';
+        else if (ci === picked) cls += ' wrong';
+      }
+      return '<button type="button" class="' + cls + '" data-act="lesson-quiz" data-qid="' + key + '" data-pick="' + ci + '"' + (picked != null ? ' disabled' : '') + '>' + esc(c) + '</button>';
+    }).join('');
+    var fb = picked == null ? '' : ('<p class="lesson-feedback ' + (picked === qz.answer ? 'ok' : 'bad') + '">' +
+      (picked === qz.answer ? 'ถูกต้อง · ' : 'ยังไม่ถูก · ') + esc(qz.explain) + '</p>');
+    return '<div class="lesson-quiz"><p class="q">' + esc(qz.q) + '</p><div class="lesson-choices">' + choices + '</div>' + fb + '</div>';
+  }).join('');
+  return '<button type="button" class="back-home" data-act="lesson-list">← รายการบทเรียน</button>' +
+    '<header class="page-head"><p class="j-kicker">บทที่ ' + L.no + ' · ' + esc(L.grade + ' · ' + L.vol) + '</p>' +
+    '<h2>' + esc(L.name) + '</h2><p class="j-sub">' + esc(L.blurb) + '</p></header>' +
+    '<div class="lesson-actions">' +
+    '<button type="button" class="btn secondary" data-act="lesson-mark" data-id="' + L.id + '" data-flag="read">' + (d.read ? '✓ อ่านแล้ว' : 'ทำเครื่องหมายว่าอ่านแล้ว') + '</button>' +
+    (L.sim ? '<button type="button" class="btn secondary" data-act="open-sim" data-id="' + L.sim.id + '">เปิดสื่อจำลอง</button>' : '') +
+    '<button type="button" class="btn secondary" data-act="lib-open" data-ch="' + L.id + '">เปิดคลังสูตรบทนี้</button>' +
+    '<button type="button" class="btn hero-go" data-act="view-tutor">ฝึกทำโจทย์</button></div>' +
+    '<section class="lesson-panel"><h3>เป้าหมายการเรียนรู้</h3>' + goals +
+    '<p class="lesson-prereq"><strong>ความรู้ก่อนหน้า:</strong> ' + prereq + '</p>' +
+    '<p><strong>ระดับความยาก:</strong> ' + ('★'.repeat(L.difficulty) + '☆'.repeat(3 - L.difficulty)) + ' · หมวด ' + esc(L.trackName) + '</p></section>' +
+    '<section class="lesson-panel"><h3>แนวคิดสำคัญ</h3>' + concepts +
+    (L.everyday ? '<p class="lesson-everyday"><strong>ตัวอย่างในชีวิตประจำวัน:</strong> ' + esc(L.everyday) + '</p>' : '') + '</section>' +
+    '<section class="lesson-panel"><h3>สูตรสำคัญในบทนี้ <span class="muted">(' + L.formulas.length + ' สูตรจากคลังที่ตรวจสอบแล้ว)</span></h3>' +
+    '<div class="lib-grid">' + formulaCards + '</div>' +
+    (L.formulas.length > 8 ? '<p class="pnote">แสดงบางส่วน กด “เปิดคลังสูตรบทนี้” เพื่อดูครบ</p>' : '') +
+    '<button type="button" class="btn secondary" data-act="lesson-mark" data-id="' + L.id + '" data-flag="formulas">' + (d.formulas ? '✓ ทบทวนสูตรแล้ว' : 'ทำเครื่องหมายว่าทบทวนสูตรแล้ว') + '</button></section>' +
+    (mistakes ? '<section class="lesson-panel"><h3>จุดที่มักเข้าใจคลาดเคลื่อน</h3><ul class="lesson-list mistakes">' + mistakes + '</ul></section>' : '') +
+    (quizHtml ? '<section class="lesson-panel"><h3>ตรวจความเข้าใจสั้น ๆ</h3>' + quizHtml +
+      '<button type="button" class="btn secondary" data-act="lesson-mark" data-id="' + L.id + '" data-flag="quiz">' + (d.quiz ? '✓ ทำแบบทดสอบแล้ว' : 'ทำเครื่องหมายว่าทำแบบทดสอบแล้ว') + '</button></section>' : '') +
+    '<p class="pnote">หมายเหตุ: เนื้อหาบทเรียนสรุปตามแนวหลักสูตร สสวท. เพื่อใช้ประกอบการฝึก ไม่ใช่สำเนาแบบเรียน และไม่ควรใช้แทนหนังสือเรียนอย่างเดียว</p>';
+}
+
 function pageHead(kicker, title, sub) {
   return '<button type="button" class="back-home" data-act="go-home">← กลับหน้าแรก</button>' +
     '<header class="page-head"><p class="j-kicker">' + kicker + '</p><h2>' + title + '</h2>' + (sub ? '<p class="j-sub">' + sub + '</p>' : '') + '</header>';
@@ -4098,8 +5766,8 @@ function renderLibrary() {
       '<div class="lib-gact">' + (sim ? '<button type="button" class="linkish" data-act="open-sim" data-id="' + sim.id + '">เปิดสื่อจำลอง</button>' : '') +
       '<button type="button" class="linkish" data-act="view-tutor">ฝึกโจทย์</button></div></div><div class="lib-grid">' + cards + '</div></section>';
   }).join('');
-  return pageHead('FORMULA LIBRARY', 'คลังสูตรฟิสิกส์', 'รวม ' + formulas.length + ' สูตรจาก ' + topics.length + ' บท พร้อมเงื่อนไขการใช้และความหมายของตัวแปร ค้นหาด้วยชื่อสูตร ปริมาณ หรือสัญลักษณ์ก็ได้') +
-    '<div class="lib-tools"><label class="lib-search"><span aria-hidden="true">⌕</span><input type="search" data-field="libq" placeholder="ค้นหา เช่น ความเร่ง, พลังงาน, λ, โมเมนตัม" value="' + esc(state.libQ) + '" aria-label="ค้นหาสูตร"></label>' +
+  return pageHead('คลังสูตร', 'ค้นหาสูตรได้ทันที', 'มี ' + formulas.length + ' สูตร จาก ' + topics.length + ' บท — พิมพ์ชื่อ สัญลักษณ์ หรือปริมาณที่ต้องการ') +
+    '<div class="lib-tools"><label class="lib-search"><span aria-hidden="true">⌕</span><input type="search" data-field="libq" placeholder="เช่น ความเร่ง, พลังงาน, F=ma" value="' + esc(state.libQ) + '" aria-label="ค้นหาสูตร"></label>' +
     '<span class="lib-count" id="lib-count"></span></div><div class="lib-chips" role="group" aria-label="เลือกบท">' + chips + '</div>' +
     '<div id="lib-body">' + groups + '</div><p class="lib-empty" id="lib-empty" hidden>ไม่พบสูตรที่ตรงกับคำค้น ลองใช้คำที่สั้นลง หรือเลือกทุกบท</p>';
 }
@@ -4145,19 +5813,31 @@ function agoText(ms) {
   return then.getDate() + '/' + (then.getMonth() + 1) + '/' + (then.getFullYear() + 543);
 }
 function renderProgress() {
+  syncMissions();
   var log = state.log || [];
   var perTopic = {}, perFormula = {};
   log.forEach(function (e) { perTopic[e.t] = (perTopic[e.t] || 0) + 1; perFormula[e.f] = (perFormula[e.f] || 0) + 1; });
   var touched = topics.filter(function (t) { return perTopic[t.id]; }).length;
   var max = Math.max.apply(null, [1].concat(topics.map(function (t) { return perTopic[t.id] || 0; })));
   var streak = streakDays(log);
+  var weak = weaknessReport();
+  var path = learningPath();
+  var due = srDueList().filter(function (x) { return x.due; }).slice(0, 5);
   var stat = function (num, label) { return '<div class="pstat"><strong>' + num + '</strong><span>' + label + '</span></div>'; };
   var stats = '<div class="pstats">' + stat(state.clears || 0, 'ข้อที่แก้สำเร็จ') + stat(touched + '<small>/' + topics.length + '</small>', 'บทที่เคยฝึก') +
-    stat(Object.keys(perFormula).length, 'สูตรที่เคยใช้') + stat(streak, 'วันติดต่อกัน') + '</div>';
+    stat((state.scores && state.scores.total) || 0, 'คะแนนสะสม') + stat(streak, 'วันติดต่อกัน') + '</div>';
+  var profileOpts = profileIds().map(function (id) {
+    var nm = (memory.profiles[id] && memory.profiles[id].name) || id;
+    return '<option value="' + esc(id) + '"' + (id === state.profileId ? ' selected' : '') + '>' + esc(nm) + '</option>';
+  }).join('');
+  var profileBar = '<div class="profile-bar"><label>โปรไฟล์ผู้เรียน <select data-field="profile-select">' + profileOpts + '</select></label>' +
+    '<input type="text" data-field="profile-new" placeholder="ชื่อโปรไฟล์ใหม่" maxlength="24" enterkeyhint="done">' +
+    '<button type="button" class="btn secondary" data-act="profile-add">เพิ่มโปรไฟล์</button>' +
+    '<span class="score-pill">แยกข้อมูลต่อโปรไฟล์ · คีย์เดียวกัน phys-lab-v6</span></div>';
   var heat = topics.map(function (t) {
-    var n = perTopic[t.id] || 0;
-    var lv = n ? Math.min(4, 1 + Math.floor(3 * n / max)) : 0;
-    return '<button type="button" class="heat lv' + lv + '" data-act="lib-open" data-ch="' + t.id + '" title="' + esc('บทที่ ' + t.no + ' ' + t.name + ' · ' + n + ' ข้อ') + '"><b>' + t.no + '</b><span>' + esc(t.name) + '</span><em>' + (n ? n + ' ข้อ' : 'ยังไม่ฝึก') + '</em></button>';
+    var nn = perTopic[t.id] || 0;
+    var lv = nn ? Math.min(4, 1 + Math.floor(3 * nn / max)) : 0;
+    return '<button type="button" class="heat lv' + lv + '" data-act="lib-open" data-ch="' + t.id + '" title="' + esc('บทที่ ' + t.no + ' ' + t.name + ' · ' + nn + ' ข้อ') + '"><b>' + t.no + '</b><span>' + esc(t.name) + '</span><em>' + (nn ? nn + ' ข้อ' : 'ยังไม่ฝึก') + '</em></button>';
   }).join('');
   var top = Object.keys(perFormula).sort(function (a, b) { return perFormula[b] - perFormula[a]; }).slice(0, 5).map(function (id) {
     var f = formulaById(id);
@@ -4166,25 +5846,71 @@ function renderProgress() {
   var recent = log.slice(-8).reverse().map(function (e) {
     var f = formulaById(e.f), t = topicById(e.t), info = SYM[e.k];
     return '<li><span class="rdot" style="--c:' + t.stripe + '"></span><div><strong>' + esc(f.name) + '</strong><p>บทที่ ' + t.no + ' · ' +
-      (info && e.v ? esc(info.sym + ' = ' + e.v + (info.unit ? ' ' + info.unit : '')) : esc(f.classic)) + '</p></div><time>' + agoText(e.at) + '</time></li>';
+      (info && e.v ? esc(info.sym + ' = ' + e.v + (info.unit ? ' ' + info.unit : '')) : esc(f.classic)) +
+      (e.score != null ? ' · +' + e.score + ' คะแนน' : '') + '</p></div><time>' + agoText(e.at) + '</time></li>';
+  }).join('');
+  var weakMax = Math.max.apply(null, [1].concat(weak.rows.map(function (r) { return r.count; })));
+  var weakHtml = weak.rows.slice(0, 6).map(function (r) {
+    return '<li><div><strong>บทที่ ' + r.no + ' ' + esc(r.name) + '</strong><p class="muted">' + r.count + ' จุดอ่อน' + (r.quizWrong ? ' · ควิซผิด ' + r.quizWrong : '') + '</p></div>' +
+      '<button type="button" class="linkish" data-act="open-lesson" data-id="' + r.id + '">ทบทวน</button>' +
+      '<div class="weak-bar"><span style="width:' + Math.round(100 * r.count / weakMax) + '%"></span></div></li>';
+  }).join('');
+  var missionHtml = MISSIONS.map(function (m, i) {
+    var prog = missionProgress(m);
+    var locked = i > 0 && !missionProgress(MISSIONS[i - 1]).done && state.missionsDone.indexOf(MISSIONS[i - 1].id) === -1;
+    var cls = prog.done ? 'done' : (locked ? 'locked' : 'now');
+    return '<li class="' + cls + '"><span class="badge">' + (prog.done ? '✓' : (i + 1)) + '</span><div><strong>' + esc(m.title) + '</strong><p class="muted">' + esc(m.blurb) + ' · ' + prog.n + '/' + m.need + '</p></div>' +
+      (locked ? '<span class="muted">ล็อก</span>' : '<button type="button" class="linkish" data-act="mission-go" data-topic="' + m.topic + '">ไปฝึก</button>') + '</li>';
+  }).join('');
+  var pathHtml = path.slice(0, 8).map(function (row) {
+    var label = row.status === 'done' ? '✓' : (row.status === 'ready' ? '→' : '·');
+    return '<li class="' + (row.status === 'done' ? 'done' : '') + '"><span class="badge">' + label + '</span><div><strong>บทที่ ' + row.no + ' ' + esc(row.name) + '</strong><p class="muted">' +
+      (row.status === 'locked' ? 'ยังควรผ่านบทก่อนหน้า' : (row.clears ? 'ฝึกแล้ว ' + row.clears + ' ข้อ' : 'พร้อมเริ่ม')) +
+      (row.lessonPct ? ' · บทเรียน ' + row.lessonPct + '%' : '') + '</p></div>' +
+      (row.status === 'locked' ? '' : '<button type="button" class="linkish" data-act="open-lesson" data-id="' + row.id + '">เปิด</button>') + '</li>';
+  }).join('');
+  var srHtml = (due.length ? due : srDueList().slice(0, 4)).map(function (row) {
+    var t = row.topic; var c = row.card;
+    return '<li><span class="badge">' + (row.due ? '!' : '⏳') + '</span><div><strong>บทที่ ' + t.no + ' ' + esc(t.name) + '</strong><p class="muted">' +
+      (row.due ? 'ถึงรอบทบทวนแล้ว' : 'ทบทวนในอีก ' + Math.max(0, Math.ceil((c.dueAt - Date.now()) / 86400000)) + ' วัน') +
+      ' · ช่วงห่าง ' + (c.intervalDays || 0) + ' วัน</p></div>' +
+      '<button type="button" class="linkish" data-act="mission-go" data-topic="' + t.id + '">ทบทวน</button></li>';
+  }).join('');
+  var mistakes = (state.mistakes || []).slice(-6).reverse().map(function (m) {
+    var t = m.topic && topicById(m.topic);
+    return '<li><span class="badge">!</span><div><strong>' + esc(m.kind) + '</strong><p class="muted">' +
+      (t ? 'บทที่ ' + t.no + ' · ' : '') + esc(m.note || 'จุดที่ควรทบทวน') + '</p></div><time>' + agoText(m.at) + '</time></li>';
   }).join('');
   var untouched = topics.filter(function (t) { return !perTopic[t.id]; });
   var suggest = untouched.length ? untouched[0] : null;
   var old = (state.clears || 0) - log.length;
-  return pageHead('YOUR PROGRESS', 'ความก้าวหน้าของฉัน', 'ข้อมูลเก็บในเครื่องนี้เท่านั้น ยิ่งฝึกหลายบท ยิ่งเห็นว่าสูตรต่าง ๆ เชื่อมโยงกันอย่างไร') + stats +
-    '<div class="pgrid"><section class="pcard pwide"><div class="pcard-head"><h3>แผนที่การฝึกทั้ง 20 บท</h3><span class="heat-legend"><i class="lv0"></i><i class="lv1"></i><i class="lv2"></i><i class="lv3"></i><i class="lv4"></i></span></div>' +
-    '<div class="heatmap">' + heat + '</div><p class="pnote">กดที่บทเพื่อดูสูตรของบทนั้นในคลังสูตร</p></section>' +
-    '<section class="pcard"><h3>ทำล่าสุด</h3>' + (recent ? '<ul class="recent">' + recent + '</ul>' : '<p class="pempty">ยังไม่มีประวัติ แก้โจทย์ข้อแรกให้ถึงคำตอบสุดท้าย แล้วรายการจะขึ้นที่นี่</p>') +
+  return pageHead('ความก้าวหน้า', 'ดูว่าเรียนไปถึงไหนแล้ว', 'คะแนน จุดอ่อน ภารกิจ และการทบทวน — เก็บในเครื่องนี้ แยกตามโปรไฟล์') + profileBar + stats +
+    '<div class="pgrid"><section class="pcard pwide"><div class="pcard-head"><h3>แผนที่การฝึก</h3><span class="heat-legend"><i class="lv0"></i><i class="lv1"></i><i class="lv2"></i><i class="lv3"></i><i class="lv4"></i></span></div>' +
+    '<div class="heatmap">' + heat + '</div><p class="pnote">กดที่บทเพื่อเปิดคลังสูตรของบทนั้น</p></section>' +
+    '<section class="pcard"><h3>จุดอ่อนที่ควรทบทวน</h3>' + (weakHtml ? '<ul class="weak-list">' + weakHtml + '</ul>' : '<p class="pempty">ยังไม่มีจุดอ่อนที่บันทึก — เมื่อตอบผิดหรือควิซผิด จะโผล่ที่นี่</p>') + '</section>' +
+    '<section class="pcard"><h3>ภารกิจตามลำดับ</h3><ul class="mission-list">' + missionHtml + '</ul></section>' +
+    '<section class="pcard"><h3>เส้นทางเรียนรู้</h3><ul class="path-list">' + pathHtml + '</ul><p class="pnote">เรียงตามบทบังคับก่อนหน้า + ประวัติการฝึก</p></section>' +
+    '<section class="pcard"><h3>ถึงรอบทบทวน</h3>' + (srHtml ? '<ul class="sr-list">' + srHtml + '</ul>' : '<p class="pempty">เมื่อแก้โจทย์สำเร็จ ระบบจะตั้งรอบทบทวนให้อัตโนมัติ</p>') + '</section>' +
+    '<section class="pcard"><h3>ข้อผิดพลาดล่าสุด</h3>' + (mistakes ? '<ul class="mistake-list">' + mistakes + '</ul>' : '<p class="pempty">ยังไม่มีรายการ</p>') + '</section>' +
+    '<section class="pcard"><h3>ทำล่าสุด</h3>' + (recent ? '<ul class="recent">' + recent + '</ul>' : '<p class="pempty">ยังไม่มีประวัติ</p>') +
     (old > 0 ? '<p class="pnote">มีอีก ' + old + ' ข้อที่ทำไว้ก่อนเริ่มเก็บรายละเอียด</p>' : '') + '</section>' +
     '<section class="pcard"><h3>สูตรที่ใช้บ่อย</h3>' + (top ? '<ol class="topf">' + top + '</ol>' : '<p class="pempty">ยังไม่มีข้อมูล</p>') +
     (suggest ? '<div class="psuggest"><span>บทที่ยังไม่เคยฝึก</span><strong>บทที่ ' + suggest.no + ' ' + esc(suggest.name) + '</strong><p>' + esc(suggest.blurb) + '</p>' +
-      '<div class="psuggest-act"><button type="button" class="btn hero-go" data-act="view-tutor">ลองทำโจทย์</button><button type="button" class="linkish" data-act="lib-open" data-ch="' + suggest.id + '">ดูสูตรบทนี้</button></div></div>' : '<div class="psuggest"><strong>ฝึกครบทุกบทแล้ว</strong><p>ลองโจทย์ที่ใช้หลายสูตรต่อกัน เพื่อเชื่อมความรู้ข้ามบท</p></div>') +
+      '<div class="psuggest-act"><button type="button" class="btn hero-go" data-act="view-tutor">ลองทำโจทย์</button><button type="button" class="linkish" data-act="lib-open" data-ch="' + suggest.id + '">ดูสูตรบทนี้</button></div></div>' : '<div class="psuggest"><strong>ฝึกครบทุกบทแล้ว</strong><p>ลองโจทย์ที่ใช้หลายสูตรต่อกัน</p></div>') +
     '</section></div>';
 }
 function renderNavTabs() {
+  var tab = function (act, views, label) {
+    var on = views.indexOf(state.view) !== -1;
+    return '<button type="button" data-act="' + act + '" class="' + (on ? 'on' : '') + '"' + (on ? ' aria-current="page"' : '') + '>' + label + '</button>';
+  };
   return '<nav class="nav-tabs" aria-label="เมนูหลัก">' +
-    '<button type="button" data-act="view-tutor" class="' + (state.view === 'tutor' ? 'on' : '') + '"' + (state.view === 'tutor' ? ' aria-current="page"' : '') + '>ฝึกแก้โจทย์</button>' +
-    '<button type="button" data-act="view-sims" class="' + (state.view === 'sims' ? 'on' : '') + '"' + (state.view === 'sims' ? ' aria-current="page"' : '') + '>สื่อจำลอง</button></nav>';
+    tab('go-home', ['home'], 'หน้าแรก') +
+    tab('view-lessons', ['lessons'], 'บทเรียน') +
+    tab('view-tutor', ['tutor'], 'ทำโจทย์') +
+    tab('view-library', ['library'], 'สูตร') +
+    tab('view-sims', ['sims'], 'สื่อ') +
+    '</nav>';
 }
 function chapBadge(sim) {
   return '<span class="chap-badge" style="--badge:' + sim.color + '">บท<br>' + sim.topicNo + '</span>';
@@ -4208,8 +5934,8 @@ function renderSims() {
         '<span class="head">' + chapBadge(s) + '<span><strong>' + esc(s.title) + '</strong><p>' + esc(s.grade) + (t ? ' · บทที่ ' + t.no + ' ' + esc(t.name) : '') + '</p></span></span>' +
         '<p>' + esc(s.blurb) + '</p><span class="go">เปิดสื่อจำลอง →</span></button>';
     }).join('');
-    return '<button type="button" class="back-home" data-act="go-home">← กลับหน้าแรก</button><header class="sim-head"><div><p class="eyebrow">เมนูสื่อจำลอง</p><h2>ทดลองฟิสิกส์แบบโต้ตอบ</h2></div></header>' +
-      '<p class="help">เลือกเรื่องที่ต้องการ ปรับค่าตัวแปรในสื่อจำลองแล้วสังเกตผล ใช้คู่กับการฝึกแก้โจทย์ในบทเดียวกันได้</p>' +
+    return '<button type="button" class="back-home" data-act="go-home">← กลับหน้าแรก</button><header class="sim-head"><div><p class="eyebrow">สื่อจำลอง</p><h2>ทดลองดูภาพ แล้วเข้าใจเร็วขึ้น</h2></div></header>' +
+      '<p class="help">เลือกเรื่อง ปรับค่าตัวแปร แล้วดูผลทันที — ใช้คู่กับบทเรียนหรือโจทย์ในบทเดียวกันได้</p>' +
       '<div class="sim-grid">' + cards + '</div>';
   }
   return '<header class="sim-head"><div><p class="eyebrow">' + esc(sim.grade) + ' · บทที่ ' + sim.topicNo + ' · ถ้าไม่แสดง กดเปิดในแท็บใหม่</p><h2>' + esc(sim.title) + '</h2></div>' +
@@ -4229,7 +5955,7 @@ function renderSidebar() {
   var box = state.step === 1
     ? '<p class="side-note">พิมพ์โจทย์เอง ใส่ตัวเลขพร้อมหน่วย (km/h, cm, g, mA, °C ได้หมด) ลงท้ายด้วย จงหา ถามหลายค่าได้ เช่น จงหาความเร่งและระยะทาง</p>' +
       '<textarea id="prompt" class="side-prompt" data-field="prompt" placeholder="เช่น ยิงลูกบอลด้วยความเร็ว 72 km/h ทำมุม 30 องศากับแนวราบ จงหาความสูงสูงสุดและระยะทางแนวราบ" enterkeyhint="done">' + esc(state.prompt) + '</textarea>' +
-      '<div id="topic-live"></div>' +
+      '<div id="topic-live"></div>' + renderOcrPanel() +
       '<button type="button" class="btn side-go" data-act="analyze">วิเคราะห์โจทย์</button>' +
       '<p class="kbd-hint">ทางลัด Ctrl+Enter เพื่อวิเคราะห์</p>'
     : '<p class="side-note">โจทย์ที่นักเรียนกรอก</p><p class="side-story">' + esc(state.prompt) + '</p>' +
@@ -4244,6 +5970,9 @@ function renderMain() {
   if (isHome()) return renderHome();
   if (state.view === 'library') return renderLibrary();
   if (state.view === 'progress') return renderProgress();
+  if (state.view === 'lessons') return renderLessons();
+  if (state.view === 'exam') return renderExam();
+  if (state.view === 'classroom') return renderClassroom();
   var p = current();
   return renderTop(p) + '<p class="help">' + esc(STEP_HELP[state.step - 1]) + '</p>' +
     msgHtml() + renderStep(p);
@@ -4259,7 +5988,7 @@ function renderTop(p) {
       : '<span class="' + cls + '">' + inner + '</span>';
   }).join('');
   var title = p ? (topicById(state.topicId) ? 'บทที่ ' + topicById(state.topicId).no + ' · ' + p.title : p.title) : 'ฝึกทำโจทย์';
-  return '<div class="topbar"><div><button type="button" class="back-home" data-act="go-home">← กลับหน้าแรก</button><p class="kicker">สสวท. ฟิสิกส์ เล่ม 1–6 · ม.4–ม.6</p><h1 class="page">' + esc(title) + '</h1></div><div class="stepper">' + steps + '</div></div>';
+  return '<div class="topbar"><div><button type="button" class="back-home" data-act="go-home">← กลับหน้าแรก</button><p class="kicker">ขั้นที่ ' + state.step + ' จาก 4</p><h1 class="page">' + esc(title) + '</h1></div><div class="stepper">' + steps + '</div></div>';
 }
 function renderStep(p) {
   if (state.step === 1) return renderStudio();
@@ -4485,7 +6214,7 @@ function renderArrange(p) {
   var quad = !ready && !path ? quadShape(state.eq, targetKey) : null;
   if (quad) target = 'ขั้นนี้หา ' + SYM[targetKey].sym + ' ซึ่งอยู่ ' + quad.terms + ' พจน์ ย้ายข้างให้อยู่ลำพังไม่ได้ ใช้วิธีแก้สมการ' + (quad.degree === 2 ? 'กำลังสอง' : 'โดยดึงตัวร่วม');
   else if (!ready) target += path ? ' · เหลืออย่างน้อย ' + path.steps + ' ขั้น' : ' · รูปนี้ไปต่อไม่ได้ กดย้อนกลับ';
-  suggestMove = state.hintOn && path ? path.first : null;
+  suggestMove = (state.hintLevel || 0) >= 3 && path ? path.first : null;
   var note = f.boardNote ? '<p class="note">' + esc(f.boardNote) + '</p>' : '';
   var preview = '';
   if (ready) {
@@ -4493,7 +6222,7 @@ function renderArrange(p) {
     var plugged = eqText(state.eq, knownOf(p), labelMap(p));
     preview = '<div class="preview"><span>พร้อมแทนค่า</span><code>' + esc(plugged === symbolic ? symbolic : plugged) + '</code></div>';
   }
-  var hint = state.hintOn ? '<div class="hintbox">คำใบ้: ' + esc(nextHint(state.eq, targetKey)) + '</div>' : '';
+  var hint = renderHintPanel(state.eq, targetKey);
   var head = multi
     ? 'จัดรูปขั้นที่ ' + (state.planIndex + 1) + '/' + state.plan.length + ' · ' + f.classic
     : 'จัดรูป ' + f.classic;
@@ -4502,7 +6231,7 @@ function renderArrange(p) {
     '<div class="board"><div class="eqline">' + sideHtml(state.eq.left, 'left') + '<span class="equals">=</span>' + sideHtml(state.eq.right, 'right') + '</div>' +
     '<p class="legend">แตะเลือก แล้วแตะซ้ำเพื่อย้าย หรือลากไปวางอีกฝั่ง · จุดคือเครื่องหมายคูณ · ขีดใต้คือตัวที่ต้องหา · Ctrl+Z ย้อนกลับ</p>' +
     '<p class="mobile-tip">บนมือถือ: แตะตัวเลขหรือตัวแปรให้ขึ้นสีทอง แล้วแตะซ้ำหรือกดปุ่มย้ายด้านล่าง</p></div>' +
-    preview + (quad ? quadPanel(p, targetKey, quad) : '') + renderTools(ready) + '<p class="coach">' + esc(coachText(p)) + '</p>' + hint + renderTimeline() + '</section>';
+    preview + (quad ? quadPanel(p, targetKey, quad) : '') + renderTools(ready) + '<p class="coach">' + esc(coachText(p)) + '</p>' + hint + renderAiTutorPanel() + renderTimeline() + '</section>';
 }
 function quadPanel(p, key, shape) {
   var x = SYM[key].sym;
@@ -4554,7 +6283,7 @@ function renderTools(ready) {
     (action.whole ? '<button type="button" class="btn secondary" data-act="move-term">ย้ายทั้งพจน์</button>' : '') +
     (ready ? '' : '<button type="button" class="btn secondary" data-act="auto-step">ช่วยทำ 1 ขั้น</button>') +
     '</div><div class="actions-sub">' +
-    '<button type="button" class="btn secondary" data-act="hint">' + (state.hintOn ? 'ซ่อนคำใบ้' : 'ขอคำใบ้') + '</button>' +
+    '<button type="button" class="btn secondary" data-act="hint-level" data-level="' + Math.min(4, (state.hintLevel || 0) + 1) + '">' + ((state.hintLevel || 0) ? 'คำใบ้แรงขึ้น (Lv.' + state.hintLevel + ')' : 'ขอคำใบ้') + '</button>' +
     '<button type="button" class="btn secondary" data-act="sub">แทนค่าที่โจทย์ให้</button>' +
     '<button type="button" class="btn secondary" data-act="sqrt">ถอดรากที่สอง</button>' +
     (hasSqrt ? '<button type="button" class="btn secondary" data-act="square">ยกกำลังสอง</button>' : '') +
@@ -4620,7 +6349,7 @@ function renderResult(p) {
     ? '<button type="button" class="btn secondary" data-act="similar">ฝึกข้อคล้ายกัน (เปลี่ยนตัวเลข)</button>'
     : '';
   var scores = r.scores
-    ? '<div class="score-grid"><div class="score-card"><strong>' + r.scores.moves + '</strong><span>ครั้งที่ย้ายข้าง</span></div><div class="score-card"><strong>' + r.scores.confidence + '%</strong><span>ความมั่นใจตอนวิเคราะห์บท</span></div><div class="score-card"><strong>' + (state.plan.length || 1) + '</strong><span>จำนวนสูตรในแผน</span></div></div>'
+    ? '<div class="score-grid"><div class="score-card"><strong>' + r.scores.moves + '</strong><span>ครั้งที่ย้ายข้าง</span></div><div class="score-card"><strong>' + r.scores.confidence + '%</strong><span>ความมั่นใจตอนวิเคราะห์บท</span></div><div class="score-card"><strong>' + (state.plan.length || 1) + '</strong><span>จำนวนสูตรในแผน</span></div><div class="score-card"><strong>+' + (r.scores.points != null ? r.scores.points : '—') + '</strong><span>คะแนนรอบนี้</span></div><div class="score-card"><strong>' + ((state.scores && state.scores.total) || 0) + '</strong><span>คะแนนสะสม</span></div></div>'
     : '';
   var more = r.moreSteps
     ? '<div class="next-task"><strong>ยังไม่จบโจทย์</strong><p>ได้ค่า ' + esc(info.sym) + ' แล้ว กดปุ่มด้านล่างเพื่อใช้ค่านี้ไปหา ' + esc(SYM[goalTarget()].sym) + ' ด้วยสูตรถัดไป</p></div>' +
@@ -4635,7 +6364,7 @@ function renderResult(p) {
     }).join('') + (r.moreSteps ? '' : '<li class="now">ได้คำตอบสุดท้ายแล้ว</li>') + '</ol></div>'
     : '';
   return '<section class="card"><div class="hero"><div><p class="note">' + esc(topic.grade + ' ' + topic.vol + ' · บทที่ ' + topic.no + ' ' + topic.name) + ' · ' + esc(f.classic) + '</p><p class="answer-num">' + esc(info.sym + ' = ' + r.valueText + (info.unit ? ' ' + info.unit : '')) + '</p><p class="unit-th">' + esc(info.name + ' ' + r.valueText + ' ' + info.unitTh) + '</p></div><div class="seal">' + esc(r.seal || 'วิเคราะห์แล้ว') + '</div></div>' + scores + more + chain + '<div class="analysis"><h3>การวิเคราะห์คำตอบ</h3>' + prose + '</div><div class="work-block">' + rows + '</div>' + tipsHtml + renderTimeline() +
-    '<div class="row-actions"><button type="button" class="btn" data-act="fresh">โจทย์ใหม่</button>' + similar + '<button type="button" class="btn secondary" data-act="retry">จัดรูปข้อนี้อีกครั้ง</button><button type="button" class="btn ghost" data-act="print">พิมพ์ใบคำตอบ</button></div></section>';
+    '<div class="row-actions"><button type="button" class="btn" data-act="fresh">โจทย์ใหม่</button>' + similar + '<button type="button" class="btn secondary" data-act="toggle-solution">' + (state.showSolution ? 'ซ่อนเฉลยทีละขั้น' : 'ดูเฉลยทีละขั้น') + '</button>' + '<button type="button" class="btn secondary" data-act="retry">จัดรูปข้อนี้อีกครั้ง</button><button type="button" class="btn ghost" data-act="print">พิมพ์ใบคำตอบ</button></div>' + renderSolutionPanel(p) + renderAiTutorPanel() + '</section>';
 }
 
 function startArrange(formula) {
@@ -4647,6 +6376,8 @@ function startArrange(formula) {
   state.selected = null;
   state.result = null;
   state.hintOn = false;
+  state.hintLevel = 0;
+  state.showSolution = false;
   state.step = 4;
   var iso = findIsolated(state.eq);
   if (iso && iso.name === target) setMessage('good', 'สูตรนี้อยู่ในรูปที่ตัวที่ต้องหาอยู่ลำพังแล้ว ตรวจการแทนค่าแล้วกดคำนวณ');
@@ -4893,7 +6624,9 @@ function commitResult(p, target, value, rows, middle) {
   var goal = goalTarget();
   if (!isFinite(value)) { setMessage('bad', 'ได้ค่าที่ไม่ใช่จำนวนจริง'); render(); return; }
   if (p.answer != null && target === goal && !approxEqual(value, p.answer)) {
+    recordMistake('answer', { note: 'คำตอบไม่ตรงตัวอย่าง · ได้ ' + formatNum(value), topic: state.topicId, formula: state.formulaId });
     setMessage('bad', 'คำนวณได้ ' + formatNum(value) + ' ยังไม่สอดคล้องกับแนวคำตอบของตัวอย่าง ลองย้อนกลับแล้วจัดรูปใหม่');
+    persist();
     render();
     return;
   }
@@ -4941,7 +6674,11 @@ function commitResult(p, target, value, rows, middle) {
   if (!moreSteps) {
     if (state.exampleId) markSolved(state.exampleId);
     state.clears = (state.clears || 0) + 1;
-    state.log = (state.log || []).concat([{ f: state.formulaId, t: formulaById(state.formulaId).topic, v: value != null ? formatNum(value) : '', k: target, at: Date.now() }]).slice(-300);
+    var gained = awardScore(formula.topic, state.formulaId, Math.max(5, 15 - Math.min(10, moves)));
+    bumpSR(formula.topic, true);
+    syncMissions();
+    state.log = (state.log || []).concat([{ f: state.formulaId, t: formula.topic, v: value != null ? formatNum(value) : '', k: target, at: Date.now(), score: gained }]).slice(-300);
+    if (state.result && state.result.scores) state.result.scores.points = gained;
   }
   if (!moreSteps) fx.celebrate = true;
   setMessage(moreSteps ? 'info' : null, moreSteps ? 'ได้ค่ากลางแล้ว พร้อมไปสูตรถัดไป' : null);
@@ -5225,10 +6962,11 @@ function handle(ds) {
       render();
       return;
     }
-    memory.session = null;
-    state.solved = [];
+    // ล้างเฉพาะโปรไฟล์ปัจจุบัน — ไม่ลบโปรไฟล์อื่นใน SAVE_KEY เดียวกัน
+    memory.profiles[memory.activeProfile || 'default'] = emptyProfile(state.profileName || 'ผู้เรียน');
+    pullProfileToState();
     blankWork();
-    try { localStorage.removeItem(SAVE_KEY); } catch (err) { /* ignore */ }
+    persist();
     render();
     return;
   }
@@ -5252,6 +6990,153 @@ function handle(ds) {
     if (act === 'view-sims') { state.view = 'sims'; render(); return; }
     if (act === 'view-library') { state.view = 'library'; render(); return; }
     if (act === 'view-progress') { state.view = 'progress'; render(); return; }
+    if (act === 'view-labs' || act === 'lab-list' || act === 'open-lab') { state.view = 'sims'; state.labId = null; render(); return; }
+    if (act === 'view-exam') { state.view = 'exam'; if (state.exam && state.exam.submitted) { /* keep result */ } render(); return; }
+    if (act === 'view-classroom') { state.view = 'classroom'; render(); return; }
+    if (act === 'session-refresh') {
+      ensureSession(true).then(function (t) {
+        setMessage(t ? 'good' : 'bad', t ? 'ได้เซสชันที่ลงนามแล้ว' : (state.sessionErr || 'ขอเซสชันไม่สำเร็จ'));
+        render();
+      });
+      return;
+    }
+    if (act === 'class-create') {
+      createClassroomClient(state.classNameDraft || 'ห้องสาธิต', state.classCodeDraft || 'LAB8DEMO').then(function (d) {
+        setMessage(d && d.ok ? 'good' : 'bad', d && d.ok ? ('สร้างห้อง ' + d.classroom.code) : ((d && d.message) || (d && d.error) || 'สร้างห้องไม่สำเร็จ'));
+        render();
+      });
+      return;
+    }
+    if (act === 'class-join') {
+      joinClassroomClient(state.classCodeDraft || 'DEMO01').then(function (d) {
+        setMessage(d && d.ok ? 'good' : 'bad', d && d.ok ? ('เข้าร่วมห้อง ' + d.classroom.code) : ((d && d.message) || (d && d.error) || 'เข้าร่วมไม่สำเร็จ'));
+        render();
+      });
+      return;
+    }
+    if (act === 'class-roster') {
+      loadRoster().then(function (d) {
+        if (d && d.ok) state.rosterMembers = d.classroom.members || [];
+        setMessage(d && d.ok ? 'good' : 'bad', d && d.ok ? ('สมาชิก ' + state.rosterMembers.length + ' คน') : ((d && d.message) || 'โหลดรายชื่อไม่ได้'));
+        render();
+      });
+      return;
+    }
+    if (act === 'report-send') {
+      submitProblemReport(state.reportPid, state.reportNote).then(function (d) {
+        setMessage(d && d.ok ? 'good' : 'bad', d && d.ok ? 'ส่งรายงานแล้ว' : ((d && d.message) || 'ส่งไม่สำเร็จ'));
+        render();
+      });
+      return;
+    }
+    if (act === 'report-load') {
+      loadMyReports().then(function (d) {
+        state.reportList = (d && d.reports) || [];
+        setMessage(d && d.ok ? 'good' : 'bad', d && d.ok ? ('รายการ ' + state.reportList.length + ' · scope ' + d.scope) : ((d && d.message) || 'โหลดไม่ได้'));
+        render();
+      });
+      return;
+    }
+    if (act === 'backup-checkpoint') {
+      pushRollbackPoint('manual');
+      setMessage('good', 'สร้างจุด Rollback แล้ว');
+      render(); return;
+    }
+    if (act === 'backup-export') {
+      var blob = new Blob([JSON.stringify(exportBackup(), null, 2)], { type: 'application/json' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'physics-learning-backup.json';
+      a.click();
+      setMessage('good', 'ส่งออก Backup แล้ว');
+      return;
+    }
+    if (act === 'rollback') {
+      if (rollbackTo(Number(ds.index))) setMessage('good', 'Rollback สำเร็จ');
+      else setMessage('bad', 'Rollback ไม่สำเร็จ');
+      render(); return;
+    }
+    if (act === 'exam-start') {
+      startMockExam({ count: state.examCount || 8, minutes: state.examMinutes || 15, topic: state.examTopic || 'all' });
+      render(); return;
+    }
+    if (act === 'exam-reset') { state.exam = null; state.view = 'exam'; render(); return; }
+    if (act === 'exam-goto') { if (state.exam) { state.exam.index = Math.max(0, Math.min(state.exam.items.length - 1, Number(ds.index) || 0)); } render(); return; }
+    if (act === 'exam-prev') { if (state.exam && state.exam.index > 0) state.exam.index -= 1; render(); return; }
+    if (act === 'exam-next') { if (state.exam && state.exam.index < state.exam.items.length - 1) state.exam.index += 1; render(); return; }
+    if (act === 'exam-submit') { submitMockExam(); render(); return; }
+    if (act === 'exam-to-tutor') {
+      var bankItem = examBank().filter(function (q) { return q.id === ds.id; })[0];
+      var exProb = problems.filter(function (p) { return p.id === ds.id; })[0];
+      if (exProb) { runAnalyze(exProb); state.view = 'tutor'; }
+      else if (bankItem) {
+        state.view = 'tutor'; state.prompt = bankItem.text; state.step = 1;
+        setMessage('info', 'คัดลอกโจทย์จากข้อสอบแล้ว — กดวิเคราะห์เพื่อฝึกทีละขั้น');
+      }
+      render(); return;
+    }
+    if (act === 'ai-tutor-ask') { callAiTutor(); return; }
+    if (act === 'ai-health') {
+      aiHealth().then(function (d) {
+        setMessage(d && d.aiEnabled ? 'good' : 'info', d && d.aiEnabled
+          ? ('AI พร้อม · ติวเตอร์ ' + (d.tutorModel || '') + ' · OCR ' + (d.ocrModel || ''))
+          : 'AI ยังไม่เปิดบนเซิร์ฟเวอร์ — ใช้คำใบ้/วิเคราะห์ในเครื่องได้ตามปกติ');
+        render();
+      });
+      return;
+    }
+    if (act === 'ocr-confirm') { confirmOcrText(); return; }
+    if (act === 'hint-level') {
+      var lv = Math.max(0, Math.min(4, Number(ds.level) || 0));
+      state.hintLevel = lv;
+      state.hintOn = lv > 0;
+      render(); return;
+    }
+    if (act === 'hint-clear') { state.hintLevel = 0; state.hintOn = false; render(); return; }
+    if (act === 'toggle-solution') { state.showSolution = !state.showSolution; render(); return; }
+    if (act === 'mission-go') {
+      if (topicById(ds.topic)) {
+        state.view = 'tutor';
+        if (!state.problem) { state.step = 1; state.topicId = ds.topic; }
+        else { pickTopic(ds.topic); }
+      }
+      render(); return;
+    }
+    if (act === 'profile-add') {
+      var inp = document.querySelector('[data-field="profile-new"]');
+      var nm = inp && inp.value ? inp.value : '';
+      createProfile(nm);
+      render(); return;
+    }
+    if (act === 'view-lessons') { state.view = 'lessons'; state.lessonId = null; render(); return; }
+    if (act === 'lesson-list') { state.lessonId = null; state.view = 'lessons'; render(); return; }
+    if (act === 'open-lesson') { if (lessonById(ds.id)) { state.view = 'lessons'; state.lessonId = ds.id; } render(); return; }
+    if (act === 'lesson-grade') { state.lessonGrade = ds.grade || 'all'; state.lessonId = null; render(); return; }
+    if (act === 'lesson-track') { state.lessonTrack = ds.track || 'all'; state.lessonId = null; render(); return; }
+    if (act === 'lesson-mark') {
+      var idm = ds.id; if (!lessonById(idm)) return;
+      state.lessonDone[idm] = state.lessonDone[idm] || {};
+      state.lessonDone[idm][ds.flag] = true;
+      persist(); render(); return;
+    }
+    if (act === 'lesson-quiz') {
+      var qid = ds.qid; if (!qid) return;
+      if (state.lessonQuiz[qid] != null) return; // กันส่งซ้ำ — ไม่เขียนทับคำตอบเดิม
+      state.lessonQuiz[qid] = Number(ds.pick);
+      var parts = qid.split(':'); var Lq = lessonById(parts[0]);
+      var qi = Number(parts[1]);
+      if (Lq && Lq.quiz[qi]) {
+        if (state.lessonQuiz[qid] === Lq.quiz[qi].answer) {
+          state.lessonDone[Lq.id] = state.lessonDone[Lq.id] || {};
+          state.lessonDone[Lq.id].quiz = true;
+          awardScore(Lq.id, null, 5);
+          bumpSR(Lq.id, true);
+        } else {
+          recordMistake('quiz', { topic: Lq.id, note: 'ตอบควิซบทที่ ' + Lq.no + ' ผิด' });
+        }
+      }
+      persist(); render(); return;
+    }
     if (act === 'lib-ch') { state.libCh = ds.ch || 'all'; render(); return; }
     if (act === 'lib-open') { state.view = 'library'; state.libCh = topicById(ds.ch) ? ds.ch : 'all'; state.libQ = ''; render(); return; }
     if (act === 'open-sim') { if (simById(ds.id)) { state.view = 'sims'; state.simId = ds.id; } render(); return; }
@@ -5340,7 +7225,7 @@ function handle(ds) {
     if (act === 'sqrt') return applyOp(takeSqrt);
     if (act === 'square') return applyOp(squareBoth);
     if (act === 'sub') return applyOp(function (eq) { return substituteKnown(eq, knownOf(current())); });
-    if (act === 'hint') { state.hintOn = !state.hintOn; render(); return; }
+    if (act === 'hint') { state.hintLevel = state.hintLevel ? 0 : 1; state.hintOn = state.hintLevel > 0; render(); return; }
     if (act === 'undo') {
       if (!state.undo.length) return;
       state.eq = state.undo.pop();
@@ -5556,6 +7441,22 @@ function fxCountUp() {
   })(t0);
 }
 function boot() {
+  try { aiHealth(); } catch (err) { /* ignore */ }
+  if (!window.__examTimer && typeof setInterval === 'function') {
+    window.__examTimer = setInterval(function () {
+      if (state.view === 'exam' && state.exam && state.exam.active && !state.exam.submitted) {
+        if (examRemainingMs() <= 0) { submitMockExam(); render(); }
+        else {
+          var t = document.querySelector('.exam-timer');
+          if (t) {
+            var remain = examRemainingMs();
+            var mm = Math.floor(remain / 60000), ss = Math.floor((remain % 60000) / 1000);
+            t.textContent = mm + ':' + (ss < 10 ? '0' : '') + ss;
+          }
+        }
+      }
+    }, 1000);
+  }
   loadStore();
   try { fxInit(); } catch (err) {}
   var app = document.getElementById('app');
@@ -5563,6 +7464,20 @@ function boot() {
   var topicTimer = null;
   var valueTimer = null;
   app.addEventListener('input', function (e) {
+    var elAi = e.target;
+    if (elAi && elAi.dataset && elAi.dataset.field === 'ai-tutor-q') { state.aiTutorQ = elAi.value; return; }
+    if (elAi && elAi.dataset && elAi.dataset.field === 'exam-answer' && state.exam) {
+      var cur = state.exam.items[state.exam.index];
+      if (cur) state.exam.answers[cur.id] = elAi.value;
+      return;
+    }
+    if (elAi && elAi.dataset && elAi.dataset.field === 'exam-count') { state.examCount = Number(elAi.value) || 8; return; }
+    if (elAi && elAi.dataset && elAi.dataset.field === 'exam-minutes') { state.examMinutes = Number(elAi.value) || 15; return; }
+    if (elAi && elAi.dataset && elAi.dataset.field === 'class-name') { state.classNameDraft = elAi.value; return; }
+    if (elAi && elAi.dataset && elAi.dataset.field === 'class-code') { state.classCodeDraft = elAi.value; return; }
+    if (elAi && elAi.dataset && elAi.dataset.field === 'report-note') { state.reportNote = elAi.value; return; }
+    if (elAi && elAi.dataset && elAi.dataset.field === 'report-pid') { state.reportPid = elAi.value; return; }
+    if (elAi && elAi.dataset && elAi.dataset.field === 'ocr-draft') { state.ocrDraft = elAi.value; state.ocrConfirmed = false; return; }
     var el = e.target;
     if (!el || !el.dataset) return;
     if (el.dataset.field === 'libq') { state.libQ = el.value; filterLibrary(); }
@@ -5589,7 +7504,47 @@ function boot() {
   });
   app.addEventListener('change', function (e) {
     var el = e.target;
-    if (!el || !el.dataset || !state.problem) return;
+    if (!el || !el.dataset) return;
+    if (el.dataset.field === 'profile-select') { switchProfile(el.value); render(); return; }
+    if (el.dataset.field === 'lab-param') {
+      setLabParam(el.getAttribute('data-lab'), el.getAttribute('data-key'), el.value);
+      render(); return;
+    }
+    if (el.dataset.field === 'exam-topic') { state.examTopic = el.value || 'all'; return; }
+    if (el.dataset.field === 'exam-count') { state.examCount = Number(el.value) || 8; return; }
+    if (el.dataset.field === 'exam-minutes') { state.examMinutes = Number(el.value) || 15; return; }
+    if (el.dataset.field === 'role-select') {
+      state.role = el.value === 'teacher' ? 'teacher' : 'student';
+      state.sessionToken = null;
+      ensureSession(true).then(function () { render(); });
+      return;
+    }
+    if (el.dataset.field === 'backup-file') {
+      var f = el.files && el.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          restoreBackup(String(reader.result || ''), 'replace');
+          setMessage('good', 'Restore สำเร็จ (มีจุด Rollback ก่อน restore)');
+        } catch (err) {
+          setMessage('bad', err.message || 'Restore ไม่สำเร็จ');
+        }
+        render();
+      };
+      reader.readAsText(f);
+      return;
+    }
+    if (el.dataset.field === 'ocr-file') {
+      var file = el.files && el.files[0];
+      if (!file) return;
+      if (file.size > 1500000) { state.ocrErr = 'ไฟล์ใหญ่เกิน 1.5 MB'; render(); return; }
+      var reader = new FileReader();
+      reader.onload = function () { callAiOcr(String(reader.result || '')); };
+      reader.readAsDataURL(file);
+      return;
+    }
+    if (!state.problem) return;
     if (el.dataset.field === 'value') { clearTimeout(valueTimer); commitValue(el, false); }
     if (el.dataset.field === 'unknown') {
       var pr = state.problem;
@@ -5715,7 +7670,19 @@ if (globalThis.RUN_PHYSICS_TEST) {
     findPlan: findPlan, handle: handle, blankWork: blankWork, solveTarget: solveTarget,
     parseQuantity: parseQuantity, normalizeUnits: normalizeUnits, evalExpression: evalExpression,
     setGivenValue: setGivenValue, addSlot: addSlot, renderFormulas: renderFormulas, refreshAdvice: refreshAdvice, fx: fx,
-    render: render, commitResult: commitResult, loadStore: loadStore
+    render: render, commitResult: commitResult, loadStore: loadStore,
+    getLessons: getLessons, lessonById: lessonById, renderLessons: renderLessons, formatNum: formatNum,
+    awardScore: awardScore, recordMistake: recordMistake, bumpSR: bumpSR, switchProfile: switchProfile,
+    createProfile: createProfile, buildSolutionWalkthrough: buildSolutionWalkthrough, hintTexts: hintTexts,
+    weaknessReport: weaknessReport, learningPath: learningPath, MISSIONS: MISSIONS, persist: persist,
+    migrateLegacyStore: migrateLegacyStore, emptyProfile: emptyProfile, syncMissions: syncMissions,
+    aiHealth: aiHealth, callAiTutor: callAiTutor, callAiOcr: callAiOcr, confirmOcrText: confirmOcrText,
+    LAB_ROOMS: LAB_ROOMS, verifyAllLabs: verifyAllLabs, examBank: examBank, startMockExam: startMockExam,
+    gradeExamAnswer: gradeExamAnswer, submitMockExam: submitMockExam, shuffleSeeded: shuffleSeeded,
+    runLabRefs: runLabRefs, labById: labById,
+    exportBackup: exportBackup, restoreBackup: restoreBackup, pushRollbackPoint: pushRollbackPoint,
+    rollbackTo: rollbackTo, listRollbackPoints: listRollbackPoints, ensureSession: ensureSession,
+    mintClientHelpers: true
   };
 }
 </script>
